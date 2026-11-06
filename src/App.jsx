@@ -70,13 +70,12 @@ const initialEmployees = [
 export default function App() {
   const [employees, setEmployees] = useState(initialEmployees);
   const [selectedId, setSelectedId] = useState(1);
-  const [activeTab, setActiveTab] = useState('dashboard'); // dashboard, list, detail, new
+  const [activeTab, setActiveTab] = useState('dashboard');
   const [searchTerm, setSearchTerm] = useState('');
   const [departmentFilter, setDepartmentFilter] = useState('Todos');
 
   const selectedEmployee = employees.find(e => e.id === selectedId) || employees[0];
 
-  // Global statistics
   const totalPDIs = employees.length;
   const completedPDIs = employees.filter(e => e.progress === 100).length;
   const inProgressPDIs = employees.filter(e => e.progress > 0 && e.progress < 100).length;
@@ -107,8 +106,8 @@ export default function App() {
       <header className="bg-gradient-to-r from-emerald-800 to-teal-900 text-white shadow-md no-print">
         <div className="max-w-7xl mx-auto px-4 py-4 flex flex-wrap justify-between items-center gap-4">
           <div className="flex items-center space-x-3">
-            <div className="bg-white p-2 rounded-lg shadow-inner flex items-center justify-center">
-             <img src="/logo.png" alt="Mix Soluções Ambientais" className="h-8 w-auto object-contain" />
+            <div className="flex items-center justify-center">
+              <img src="/logo.png" alt="Mix Soluções Ambientais" className="h-10 w-auto object-contain" />
             </div>
             <div>
               <h1 className="text-xl font-bold tracking-tight">MIX SOLUÇÕES AMBIENTAIS</h1>
@@ -317,7 +316,7 @@ export default function App() {
           </div>
         )}
 
-        {/* DETAIL TAB (FICHA DO PDI) */}
+        {/* DETAIL TAB */}
         {activeTab === 'detail' && selectedEmployee && (
           <div className="space-y-6">
             <div className="flex justify-between items-center no-print">
@@ -335,9 +334,7 @@ export default function App() {
               </button>
             </div>
 
-            {/* Ficha Imprimível */}
             <div className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-8">
-              {/* Cabeçalho da Ficha */}
               <div className="border-b border-slate-200 pb-6 flex justify-between items-start flex-wrap gap-4">
                 <div>
                   <span className="text-xs font-bold text-emerald-600 uppercase tracking-widest">Ficha Individual de Desenvolvimento</span>
@@ -355,7 +352,6 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Mapeamento de Competências */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="p-4 bg-emerald-50/50 border border-emerald-100 rounded-xl">
                   <h4 className="text-xs font-bold uppercase text-emerald-800 flex items-center gap-1.5 mb-2">
@@ -379,7 +375,6 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Matriz de Ações 70/20/10 */}
               <div>
                 <h3 className="font-bold text-slate-800 text-lg mb-4 flex items-center gap-2">
                   <BookOpen className="w-5 h-5 text-emerald-600" /> Plano de Ação Estruturado (Metodologia 70/20/10)
@@ -417,7 +412,6 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Seção de Assinaturas (Visual na Impressão) */}
               <div className="pt-12 border-t border-slate-200 grid grid-cols-3 gap-6 text-center text-xs text-slate-500">
                 <div>
                   <div className="border-b border-slate-300 mb-2 pb-8"></div>
@@ -440,7 +434,6 @@ export default function App() {
         )}
       </main>
 
-      {/* Footer */}
       <footer className="bg-slate-900 text-slate-400 text-xs py-4 text-center border-t border-slate-800 no-print">
         <p>Mix Soluções Ambientais • Sistema Interno de Gestão de Desenvolvimento Individual 2026</p>
       </footer>
