@@ -3,10 +3,9 @@ import { createClient } from '@supabase/supabase-js';
 import { 
   Users, Target, CheckCircle2, Clock, Search, Filter, 
   ChevronRight, Award, BarChart3, Printer, BookOpen, 
-  TrendingUp, UserPlus, X, Lock, LogOut, Shield, Loader2, RefreshCw 
+  TrendingUp, Lock, LogOut, Shield, Loader2, RefreshCw 
 } from 'lucide-react';
 
-// Conexão com o Supabase
 const supabaseUrl = 'https://hbyjblwzuvntinpugetr.supabase.co';
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhieWpibHd6dXZudGlucHVnZXRyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDEyMzQ1NjcsImV4cCI6MjAxNTAwMDAwMH0.placeholder';
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
@@ -18,6 +17,38 @@ const validUsers = [
   { name: "Augusto Arruda", email: "augusto@mixsolucoesambientais.com.br", pass: "gestor123", profile: "GESTOR", role: "Supervisor Operacional" },
   { name: "Jose Izailton", email: "log@mixsolucoesambientais.com.br", pass: "gestor123", profile: "GESTOR", role: "Gestor Logística" }
 ];
+
+// Logótipo Oficial da Mix Soluções Ambientais (SVG Fiel)
+function LogoMixOficial() {
+  return (
+    <div className="flex items-center justify-center select-none py-1">
+      <svg className="h-16 w-auto" viewBox="0 0 280 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {/* Letra M */}
+        <path d="M 15 110 L 15 40 L 40 85 L 65 40 L 65 110" stroke="#0078C8" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round" />
+        
+        {/* Letra i (Haste) */}
+        <line x1="92" y1="58" x2="92" y2="110" stroke="#0078C8" strokeWidth="12" strokeLinecap="round" />
+
+        {/* Folha Verde (Superior Esquerda) */}
+        <path d="M 85 45 C 70 30 75 10 92 10 C 100 25 95 40 85 45 Z" fill="#4CAE30" />
+        
+        {/* Folha Azul (Superior Direita) */}
+        <path d="M 94 43 C 95 25 110 15 125 22 C 120 38 105 45 94 43 Z" fill="#0078C8" />
+        
+        {/* Curva Ramo Verde sob o pingo do i */}
+        <path d="M 80 50 C 78 68 115 70 175 25" stroke="#4CAE30" strokeWidth="3.5" strokeLinecap="round" fill="none" />
+
+        {/* Letra x */}
+        <path d="M 115 62 C 130 85 140 100 162 110" stroke="#0078C8" strokeWidth="11" strokeLinecap="round" />
+        <path d="M 162 62 C 145 85 130 98 115 110" stroke="#0078C8" strokeWidth="11" strokeLinecap="round" />
+
+        {/* Texto SOLUÇÕES AMBIENTAIS */}
+        <text x="172" y="76" fill="#4CAE30" fontFamily="Arial, sans-serif" fontSize="20" fontWeight="bold" letterSpacing="1">SOLUÇÕES</text>
+        <text x="172" y="102" fill="#4CAE30" fontFamily="Arial, sans-serif" fontSize="20" fontWeight="bold" letterSpacing="1">AMBIENTAIS</text>
+      </svg>
+    </div>
+  );
+}
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -148,8 +179,11 @@ export default function App() {
     return (
       <div className="min-h-screen bg-[#0d1527] flex items-center justify-center p-4 font-sans">
         <div className="bg-white max-w-md w-full rounded-2xl shadow-2xl overflow-hidden border border-slate-100">
-          <div className="bg-[#055a43] p-8 text-center text-white space-y-2">
-            <h2 className="text-xl font-extrabold tracking-tight">MIX SOLUÇÕES AMBIENTAIS</h2>
+          <div className="bg-[#055a43] p-8 text-center text-white space-y-3">
+            <div className="bg-white py-2 px-4 rounded-xl shadow-md inline-block w-full">
+              <LogoMixOficial />
+            </div>
+            <h2 className="text-xl font-extrabold tracking-tight mt-2">MIX SOLUÇÕES AMBIENTAIS</h2>
             <p className="text-xs text-emerald-100/80 font-medium">Portal de Gestão de PDI • Pilar Desenvolvimento</p>
           </div>
 
@@ -207,9 +241,8 @@ export default function App() {
     <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans">
       <header className="bg-gradient-to-r from-emerald-800 to-teal-900 text-white shadow-md">
         <div className="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-4">
-          <div>
-            <h1 className="text-xl font-bold tracking-tight">MIX SOLUÇÕES AMBIENTAIS</h1>
-            <p className="text-xs text-emerald-200">Sistema de Gestão de PDI • {employees.length} Colaboradores</p>
+          <div className="bg-white px-3 py-1 rounded-lg">
+            <LogoMixOficial />
           </div>
 
           <div className="flex items-center gap-4">
@@ -260,7 +293,7 @@ export default function App() {
                 <span className="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full">META ESTRATÉGICA 2026</span>
                 <h2 className="text-2xl font-bold text-slate-900 mt-2">Implementação de 100% dos PDIs</h2>
                 <p className="text-sm text-slate-500">
-                  {currentUser.profile === 'RH' ? `Acompanhamento global dos ${employees.length} colaboradores da empresa.` : `Gerenciando a equipe de ${currentUser.name}.`}
+                  {currentUser.profile === 'RH' ? `Acompanhamento global de todos os ${employees.length} colaboradores da empresa.` : `Gerenciando a equipe de ${currentUser.name}.`}
                 </p>
               </div>
               
@@ -479,6 +512,37 @@ export default function App() {
                     <TrendingUp className="w-4 h-4" /> Objetivo de Carreira
                   </h4>
                   <p className="text-xs text-slate-600 leading-relaxed">{selectedEmployee.goal}</p>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-slate-800 text-lg mb-4 flex items-center gap-2">
+                  <BookOpen className="w-5 h-5 text-emerald-600" /> Plano de Ação Estruturado (70/20/10)
+                </h3>
+                <div className="space-y-3">
+                  {selectedEmployee.actions.length === 0 ? (
+                    <p className="text-xs text-slate-400">Nenhuma ação cadastrada para este colaborador ainda.</p>
+                  ) : (
+                    selectedEmployee.actions.map(action => (
+                      <div key={action.id} className="p-4 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between gap-4">
+                        <div className="space-y-1">
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-600 text-white">
+                            {action.type} {action.category}
+                          </span>
+                          <p className="text-sm font-semibold text-slate-800">{action.title}</p>
+                        </div>
+                        <select 
+                          value={action.status} 
+                          onChange={e => handleStatusChange(action.id, e.target.value)}
+                          className="text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-300 bg-white"
+                        >
+                          <option value="Não Iniciado">Não Iniciado</option>
+                          <option value="Em Andamento">Em Andamento</option>
+                          <option value="Concluído">Concluído</option>
+                        </select>
+                      </div>
+                    ))
+                  )}
                 </div>
               </div>
             </div>
