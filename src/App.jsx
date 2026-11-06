@@ -3,12 +3,12 @@ import { createClient } from '@supabase/supabase-js';
 import { 
   Users, Target, CheckCircle2, Clock, Search, Filter, 
   ChevronRight, Award, BarChart3, Printer, BookOpen, 
-  TrendingUp, UserPlus, Lock, LogOut, Shield, Loader2, RefreshCw
+  TrendingUp, UserPlus, X, Lock, LogOut, Shield, Loader2, RefreshCw
 } from 'lucide-react';
 
 const supabaseUrl = 'https://hbyjblwzuvntinpugetr.supabase.co';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhieWpibHd6dXZudGlucHVnZXRyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDAwMDAwMDAsImV4cCI6MjAxNTAwMDAwMH0.placeholder';
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+const supabase = (supabaseUrl && supabaseAnonKey) ? createClient(supabaseUrl, supabaseAnonKey) : null;
 
 const validUsers = [
   { name: "Daiene Santos", email: "daiene@mixsolucoesambientais.com.br", pass: "mix#rh2026", profile: "RH", role: "Gestora de RH / DHO" },
@@ -18,42 +18,10 @@ const validUsers = [
   { name: "Jose Izailton", email: "log@mixsolucoesambientais.com.br", pass: "gestor123", profile: "GESTOR", role: "Gestor Logística" }
 ];
 
-// Vetor idêntico à Logomarca Oficial da Mix Soluções Ambientais
-function LogoMixOficial() {
-  return (
-    <div className="flex items-center justify-center select-none py-1">
-      <svg className="h-16 w-auto" viewBox="0 0 280 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-        {/* Letra M */}
-        <path d="M 15 110 L 15 40 L 40 85 L 65 40 L 65 110" stroke="#0078C8" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round" />
-        
-        {/* Letra i (Haste) */}
-        <line x1="92" y1="58" x2="92" y2="110" stroke="#0078C8" strokeWidth="12" strokeLinecap="round" />
-
-        {/* Folha Verde (Superior Esquerda) */}
-        <path d="M 85 45 C 70 30 75 10 92 10 C 100 25 95 40 85 45 Z" fill="#4CAE30" />
-        
-        {/* Folha Azul (Superior Direita) */}
-        <path d="M 94 43 C 95 25 110 15 125 22 C 120 38 105 45 94 43 Z" fill="#0078C8" />
-        
-        {/* Curva Ramo Verde sob o pingo do i */}
-        <path d="M 80 50 C 78 68 115 70 175 25" stroke="#4CAE30" strokeWidth="3.5" strokeLinecap="round" fill="none" />
-        <path d="M 82 52 C 85 62 105 64 135 50" stroke="#4CAE30" strokeWidth="2.5" fill="none" />
-
-        {/* Letra x */}
-        <path d="M 115 62 C 130 85 140 100 162 110" stroke="#0078C8" strokeWidth="11" strokeLinecap="round" />
-        <path d="M 162 62 C 145 85 130 98 115 110" stroke="#0078C8" strokeWidth="11" strokeLinecap="round" />
-
-        {/* Texto SOLUÇÕES AMBIENTAIS */}
-        <text x="172" y="76" fill="#4CAE30" fontFamily="Arial, sans-serif" fontSize="20" fontWeight="bold" letterSpacing="1">SOLUÇÕES</text>
-        <text x="172" y="102" fill="#4CAE30" fontFamily="Arial, sans-serif" fontSize="20" fontWeight="bold" letterSpacing="1">AMBIENTAIS</text>
-      </svg>
-    </div>
-  );
-}
-
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
   const [loginError, setLoginError] = useState('');
@@ -61,22 +29,67 @@ export default function App() {
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(false);
   const [fetchError, setFetchError] = useState('');
+  const [selectedId, setSelectedId] = useState(null);
+  const [activeTab, setActiveTab] = useState('dashboard');
   const [searchTerm, setSearchTerm] = useState('');
   const [departmentFilter, setDepartmentFilter] = useState('Todos');
+  const [showAddModal, setShowAddModal] = useState(false);
+
+  const [newEmployee, setNewEmployee] = useState({
+    nome: '',
+    cargo: '',
+    departamento: 'Operação',
+    gestor_nome: 'Daiene Santos',
+    pontos_fortes: '',
+    pontos_desenvolver: '',
+    objetivo_carreira: ''
+  });
 
   const fetchEmployees = async () => {
+    if (!supabase) return;
     setLoading(true);
     setFetchError('');
     try {
-      const { data, error } = await supabase
+      const { data: colaboradoresData, error: empError } = await supabase
         .from('colaboradores')
         .select('*');
 
-      if (error) throw error;
-      setEmployees(data || []);
+      if (empError) throw empError;
+
+      const { data: acoesData } = await supabase
+        .from('acoes_pdi')
+        .select('*');
+
+      const formatted = (colaboradoresData || []).map(emp => ({
+        id: emp.id,
+        name: emp.nome || emp.name || 'Sem Nome',
+        role: emp.cargo || emp.role || 'Sem Cargo',
+        department: emp.departamento || emp.department || 'Geral',
+        manager: emp.gestor_nome || emp.manager || 'Não Definido',
+        managerEmail: emp.gestor_email || emp.manager_email || '',
+        status: emp.status || 'Não Iniciado',
+        progress: emp.progress || 0,
+        strengths: emp.pontos_fortes || emp.strengths || 'A mapear em reunião de PDI.',
+        growthAreas: emp.pontos_desenvolver || emp.growth_areas || 'A definir com a gestão.',
+        goal: emp.objetivo_carreira || emp.goal || 'Desenvolvimento contínuo.',
+        actions: (acoesData || []).filter(a => a.colaborador_id === emp.id).map(a => ({
+          id: a.id,
+          type: a.type,
+          category: a.category,
+          title: a.title,
+          evidence: a.evidence,
+          deadline: a.deadline,
+          status: a.status
+        }))
+      }));
+
+      setEmployees(formatted);
+      if (formatted.length > 0 && !selectedId) {
+        setSelectedId(formatted[0].id);
+      }
     } catch (err) {
       console.error("Erro Supabase:", err);
-      setFetchError("Não foi possível carregar os colaboradores.");
+      setFetchError("Falha ao carregar colaboradores do Supabase.");
     } finally {
       setLoading(false);
     }
@@ -108,28 +121,64 @@ export default function App() {
     setCurrentUser(null);
   };
 
-  const filteredEmployees = employees.filter(e => {
-    const name = e.nome || e.name || '';
-    const role = e.cargo || e.role || '';
-    const dept = e.departamento || e.department || '';
-    
-    const matchesSearch = name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          role.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesDept = departmentFilter === 'Todos' || dept === departmentFilter;
-    
+  const accessibleEmployees = employees.filter(emp => {
+    if (!currentUser) return false;
+    if (currentUser.profile === 'RH') return true;
+    return emp.manager.toLowerCase().includes(currentUser.name.toLowerCase().split(' ')[0]);
+  });
+
+  const selectedEmployee = accessibleEmployees.find(e => e.id === selectedId) || accessibleEmployees[0];
+
+  const totalPDIs = accessibleEmployees.length;
+  const completedPDIs = accessibleEmployees.filter(e => e.progress === 100).length;
+  const inProgressPDIs = accessibleEmployees.filter(e => e.progress > 0 && e.progress < 100).length;
+  const implementationRate = totalPDIs > 0 
+    ? Math.round((accessibleEmployees.filter(e => e.status !== 'Não Iniciado').length / totalPDIs) * 100)
+    : 0;
+
+  const filteredEmployees = accessibleEmployees.filter(e => {
+    const matchesSearch = e.name.toLowerCase().includes(searchTerm.toLowerCase()) || e.role.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesDept = departmentFilter === 'Todos' || e.department === departmentFilter;
     return matchesSearch && matchesDept;
   });
+
+  const handleStatusChange = async (actionId, newStatus) => {
+    if (!selectedEmployee) return;
+
+    const updatedActions = selectedEmployee.actions.map(act => act.id === actionId ? { ...act, status: newStatus } : act);
+    const completed = updatedActions.filter(a => a.status === 'Concluído').length;
+    const progress = Math.round((completed / (updatedActions.length || 1)) * 100);
+    let status = 'Em Andamento';
+    if (progress === 100) status = 'Concluído';
+    if (progress === 0 && updatedActions.every(a => a.status === 'Não Iniciado')) status = 'Não Iniciado';
+
+    setEmployees(prev => prev.map(emp => emp.id === selectedEmployee.id ? { ...emp, actions: updatedActions, progress, status } : emp));
+
+    if (supabase) {
+      await supabase.from('acoes_pdi').update({ status: newStatus }).eq('id', actionId);
+      await supabase.from('colaboradores').update({ progress, status }).eq('id', selectedEmployee.id);
+    }
+  };
 
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-[#0d1527] flex items-center justify-center p-4 font-sans">
         <div className="bg-white max-w-md w-full rounded-2xl shadow-2xl overflow-hidden border border-slate-100">
-          <div className="bg-white p-6 text-center border-b border-slate-100 space-y-2">
-            <LogoMixOficial />
-            <div className="pt-1">
-              <h2 className="text-sm font-extrabold tracking-tight text-slate-800 uppercase">MIX SOLUÇÕES AMBIENTAIS</h2>
-              <p className="text-[11px] text-slate-500 font-medium">Portal de Gestão de PDI • Pilar Desenvolvimento</p>
+          <div className="bg-[#055a43] p-8 text-center text-white space-y-2">
+            <div className="flex justify-center mb-1">
+              <svg className="h-10 w-auto text-white" viewBox="0 0 200 60" fill="none">
+                <path d="M 10 50 L 10 15 L 25 38 L 40 15 L 40 50" stroke="#FFFFFF" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
+                <line x1="58" y1="26" x2="58" y2="50" stroke="#FFFFFF" strokeWidth="6" strokeLinecap="round" />
+                <path d="M 53 20 C 48 10 50 2 60 2 C 65 10 62 18 53 20 Z" fill="#4CAE30" />
+                <path d="M 60 19 C 62 10 70 5 78 8 C 75 16 68 20 60 19 Z" fill="#60A5FA" />
+                <path d="M 72 26 L 95 50" stroke="#FFFFFF" strokeWidth="6" strokeLinecap="round" />
+                <path d="M 95 26 L 72 50" stroke="#FFFFFF" strokeWidth="6" strokeLinecap="round" />
+                <text x="105" y="34" fill="#4CAE30" fontFamily="Arial" fontSize="11" fontWeight="bold">SOLUÇÕES</text>
+                <text x="105" y="47" fill="#4CAE30" fontFamily="Arial" fontSize="11" fontWeight="bold">AMBIENTAIS</text>
+              </svg>
             </div>
+            <h2 className="text-xl font-extrabold tracking-tight">MIX SOLUÇÕES AMBIENTAIS</h2>
+            <p className="text-xs text-emerald-100/80 font-medium">Portal de Gestão de PDI • Pilar Desenvolvimento</p>
           </div>
 
           <form onSubmit={handleLogin} className="p-8 space-y-5 text-xs">
@@ -184,110 +233,37 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans">
-      <header className="bg-white border-b border-slate-200 text-slate-800 shadow-sm p-4">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <LogoMixOficial />
+      <header className="bg-gradient-to-r from-emerald-800 to-teal-900 text-white shadow-md">
+        <div className="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-4">
+          <div>
+            <h1 className="text-xl font-bold tracking-tight">MIX SOLUÇÕES AMBIENTAIS</h1>
+            <p className="text-xs text-emerald-200">Sistema de Gestão de PDI • {employees.length} Colaboradores</p>
+          </div>
+
           <div className="flex items-center gap-4">
-            <div className="text-right text-xs">
-              <span className="font-bold block text-slate-800">{currentUser?.name}</span>
-              <span className="text-[10px] text-emerald-700 font-bold uppercase">{currentUser?.role}</span>
+            <div className="bg-emerald-950/60 px-3 py-1.5 rounded-xl border border-emerald-700/50 flex items-center gap-2">
+              <Shield className="w-4 h-4 text-emerald-300" />
+              <div className="text-xs">
+                <span className="font-bold text-white block">{currentUser.name}</span>
+                <span className="text-[10px] text-emerald-300 font-semibold uppercase">{currentUser.role}</span>
+              </div>
             </div>
-            <button onClick={handleLogout} className="text-xs bg-slate-100 hover:bg-red-600 hover:text-white text-slate-700 px-3 py-1.5 rounded-lg transition flex items-center gap-1 font-semibold border border-slate-200">
-              <LogOut className="w-3.5 h-3.5" /> Sair
+
+            <button 
+              onClick={handleLogout}
+              className="p-2 bg-emerald-950/40 hover:bg-red-600 text-emerald-200 hover:text-white rounded-xl transition border border-emerald-700/50 flex items-center gap-1 text-xs font-semibold"
+            >
+              <LogOut className="w-4 h-4" /> Sair
             </button>
           </div>
-        </div>
-      </header>
 
-      <main className="flex-1 max-w-7xl w-full mx-auto p-6">
-        {loading ? (
-          <div className="flex flex-col items-center justify-center py-20 space-y-3">
-            <Loader2 className="w-8 h-8 text-emerald-600 animate-spin" />
-            <span className="text-xs font-bold text-slate-500">Conectando ao banco de dados...</span>
-          </div>
-        ) : fetchError ? (
-          <div className="bg-red-50 border border-red-200 text-red-700 p-6 rounded-2xl text-xs font-semibold text-center space-y-3 max-w-md mx-auto mt-10 shadow-sm">
-            <p>{fetchError}</p>
-            <button onClick={fetchEmployees} className="px-4 py-2 bg-red-600 text-white rounded-xl flex items-center justify-center gap-2 mx-auto font-bold">
-              <RefreshCw className="w-4 h-4" /> Recarregar Conexão
+          <nav className="flex bg-emerald-950/40 p-1 rounded-xl border border-emerald-700/50">
+            <button 
+              onClick={() => setActiveTab('dashboard')} 
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-2 ${activeTab === 'dashboard' ? 'bg-white text-emerald-900 shadow' : 'text-emerald-100 hover:text-white'}`}
+            >
+              <BarChart3 className="w-4 h-4" /> Visão Geral
             </button>
-          </div>
-        ) : (
-          <div className="space-y-6">
-            <div className="flex flex-wrap gap-4 justify-between items-center bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-              <div className="relative flex-1 min-w-[240px]">
-                <Search className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
-                <input 
-                  type="text" 
-                  placeholder="Buscar colaborador ou cargo..." 
-                  value={searchTerm} 
-                  onChange={e => setSearchTerm(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                />
-              </div>
-
-              <div className="flex items-center gap-3">
-                <Filter className="w-4 h-4 text-slate-400" />
-                <select 
-                  value={departmentFilter} 
-                  onChange={e => setDepartmentFilter(e.target.value)}
-                  className="border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white"
-                >
-                  <option value="Todos">Todos os Setores</option>
-                  <option value="Operação">Operação</option>
-                  <option value="Logistica">Logística</option>
-                  <option value="TR 2">TR 2</option>
-                  <option value="Administrativo / RH">Administrativo / RH</option>
-                </select>
-
-                <span className="text-xs font-bold text-emerald-800 bg-emerald-50 px-4 py-2 rounded-xl border border-emerald-200">
-                  Total: {filteredEmployees.length} Colaboradores
-                </span>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs text-slate-600">
-                  <thead className="bg-slate-50 uppercase text-slate-500 font-semibold border-b">
-                    <tr>
-                      <th className="p-3">#</th>
-                      <th className="p-3">Nome Completo</th>
-                      <th className="p-3">Cargo</th>
-                      <th className="p-3">Departamento</th>
-                      <th className="p-3">Gestor Responsável</th>
-                      <th className="p-3 text-right">Ação</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100">
-                    {filteredEmployees.map((emp, index) => (
-                      <tr key={emp.id || index} className="hover:bg-slate-50 transition">
-                        <td className="p-3 font-bold text-slate-400">{index + 1}</td>
-                        <td className="p-3 font-bold text-slate-800">{emp.nome || emp.name}</td>
-                        <td className="p-3">{emp.cargo || emp.role}</td>
-                        <td className="p-3">
-                          <span className="px-2 py-0.5 rounded bg-slate-100 font-semibold text-slate-700">
-                            {emp.departamento || emp.department}
-                          </span>
-                        </td>
-                        <td className="p-3 font-semibold text-emerald-800">{emp.gestor_nome || emp.manager}</td>
-                        <td className="p-3 text-right">
-                          <button 
-                            onClick={() => alert(`Abrindo PDI de ${emp.nome || emp.name}`)}
-                            className="px-3 py-1 bg-emerald-600 text-white rounded-md font-bold hover:bg-emerald-700 transition"
-                          >
-                            Abrir PDI
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        )}
-      </main>
-    </div>
-  );
-}
+            <button 
+              onClick={() => setActiveTab('list')} 
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-2 ${activeTab === 'list' || activeTab === 'detail' ? 'bg-white text-emerald
