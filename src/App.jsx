@@ -18,22 +18,46 @@ const validUsers = [
   { name: "Jose Izailton", email: "log@mixsolucoesambientais.com.br", pass: "gestor123", profile: "GESTOR", role: "Gestor Logística" }
 ];
 
-// Componente do Logotipo Oficial Mix Soluções Ambientais
-function LogoMix({ className = "h-12" }) {
+// Componente do Logotipo Oficial e Fiel da Mix Soluções Ambientais
+function LogoMixOficial({ lightMode = false }) {
   return (
-    <div className={`flex items-center justify-center gap-2 select-none ${className}`}>
-      <div className="relative flex items-center justify-center w-10 h-10 bg-emerald-700/20 rounded-full border border-emerald-400/30">
-        <svg className="w-6 h-6 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.4 19 2c1 2 2 4.1 2 7 0 6-4.5 11-10 11z"></path>
-          <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"></path>
-        </svg>
-      </div>
-      <div className="text-left leading-none">
-        <div className="flex items-baseline">
-          <span className="text-2xl font-black tracking-tight text-white">M<span className="text-emerald-400">i</span>x</span>
+    <div className="flex items-center justify-center select-none py-1">
+      <div className="flex items-center gap-1.5">
+        {/* Letra M, i com folhas e x */}
+        <div className="flex items-end">
+          {/* M */}
+          <span className={`text-4xl font-extrabold tracking-tighter font-sans ${lightMode ? 'text-[#0078C8]' : 'text-white'}`} style={{ fontFamily: 'Arial, sans-serif' }}>
+            M
+          </span>
+          
+          {/* i com o ramo de folhas no topo */}
+          <div className="relative flex flex-col items-center mx-[1px]">
+            {/* Folhas sobre o ponto do i */}
+            <svg className="w-7 h-7 -mb-1 text-[#4CAE30]" viewBox="0 0 24 24" fill="none">
+              <path d="M12 3C8 3 5 7 5 11C5 13.5 6.5 15.5 8.5 16.5C7 13.5 9 10 12 9C15 9 17 11 17.5 14.5C19.5 13.5 21 11.5 21 9C21 5 17 3 12 3Z" fill="#4CAE30" />
+              <path d="M12 9C9 10 7 13.5 8.5 16.5C10 18.5 12.5 19 14.5 18C13.5 16.5 14 14.5 16 13C15 11 13.5 9.5 12 9Z" fill="#0078C8" />
+              <path d="M5 15C8 16 12 14.5 15 11" stroke="#4CAE30" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
+            {/* Corpo do i */}
+            <span className={`text-4xl font-extrabold font-sans ${lightMode ? 'text-[#0078C8]' : 'text-white'}`} style={{ fontFamily: 'Arial, sans-serif' }}>
+              i
+            </span>
+          </div>
+
+          {/* x */}
+          <span className={`text-4xl font-extrabold tracking-tighter font-sans ${lightMode ? 'text-[#0078C8]' : 'text-white'}`} style={{ fontFamily: 'Arial, sans-serif' }}>
+            x
+          </span>
         </div>
-        <div className="text-[9px] font-bold tracking-widest text-emerald-200 uppercase mt-0.5">
-          SOLUÇÕES AMBIENTAIS
+
+        {/* Texto SOLUÇÕES AMBIENTAIS */}
+        <div className="text-left font-sans leading-tight ml-1.5 flex flex-col justify-center">
+          <span className={`text-[11px] font-bold tracking-wider ${lightMode ? 'text-[#4CAE30]' : 'text-emerald-300'}`}>
+            SOLUÇÕES
+          </span>
+          <span className={`text-[11px] font-bold tracking-wider ${lightMode ? 'text-[#4CAE30]' : 'text-emerald-300'}`}>
+            AMBIENTAIS
+          </span>
         </div>
       </div>
     </div>
@@ -64,8 +88,8 @@ export default function App() {
       if (error) throw error;
       setEmployees(data || []);
     } catch (err) {
-      console.error("Erro ao conectar no Supabase:", err);
-      setFetchError("Não foi possível carregar os colaboradores. Verifique as permissões da API no Supabase.");
+      console.error("Erro Supabase:", err);
+      setFetchError("Não foi possível conectar ao banco de dados.");
     } finally {
       setLoading(false);
     }
@@ -114,9 +138,9 @@ export default function App() {
       <div className="min-h-screen bg-[#0d1527] flex items-center justify-center p-4 font-sans">
         <div className="bg-white max-w-md w-full rounded-2xl shadow-2xl overflow-hidden border border-slate-100">
           <div className="bg-[#055a43] p-8 text-center text-white space-y-3">
-            <LogoMix />
-            <div className="pt-2">
-              <h2 className="text-lg font-extrabold tracking-tight text-white">MIX SOLUÇÕES AMBIENTAIS</h2>
+            <LogoMixOficial lightMode={false} />
+            <div className="pt-1">
+              <h2 className="text-lg font-extrabold tracking-tight text-white uppercase">MIX SOLUÇÕES AMBIENTAIS</h2>
               <p className="text-xs text-emerald-100/80 font-medium">Portal de Gestão de PDI • Pilar Desenvolvimento</p>
             </div>
           </div>
@@ -175,7 +199,7 @@ export default function App() {
     <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans">
       <header className="bg-[#055a43] text-white shadow-md p-4">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <LogoMix />
+          <LogoMixOficial lightMode={false} />
           <div className="flex items-center gap-4">
             <div className="text-right text-xs">
               <span className="font-bold block">{currentUser?.name}</span>
@@ -192,12 +216,12 @@ export default function App() {
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20 space-y-3">
             <Loader2 className="w-8 h-8 text-emerald-600 animate-spin" />
-            <span className="text-xs font-bold text-slate-500">Conectando ao banco de dados do Supabase...</span>
+            <span className="text-xs font-bold text-slate-500">Conectando ao banco de dados...</span>
           </div>
         ) : fetchError ? (
           <div className="bg-red-50 border border-red-200 text-red-700 p-6 rounded-2xl text-xs font-semibold text-center space-y-3 max-w-md mx-auto mt-10 shadow-sm">
             <p>{fetchError}</p>
-            <button onClick={fetchEmployees} className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl flex items-center justify-center gap-2 mx-auto font-bold transition">
+            <button onClick={fetchEmployees} className="px-4 py-2 bg-red-600 text-white rounded-xl flex items-center justify-center gap-2 mx-auto font-bold">
               <RefreshCw className="w-4 h-4" /> Recarregar Conexão
             </button>
           </div>
