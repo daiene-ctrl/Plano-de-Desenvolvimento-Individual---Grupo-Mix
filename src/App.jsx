@@ -18,38 +18,6 @@ const validUsers = [
   { name: "Jose Izailton", email: "log@mixsolucoesambientais.com.br", pass: "gestor123", profile: "GESTOR", role: "Gestor Logística" }
 ];
 
-// Logo Oficial Branca Transparente (Sem caixa branca de fundo)
-function LogoMixOficial() {
-  return (
-    <div className="flex items-center justify-center select-none py-1">
-      <svg className="h-14 w-auto" viewBox="0 0 280 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-        {/* Letra M */}
-        <path d="M 15 110 L 15 40 L 40 85 L 65 40 L 65 110" stroke="#FFFFFF" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round" />
-        
-        {/* Letra i (Haste) */}
-        <line x1="92" y1="58" x2="92" y2="110" stroke="#FFFFFF" strokeWidth="12" strokeLinecap="round" />
-
-        {/* Folha Superior Esquerda */}
-        <path d="M 85 45 C 70 30 75 10 92 10 C 100 25 95 40 85 45 Z" fill="#60A5FA" />
-        
-        {/* Folha Superior Direita */}
-        <path d="M 94 43 C 95 25 110 15 125 22 C 120 38 105 45 94 43 Z" fill="#34D399" />
-        
-        {/* Curva Ramo sob o i */}
-        <path d="M 80 50 C 78 68 115 70 175 25" stroke="#34D399" strokeWidth="3.5" strokeLinecap="round" fill="none" />
-
-        {/* Letra x */}
-        <path d="M 115 62 C 130 85 140 100 162 110" stroke="#FFFFFF" strokeWidth="11" strokeLinecap="round" />
-        <path d="M 162 62 C 145 85 130 98 115 110" stroke="#FFFFFF" strokeWidth="11" strokeLinecap="round" />
-
-        {/* Texto SOLUÇÕES AMBIENTAIS */}
-        <text x="172" y="76" fill="#34D399" fontFamily="Arial, sans-serif" fontSize="20" fontWeight="bold" letterSpacing="1">SOLUÇÕES</text>
-        <text x="172" y="102" fill="#34D399" fontFamily="Arial, sans-serif" fontSize="20" fontWeight="bold" letterSpacing="1">AMBIENTAIS</text>
-      </svg>
-    </div>
-  );
-}
-
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
@@ -179,9 +147,15 @@ export default function App() {
     return (
       <div className="min-h-screen bg-[#0d1527] flex items-center justify-center p-4 font-sans">
         <div className="bg-white max-w-md w-full rounded-2xl shadow-2xl overflow-hidden border border-slate-100">
-          {/* Cabeçalho Verde sem fundo branco no logo */}
+          {/* Cabeçalho Verde carregando a imagem uploadada logo.png */}
           <div className="bg-[#055a43] p-8 text-center text-white space-y-2">
-            <LogoMixOficial />
+            <div className="flex justify-center mb-2">
+              <img 
+                src="/logo.png" 
+                alt="Mix Soluções Ambientais" 
+                className="h-16 w-auto object-contain" 
+              />
+            </div>
             <h2 className="text-xl font-extrabold tracking-tight mt-1">MIX SOLUÇÕES AMBIENTAIS</h2>
             <p className="text-xs text-emerald-100/80 font-medium">Portal de Gestão de PDI • Pilar Desenvolvimento</p>
           </div>
@@ -240,7 +214,7 @@ export default function App() {
     <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans">
       <header className="bg-gradient-to-r from-emerald-800 to-teal-900 text-white shadow-md">
         <div className="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-4">
-          <LogoMixOficial />
+          <img src="/logo.png" alt="Mix Soluções Ambientais" className="h-10 w-auto object-contain" />
 
           <div className="flex items-center gap-4">
             <div className="bg-emerald-950/60 px-3 py-1.5 rounded-xl border border-emerald-700/50 flex items-center gap-2">
@@ -505,7 +479,9 @@ export default function App() {
                 </div>
 
                 <div className="p-4 bg-blue-50/50 border border-blue-100 rounded-xl">
-                  <h4 className="text-xs font-bold uppercase text-trending-up h-4" /> Objetivo de Carreira
+                  <h4 className="text-xs font-bold uppercase text-blue-800 flex items-center gap-1.5 mb-2">
+                    <TrendingUp className="w-4 h-4" /> Objetivo de Carreira
+                  </h4>
                   <p className="text-xs text-slate-600 leading-relaxed">{selectedEmployee.goal}</p>
                 </div>
               </div>
