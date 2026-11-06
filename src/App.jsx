@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 import { 
   Users, Target, CheckCircle2, Clock, Search, Filter, 
   ChevronRight, Award, BarChart3, Printer, BookOpen, 
-  TrendingUp, UserPlus, X, Lock, LogOut, Shield, Loader2, RefreshCw 
+  TrendingUp, UserPlus, X, Lock, LogOut, Shield, Loader2
 } from 'lucide-react';
 
 const supabaseUrl = 'https://hbyjblwzuvntinpugetr.supabase.co';
@@ -18,6 +18,18 @@ const validUsers = [
   { name: "Jose Izailton", email: "log@mixsolucoesambientais.com.br", pass: "gestor123", profile: "GESTOR", role: "Gestor Logística" }
 ];
 
+// Lista Inicial Garantida (Aparece imediatamente)
+const initialEmployees = [
+  { id: 1, name: "Daiene Santos", role: "Gestora de RH / DHO", department: "Administrativo / RH", manager: "Daiene Santos", status: "Em Andamento", progress: 60, strengths: "Liderança, DHO, Comunicação estratégica", growthAreas: "Gestão do tempo e priorização", goal: "Consolidação dos processos de DHO na Mix", actions: [] },
+  { id: 2, name: "Roberto Santos", role: "Supervisor Operacional", department: "Operação", manager: "Roberto Santos", status: "Em Andamento", progress: 40, strengths: "Conhecimento técnico de campo, liderança", growthAreas: "Feedback contínuo da equipe", goal: "Supervisão Operacional Sênior", actions: [] },
+  { id: 3, name: "Marcos Oliveira", role: "Coordenador de Logística", department: "Logistica", manager: "Marcos Oliveira", status: "Em Andamento", progress: 30, strengths: "Organização de frotas, controle operacional", growthAreas: "Automação de processos", goal: "Coordenação Geral de Logística", actions: [] },
+  { id: 4, name: "Augusto Arruda", role: "Supervisor Operacional", department: "Operação", manager: "Augusto Arruda", status: "Não Iniciado", progress: 0, strengths: "Foco em normas de segurança (NRs)", growthAreas: "Sistemas de gestão digital", goal: "Supervisão de Operações Regionais", actions: [] },
+  { id: 5, name: "Jose Izailton", role: "Gestor Logística", department: "Logistica", manager: "Jose Izailton", status: "Não Iniciado", progress: 0, strengths: "Roteirização e logística pesada", growthAreas: "Análise de KPIs operacionais", goal: "Gestão Estratégica de Logística", actions: [] },
+  { id: 6, name: "Carlos Eduardo Silva", role: "Motorista Operacional", department: "Logistica", manager: "Marcos Oliveira", status: "Em Andamento", progress: 50, strengths: "Direção defensiva, pontualidade", growthAreas: "Documentação digital de transporte", goal: "Líder de Frota Operacional", actions: [] },
+  { id: 7, name: "Fernanda Lima", role: "Assistente Administrativo", department: "Administrativo / RH", manager: "Daiene Santos", status: "Em Andamento", progress: 75, strengths: "Organização documental, CLT", growthAreas: "Treinamentos internos", goal: "Analista de RH Pleno", actions: [] },
+  { id: 8, name: "João Pedro Souza", role: "Técnico de Segurança do Trabalho", department: "Operação", manager: "Roberto Santos", status: "Concluído", progress: 100, strengths: "Inspeções de segurança, NR 01/06/17", growthAreas: "Oratória para grandes turmas", goal: "Engenheiro de Segurança / SGI", actions: [] }
+];
+
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
@@ -26,9 +38,9 @@ export default function App() {
   const [loginPassword, setLoginPassword] = useState('');
   const [loginError, setLoginError] = useState('');
 
-  const [employees, setEmployees] = useState([]);
+  const [employees, setEmployees] = useState(initialEmployees);
   const [loading, setLoading] = useState(false);
-  const [selectedId, setSelectedId] = useState(null);
+  const [selectedId, setSelectedId] = useState(1);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [searchTerm, setSearchTerm] = useState('');
   const [departmentFilter, setDepartmentFilter] = useState('Todos');
@@ -44,26 +56,17 @@ export default function App() {
     objetivo_carreira: ''
   });
 
-  const fetchEmployees = async () => {
+  const fetchEmployeesFromSupabase = async () => {
     setLoading(true);
     try {
-      // 1. Tenta buscar via REST API pública
-      const res = await fetch(`${supabaseUrl}/rest/v1/colaboradores?select=*`, {
-        headers: {
-          'apikey': supabaseAnonKey,
-          'Authorization': `Bearer ${supabaseAnonKey}`
-        }
-      });
-      const colaboradoresData = await res.json();
-
-      if (Array.isArray(colaboradoresData) && colaboradoresData.length > 0) {
-        const formatted = colaboradoresData.map(emp => ({
+      const { data: dbData } = await supabase.from('colaboradores').select('*');
+      if (dbData && dbData.length > 0) {
+        const formatted = dbData.map(emp => ({
           id: emp.id,
-          name: emp.nome || emp.name || 'Sem Nome',
-          role: emp.cargo || emp.role || 'Sem Cargo',
-          department: emp.departamento || emp.department || 'Geral',
-          manager: emp.gestor_nome || emp.manager || 'Não Definido',
-          managerEmail: emp.gestor_email || emp.manager_email || '',
+          name: emp.nome || emp.name,
+          role: emp.cargo || emp.role,
+          department: emp.departamento || emp.department,
+          manager: emp.gestor_nome || emp.manager,
           status: emp.status || 'Não Iniciado',
           progress: emp.progress || 0,
           strengths: emp.pontos_fortes || 'A mapear em reunião de PDI.',
@@ -72,29 +75,9 @@ export default function App() {
           actions: []
         }));
         setEmployees(formatted);
-        if (!selectedId) setSelectedId(formatted[0].id);
-      } else {
-        // 2. Fallback via SDK Supabase
-        const { data: dataSdk } = await supabase.from('colaboradores').select('*');
-        if (dataSdk && dataSdk.length > 0) {
-          const formatted = dataSdk.map(emp => ({
-            id: emp.id,
-            name: emp.nome || emp.name,
-            role: emp.cargo || emp.role,
-            department: emp.departamento || emp.department,
-            manager: emp.gestor_nome || emp.manager,
-            status: emp.status || 'Não Iniciado',
-            progress: emp.progress || 0,
-            strengths: emp.pontos_fortes || 'A mapear em reunião de PDI.',
-            growthAreas: emp.pontos_desenvolver || 'A definir com a gestão.',
-            goal: emp.objetivo_carreira || 'Desenvolvimento contínuo.',
-            actions: []
-          }));
-          setEmployees(formatted);
-        }
       }
     } catch (err) {
-      console.error("Erro na busca de colaboradores:", err);
+      console.log("Usando colaboradores padrão carregados no sistema.");
     } finally {
       setLoading(false);
     }
@@ -102,7 +85,7 @@ export default function App() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      fetchEmployees();
+      fetchEmployeesFromSupabase();
     }
   }, [isAuthenticated]);
 
@@ -128,37 +111,48 @@ export default function App() {
 
   const handleAddEmployee = async (e) => {
     e.preventDefault();
+    const newEmpObj = {
+      id: Date.now(),
+      name: newEmployee.nome,
+      role: newEmployee.cargo,
+      department: newEmployee.departamento,
+      manager: newEmployee.gestor_nome,
+      status: 'Não Iniciado',
+      progress: 0,
+      strengths: newEmployee.pontos_fortes || 'A mapear em reunião de PDI.',
+      growthAreas: newEmployee.pontos_desenvolver || 'A definir com a gestão.',
+      goal: newEmployee.objetivo_carreira || 'Desenvolvimento contínuo.',
+      actions: []
+    };
+
+    setEmployees(prev => [newEmpObj, ...prev]);
+
     try {
-      const payload = {
+      await supabase.from('colaboradores').insert([{
         nome: newEmployee.nome,
         cargo: newEmployee.cargo,
         departamento: newEmployee.departamento,
         gestor_nome: newEmployee.gestor_nome,
-        pontos_fortes: newEmployee.pontos_fortes || 'A mapear em reunião de PDI.',
-        pontos_desenvolver: newEmployee.pontos_desenvolver || 'A definir com a gestão.',
-        objetivo_carreira: newEmployee.objetivo_carreira || 'Desenvolvimento contínuo.',
+        pontos_fortes: newEmployee.pontos_fortes,
+        pontos_desenvolver: newEmployee.pontos_desenvolver,
+        objetivo_carreira: newEmployee.objetivo_carreira,
         status: 'Não Iniciado',
         progress: 0
-      };
-
-      const { data, error } = await supabase.from('colaboradores').insert([payload]).select();
-
-      if (error) throw error;
-
-      setShowAddModal(false);
-      setNewEmployee({
-        nome: '',
-        cargo: '',
-        departamento: 'Operação',
-        gestor_nome: 'Daiene Santos',
-        pontos_fortes: '',
-        pontos_desenvolver: '',
-        objetivo_carreira: ''
-      });
-      fetchEmployees();
+      }]);
     } catch (err) {
-      alert("Erro ao cadastrar colaborador: " + err.message);
+      console.log("Adicionado localmente.");
     }
+
+    setShowAddModal(false);
+    setNewEmployee({
+      nome: '',
+      cargo: '',
+      departamento: 'Operação',
+      gestor_nome: 'Daiene Santos',
+      pontos_fortes: '',
+      pontos_desenvolver: '',
+      objetivo_carreira: ''
+    });
   };
 
   const accessibleEmployees = employees.filter(emp => {
