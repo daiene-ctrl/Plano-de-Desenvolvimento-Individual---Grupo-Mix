@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 import { 
   Users, Target, CheckCircle2, Clock, Search, Filter, 
   ChevronRight, Award, BarChart3, Printer, BookOpen, 
-  TrendingUp, UserPlus, X, Lock, LogOut, Shield, Loader2, Save, Plus, Calendar
+  TrendingUp, UserPlus, X, Lock, LogOut, Shield, Loader2, Save, Plus, Calendar, CheckSquare
 } from 'lucide-react';
 
 const supabaseUrl = 'https://hbyjblwzuvntinpugetr.supabase.co';
@@ -106,7 +106,18 @@ const initialEmployees = [
   });
 
   const [editFormData, setEditFormData] = useState({ strengths: '', growthAreas: '', goal: '' });
-  const [newAction, setNewAction] = useState({ title: '', type: '70% Prática', deadline: '', evidence: '' });
+  
+  // Ação com Prazo, Tipo, Norma e Evidência para Auditoria SGI
+  const [newAction, setNewAction] = useState({ 
+    title: '', 
+    type: '70% Prática', 
+    deadline: '', 
+    norm: 'Geral / DHO', 
+    evidence: '' 
+  });
+
+  // Bloco de Assinaturas e Validação de Conformidade
+  const [auditData, setAuditData] = useState({ signedManager: false, signedEmployee: false, auditNotes: '' });
 
   const selectedEmployee = employees.find(e => e.id === selectedId) || employees[0];
 
@@ -153,7 +164,7 @@ const initialEmployees = [
       }
       return emp;
     }));
-    alert("PDI atualizado com sucesso!");
+    alert("PDI e dados de conformidade salvos com sucesso!");
   };
 
   const handleAddAction = (e) => {
@@ -172,7 +183,7 @@ const initialEmployees = [
       return emp;
     }));
 
-    setNewAction({ title: '', type: '70% Prática', deadline: '', evidence: '' });
+    setNewAction({ title: '', type: '70% Prática', deadline: '', norm: 'Geral / DHO', evidence: '' });
   };
 
   const toggleActionStatus = (actionId) => {
@@ -308,9 +319,9 @@ const initialEmployees = [
           <div className="space-y-6">
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-wrap justify-between items-center gap-4">
               <div>
-                <span className="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full">META ESTRATÉGICA 2026</span>
-                <h2 className="text-2xl font-bold text-slate-900 mt-2">Implementação de 100% dos PDIs</h2>
-                <p className="text-sm text-slate-500">Acompanhamento global de todos os colaboradores da empresa.</p>
+                <span className="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full">SGI & QUALIDADE 2026</span>
+                <h2 className="text-2xl font-bold text-slate-900 mt-2">Implementação de 100% dos PDIs e Conformidade</h2>
+                <p className="text-sm text-slate-500">Gestão integrada alinhada às NRs e diretrizes de desenvolvimento humano.</p>
               </div>
               <div className="text-right bg-slate-50 p-4 rounded-xl border">
                 <span className="text-xs text-slate-500 font-medium">Taxa de Adesão</span>
@@ -416,7 +427,7 @@ const initialEmployees = [
                     </div>
                     <div className="mt-4 space-y-1">
                       <div className="flex justify-between text-xs text-slate-600">
-                        <span>Progresso</span>
+                        <span>Progresso SGI</span>
                         <span className="font-bold">{emp.progress}%</span>
                       </div>
                       <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
@@ -438,12 +449,17 @@ const initialEmployees = [
 
         {activeTab === 'detail' && selectedEmployee && (
           <div className="space-y-6">
-            <button onClick={() => setActiveTab('list')} className="text-xs font-bold text-slate-500 hover:text-slate-800">← Voltar para a lista</button>
+            <div className="flex justify-between items-center">
+              <button onClick={() => setActiveTab('list')} className="text-xs font-bold text-slate-500 hover:text-slate-800">← Voltar para a lista</button>
+              <button onClick={() => window.print()} className="px-4 py-2 bg-slate-800 text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-sm">
+                <Printer className="w-4 h-4" /> Imprimir Ficha de Auditoria (PDF)
+              </button>
+            </div>
 
             <div className="bg-white p-6 sm:p-8 rounded-2xl border shadow-sm space-y-6">
               <div className="flex justify-between border-b pb-4 flex-wrap gap-4">
                 <div>
-                  <span className="text-xs font-bold text-emerald-600 uppercase tracking-widest">Ficha Individual de PDI</span>
+                  <span className="text-xs font-bold text-emerald-600 uppercase tracking-widest">Ficha de PDI & Conformidade SGI</span>
                   <h2 className="text-2xl font-extrabold text-slate-900 mt-1">{selectedEmployee.name}</h2>
                   <p className="text-xs text-slate-500 font-medium">{selectedEmployee.role} • {selectedEmployee.department}</p>
                 </div>
@@ -490,20 +506,23 @@ const initialEmployees = [
 
                 <div className="md:col-span-3 flex justify-end">
                   <button type="submit" className="px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow">
-                    <Save className="w-4 h-4" /> Salvar Alterações do PDI
+                    <Save className="w-4 h-4" /> Salvar Competências do PDI
                   </button>
                 </div>
               </form>
 
-              {/* SEÇÃO DE AÇÕES 70/20/10 COM PRAZO */}
+              {/* SEÇÃO DE AÇÕES 70/20/10 COM PRAZOS E NORMAS SGI/NRs */}
               <div className="pt-6 border-t space-y-4">
-                <h3 className="font-bold text-slate-900 text-base">Plano de Ação (Metodologia 70/20/10)</h3>
+                <div className="flex justify-between items-center">
+                  <h3 className="font-bold text-slate-900 text-base">Plano de Ação e Treinamentos Obrigatórios (Metodologia 70/20/10)</h3>
+                  <span className="text-xs bg-slate-100 text-slate-600 px-3 py-1 rounded-lg font-semibold">Conformidade SGI / NRs</span>
+                </div>
 
-                <form onSubmit={handleAddAction} className="grid grid-cols-1 sm:grid-cols-4 gap-3 bg-slate-50 p-4 rounded-xl border">
+                <form onSubmit={handleAddAction} className="grid grid-cols-1 sm:grid-cols-5 gap-3 bg-slate-50 p-4 rounded-xl border">
                   <input 
                     type="text" 
                     required 
-                    placeholder="Descrição da Ação (Ex: Treinamento NR 06)" 
+                    placeholder="Ação ou Treinamento (Ex: Reciclagem NR 06)" 
                     value={newAction.title}
                     onChange={e => setNewAction({...newAction, title: e.target.value})}
                     className="p-2 border rounded-lg text-xs sm:col-span-2"
@@ -513,34 +532,78 @@ const initialEmployees = [
                     onChange={e => setNewAction({...newAction, type: e.target.value})}
                     className="p-2 border rounded-lg text-xs bg-white"
                   >
-                    <option value="70% Prática">70% Prática (No trabalho)</option>
-                    <option value="20% Mentoria">20% Mentoria / Feedback</option>
-                    <option value="10% Cursos">10% Cursos / Treinamentos</option>
+                    <option value="70% Prática">70% Prática</option>
+                    <option value="20% Mentoria">20% Mentoria</option>
+                    <option value="10% Cursos/NR">10% Cursos / NRs</option>
+                  </select>
+                  <select 
+                    value={newAction.norm}
+                    onChange={e => setNewAction({...newAction, norm: e.target.value})}
+                    className="p-2 border rounded-lg text-xs bg-white"
+                  >
+                    <option value="Geral / DHO">Geral / DHO</option>
+                    <option value="NR 01 (Gerenciamento)">NR 01</option>
+                    <option value="NR 06 (EPIs)">NR 06</option>
+                    <option value="NR 17 (Ergonomia)">NR 17</option>
+                    <option value="SGI (Gestão Integrada)">SGI</option>
                   </select>
                   <button type="submit" className="p-2 bg-emerald-600 text-white rounded-lg text-xs font-bold flex items-center justify-center gap-1">
-                    <Plus className="w-4 h-4" /> Adicionar Ação
+                    <Plus className="w-4 h-4" /> Adicionar
                   </button>
                 </form>
 
                 <div className="space-y-2">
                   {(selectedEmployee.actions || []).length === 0 ? (
-                    <p className="text-xs text-slate-400 italic">Nenhuma ação cadastrada para este colaborador ainda.</p>
+                    <p className="text-xs text-slate-400 italic">Nenhuma ação ou treinamento obrigatório cadastrado ainda.</p>
                   ) : (
                     selectedEmployee.actions.map(action => (
-                      <div key={action.id} className="flex items-center justify-between p-3 border rounded-xl text-xs bg-white">
-                        <div className="flex items-center gap-3">
+                      <div key={action.id} className="flex items-center justify-between p-3 border rounded-xl text-xs bg-white gap-2">
+                        <div className="flex items-center gap-3 flex-1">
                           <input 
                             type="checkbox" 
                             checked={action.completed}
                             onChange={() => toggleActionStatus(action.id)}
                             className="w-4 h-4 text-emerald-600 rounded"
                           />
-                          <span className={action.completed ? "line-through text-slate-400" : "font-semibold text-slate-700"}>{action.title}</span>
+                          <div>
+                            <span className={action.completed ? "line-through text-slate-400 block font-semibold" : "font-semibold text-slate-800 block"}>{action.title}</span>
+                            <span className="text-[10px] text-slate-400">Categoria: {action.type}</span>
+                          </div>
                         </div>
-                        <span className="px-2 py-0.5 bg-slate-100 text-slate-600 rounded text-[10px] font-bold">{action.type}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="px-2.5 py-1 bg-emerald-50 text-emerald-700 rounded-md text-[10px] font-bold border border-emerald-200">{action.norm}</span>
+                        </div>
                       </div>
                     ))
                   )}
+                </div>
+              </div>
+
+              {/* BLOCO DE VALIDAÇÃO E ASSINATURAS PARA AUDITORIA */}
+              <div className="pt-6 border-t space-y-4 bg-slate-50 p-5 rounded-xl border">
+                <h4 className="font-bold text-slate-800 text-sm flex items-center gap-2">
+                  <CheckSquare className="w-4 h-4 text-emerald-600" /> Validação e Assinaturas (Conforme Requisitos de Auditoria SGI)
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                  <label className="flex items-center gap-2 bg-white p-3 rounded-lg border cursor-pointer">
+                    <input 
+                      type="checkbox" 
+                      checked={auditData.signedManager}
+                      onChange={e => setAuditData({...auditData, signedManager: e.target.checked})}
+                      className="w-4 h-4 text-emerald-600 rounded"
+                    />
+                    <span className="font-semibold text-slate-700">Validado e Validado pelo Gestor Responsável ({selectedEmployee.manager})</span>
+                  </label>
+
+                  <label className="flex items-center gap-2 bg-white p-3 rounded-lg border cursor-pointer">
+                    <input 
+                      type="checkbox" 
+                      checked={auditData.signedEmployee}
+                      onChange={e => setAuditData({...auditData, signedEmployee: e.target.checked})}
+                      className="w-4 h-4 text-emerald-600 rounded"
+                    />
+                    <span className="font-semibold text-slate-700">Ciente e De Acordo do Colaborador ({selectedEmployee.name})</span>
+                  </label>
                 </div>
               </div>
             </div>
