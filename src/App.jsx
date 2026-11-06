@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 import { 
   Users, Target, CheckCircle2, Clock, Search, Filter, 
   ChevronRight, Award, BarChart3, Printer, BookOpen, 
-  TrendingUp, Lock, LogOut, Shield, Loader2, RefreshCw 
+  TrendingUp, UserPlus, X, Lock, LogOut, Shield, Loader2, RefreshCw 
 } from 'lucide-react';
 
 const supabaseUrl = 'https://hbyjblwzuvntinpugetr.supabase.co';
@@ -32,6 +32,17 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [searchTerm, setSearchTerm] = useState('');
   const [departmentFilter, setDepartmentFilter] = useState('Todos');
+  const [showAddModal, setShowAddModal] = useState(false);
+
+  const [newEmployee, setNewEmployee] = useState({
+    nome: '',
+    cargo: '',
+    departamento: 'Operação',
+    gestor_nome: 'Daiene Santos',
+    pontos_fortes: '',
+    pontos_desenvolver: '',
+    objetivo_carreira: ''
+  });
 
   const fetchEmployees = async () => {
     setLoading(true);
@@ -106,6 +117,41 @@ export default function App() {
     setCurrentUser(null);
   };
 
+  const handleAddEmployee = async (e) => {
+    e.preventDefault();
+    try {
+      const payload = {
+        nome: newEmployee.nome,
+        cargo: newEmployee.cargo,
+        departamento: newEmployee.departamento,
+        gestor_nome: newEmployee.gestor_nome,
+        pontos_fortes: newEmployee.pontos_fortes || 'A mapear em reunião de PDI.',
+        pontos_desenvolver: newEmployee.pontos_desenvolver || 'A definir com a gestão.',
+        objetivo_carreira: newEmployee.objetivo_carreira || 'Desenvolvimento contínuo.',
+        status: 'Não Iniciado',
+        progress: 0
+      };
+
+      const { data, error } = await supabase.from('colaboradores').insert([payload]).select();
+
+      if (error) throw error;
+
+      setShowAddModal(false);
+      setNewEmployee({
+        nome: '',
+        cargo: '',
+        departamento: 'Operação',
+        gestor_nome: 'Daiene Santos',
+        pontos_fortes: '',
+        pontos_desenvolver: '',
+        objetivo_carreira: ''
+      });
+      fetchEmployees();
+    } catch (err) {
+      alert("Erro ao cadastrar colaborador: " + err.message);
+    }
+  };
+
   const accessibleEmployees = employees.filter(emp => {
     if (!currentUser) return false;
     if (currentUser.profile === 'RH') return true;
@@ -147,14 +193,9 @@ export default function App() {
     return (
       <div className="min-h-screen bg-[#0d1527] flex items-center justify-center p-4 font-sans">
         <div className="bg-white max-w-md w-full rounded-2xl shadow-2xl overflow-hidden border border-slate-100">
-          {/* Cabeçalho Verde carregando a imagem uploadada logo.png */}
           <div className="bg-[#055a43] p-8 text-center text-white space-y-2">
             <div className="flex justify-center mb-2">
-              <img 
-                src="/logo.png" 
-                alt="Mix Soluções Ambientais" 
-                className="h-16 w-auto object-contain" 
-              />
+              <img src="/logo.png" alt="Mix Soluções Ambientais" className="h-16 w-auto object-contain" />
             </div>
             <h2 className="text-xl font-extrabold tracking-tight mt-1">MIX SOLUÇÕES AMBIENTAIS</h2>
             <p className="text-xs text-emerald-100/80 font-medium">Portal de Gestão de PDI • Pilar Desenvolvimento</p>
@@ -233,19 +274,30 @@ export default function App() {
             </button>
           </div>
 
-          <nav className="flex bg-emerald-950/40 p-1 rounded-xl border border-emerald-700/50">
-            <button 
-              onClick={() => setActiveTab('dashboard')} 
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-2 ${activeTab === 'dashboard' ? 'bg-white text-emerald-900 shadow' : 'text-emerald-100 hover:text-white'}`}
-            >
-              <BarChart3 className="w-4 h-4" /> Visão Geral
-            </button>
-            <button 
-              onClick={() => setActiveTab('list')} 
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-2 ${activeTab === 'list' || activeTab === 'detail' ? 'bg-white text-emerald-900 shadow' : 'text-emerald-100 hover:text-white'}`}
-            >
-              <Users className="w-4 h-4" /> Colaboradores ({accessibleEmployees.length})
-            </button>
+          <nav className="flex items-center gap-2">
+            <div className="flex bg-emerald-950/40 p-1 rounded-xl border border-emerald-700/50">
+              <button 
+                onClick={() => setActiveTab('dashboard')} 
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-2 ${activeTab === 'dashboard' ? 'bg-white text-emerald-900 shadow' : 'text-emerald-100 hover:text-white'}`}
+              >
+                <BarChart3 className="w-4 h-4" /> Visão Geral
+              </button>
+              <button 
+                onClick={() => setActiveTab('list')} 
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-2 ${activeTab === 'list' || activeTab === 'detail' ? 'bg-white text-emerald-900 shadow' : 'text-emerald-100 hover:text-white'}`}
+              >
+                <Users className="w-4 h-4" /> Colaboradores ({accessibleEmployees.length})
+              </button>
+            </div>
+
+            {currentUser.profile === 'RH' && (
+              <button 
+                onClick={() => setShowAddModal(true)}
+                className="px-3 py-2 bg-emerald-500 hover:bg-emerald-400 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-md"
+              >
+                <UserPlus className="w-4 h-4" /> Novo Colaborador
+              </button>
+            )}
           </nav>
         </div>
       </header>
@@ -489,6 +541,95 @@ export default function App() {
           </div>
         )}
       </main>
+
+      {/* Modal de Cadastro de Novo Colaborador */}
+      {showAddModal && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4">
+            <div className="flex justify-between items-center border-b pb-3">
+              <h3 className="font-bold text-slate-800 text-lg flex items-center gap-2">
+                <UserPlus className="w-5 h-5 text-emerald-600" /> Cadastrar Novo Colaborador
+              </h3>
+              <button onClick={() => setShowAddModal(false)} className="text-slate-400 hover:text-slate-600">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleAddEmployee} className="space-y-4 text-xs">
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Nome Completo</label>
+                <input 
+                  type="text" 
+                  required 
+                  placeholder="Ex: Carlos Silva"
+                  value={newEmployee.nome}
+                  onChange={e => setNewEmployee({...newEmployee, nome: e.target.value})}
+                  className="w-full p-2.5 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Cargo</label>
+                  <input 
+                    type="text" 
+                    required 
+                    placeholder="Ex: Motorista Operacional"
+                    value={newEmployee.cargo}
+                    onChange={e => setNewEmployee({...newEmployee, cargo: e.target.value})}
+                    className="w-full p-2.5 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Departamento / Setor</label>
+                  <select 
+                    value={newEmployee.departamento}
+                    onChange={e => setNewEmployee({...newEmployee, departamento: e.target.value})}
+                    className="w-full p-2.5 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-white"
+                  >
+                    <option value="Operação">Operação</option>
+                    <option value="Logistica">Logística</option>
+                    <option value="TR 2">TR 2</option>
+                    <option value="Administrativo / RH">Administrativo / RH</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Gestor Responsável</label>
+                <select 
+                  value={newEmployee.gestor_nome}
+                  onChange={e => setNewEmployee({...newEmployee, gestor_nome: e.target.value})}
+                  className="w-full p-2.5 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-white"
+                >
+                  <option value="Daiene Santos">Daiene Santos (RH)</option>
+                  <option value="Roberto Santos">Roberto Santos (Operacional)</option>
+                  <option value="Marcos Oliveira">Marcos Oliveira (Logística)</option>
+                  <option value="Augusto Arruda">Augusto Arruda (Operacional)</option>
+                  <option value="Jose Izailton">Jose Izailton (Logística)</option>
+                </select>
+              </div>
+
+              <div className="flex justify-end gap-2 pt-3 border-t">
+                <button 
+                  type="button" 
+                  onClick={() => setShowAddModal(false)}
+                  className="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl font-bold hover:bg-slate-200 transition"
+                >
+                  Cancelar
+                </button>
+                <button 
+                  type="submit" 
+                  className="px-4 py-2 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-700 transition"
+                >
+                  Salvar Colaborador
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
