@@ -6,7 +6,6 @@ import {
   TrendingUp, UserPlus, X, Lock, LogOut, Shield, Loader2 
 } from 'lucide-react';
 
-// Credenciais diretas para evitar erro de inicialização
 const supabaseUrl = 'https://hbyjblwzuvntinpugetr.supabase.co';
 const supabaseAnonKey = 'sb_publishable_IiuFZ-CdVLo65oPqkJa-4Q_ucWFBSC9p';
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
@@ -100,8 +99,6 @@ export default function App() {
     return emp.manager.toLowerCase().includes(currentUser.name.toLowerCase().split(' ')[0]);
   });
 
-  const selectedEmployee = accessibleEmployees.find(e => e.id === selectedId) || accessibleEmployees[0];
-
   const filteredEmployees = accessibleEmployees.filter(e => {
     const matchesSearch = e.name.toLowerCase().includes(searchTerm.toLowerCase()) || e.role.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesDept = departmentFilter === 'Todos' || e.department === departmentFilter;
@@ -113,6 +110,9 @@ export default function App() {
       <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4 font-sans">
         <div className="bg-white max-w-md w-full rounded-2xl shadow-2xl overflow-hidden border border-slate-100">
           <div className="bg-gradient-to-r from-emerald-800 to-teal-900 p-8 text-center text-white">
+            <div className="flex justify-center mb-3">
+              <img src="/logo.png" alt="Mix Soluções Ambientais" className="h-12 w-auto object-contain brightness-0 invert" />
+            </div>
             <h2 className="text-xl font-extrabold tracking-tight">MIX SOLUÇÕES AMBIENTAIS</h2>
             <p className="text-xs text-emerald-200 mt-1">Portal de Gestão de PDI</p>
           </div>
@@ -164,9 +164,12 @@ export default function App() {
     <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans">
       <header className="bg-gradient-to-r from-emerald-800 to-teal-900 text-white shadow-md p-4">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <div>
-            <h1 className="text-xl font-bold">MIX SOLUÇÕES AMBIENTAIS</h1>
-            <p className="text-xs text-emerald-200">Sistema de PDI • {employees.length} Colaboradores Importados</p>
+          <div className="flex items-center space-x-3">
+            <img src="/logo.png" alt="Mix Soluções Ambientais" className="h-10 w-auto object-contain brightness-0 invert" />
+            <div>
+              <h1 className="text-xl font-bold">MIX SOLUÇÕES AMBIENTAIS</h1>
+              <p className="text-xs text-emerald-200">Sistema de PDI • {employees.length} Colaboradores Importados</p>
+            </div>
           </div>
           <div className="flex items-center gap-3">
             <span className="text-xs font-semibold">{currentUser.name}</span>
