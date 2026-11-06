@@ -6,6 +6,7 @@ import {
   TrendingUp, UserPlus, X, Lock, LogOut, Shield, Loader2
 } from 'lucide-react';
 
+// Conexão dinâmica com as variáveis de ambiente ativas na Vercel
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 const supabase = (supabaseUrl && supabaseAnonKey) ? createClient(supabaseUrl, supabaseAnonKey) : null;
@@ -13,19 +14,19 @@ const supabase = (supabaseUrl && supabaseAnonKey) ? createClient(supabaseUrl, su
 const validUsers = [
   { name: "Daiene Santos", email: "daiene@mixsolucoesambientais.com.br", pass: "mix#rh2026", profile: "RH", role: "Gestora de RH / DHO" },
   { name: "Roberto Santos", email: "roberto@mixsolucoesambientais.com.br", pass: "gestor123", profile: "GESTOR", role: "Supervisor Operacional" },
-  { name: "Marcos Oliveira", email: "marcos@mixsolucoesambientais.com.br", pass: "gestor123", profile: "GESTOR", role: "Coordenador de Logística" },
-  { name: "Augusto Arruda", email: "augusto@mixsolucoesambientais.com.br", pass: "gestor123", profile: "GESTOR", role: "Supervisor Operacional" },
-  { name: "Jose Izailton", email: "log@mixsolucoesambientais.com.br", pass: "gestor123", profile: "GESTOR", role: "Gestor Logística" }
+  { name: "Marcos Oliveira", email: "marcos@mixsolucoesambientais.com.br", pass: "gestor123", profile: "GESTOR", role: "Coordenador de Logística" }
 ];
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   
+  // Login Form State
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
   const [loginError, setLoginError] = useState('');
 
+  // Main App State
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
@@ -35,15 +36,16 @@ export default function App() {
   const [showAddModal, setShowAddModal] = useState(false);
 
   const [newEmployee, setNewEmployee] = useState({
-    nome: '',
-    cargo: '',
-    departamento: 'Operação',
-    gestor_nome: 'Daiene Santos',
-    pontos_fortes: '',
-    pontos_desenvolver: '',
-    objetivo_carreira: ''
+    name: '',
+    role: '',
+    department: 'Operacional',
+    manager: 'Daiene Santos',
+    strengths: '',
+    growthAreas: '',
+    goal: ''
   });
 
+  // Carregar dados reais do Supabase
   const fetchEmployees = async () => {
     if (!supabase) return;
     setLoading(true);
@@ -58,21 +60,21 @@ export default function App() {
         .from('acoes_pdi')
         .select('*');
 
-      if (acoesError && acoesError.code !== 'PGRST116') console.log("Sem ações ainda");
+      if (acoesError) throw acoesError;
 
-      const formatted = (colaboradoresData || []).map(emp => ({
+      const formatted = colaboradoresData.map(emp => ({
         id: emp.id,
-        name: emp.nome || emp.name || 'Sem Nome',
-        role: emp.cargo || emp.role || 'Sem Cargo',
-        department: emp.departamento || emp.department || 'Geral',
-        manager: emp.gestor_nome || emp.manager || 'Não Definido',
-        managerEmail: emp.gestor_email || emp.manager_email || '',
+        name: emp.name,
+        role: emp.role,
+        department: emp.department,
+        manager: emp.manager,
+        managerEmail: emp.manager_email,
         status: emp.status || 'Não Iniciado',
         progress: emp.progress || 0,
-        strengths: emp.pontos_fortes || emp.strengths || 'A mapear em reunião de PDI.',
-        growthAreas: emp.pontos_desenvolver || emp.growth_areas || 'A definir com a gestão.',
-        goal: emp.objetivo_carreira || emp.goal || 'Desenvolvimento contínuo.',
-        actions: (acoesData || []).filter(a => a.colaborador_id === emp.id).map(a => ({
+        strengths: emp.strengths || 'A mapear em reunião de PDI.',
+        growthAreas: emp.growth_areas || 'A definir com a gestão.',
+        goal: emp.goal || 'Desenvolvimento contínuo.',
+        actions: acoesData.filter(a => a.colaborador_id === emp.id).map(a => ({
           id: a.id,
           type: a.type,
           category: a.category,
@@ -111,19 +113,21 @@ export default function App() {
       setIsAuthenticated(true);
       setLoginError('');
     } else {
-      setLoginError('E-mail ou senha incorretos.');
+      setLoginError('E-mail ou senha incorretos. Verifique as credenciais.');
     }
   };
 
   const handleLogout = () => {
     setIsAuthenticated(false);
     setCurrentUser(null);
+    setLoginEmail('');
+    setLoginPassword('');
   };
 
   const accessibleEmployees = employees.filter(emp => {
     if (!currentUser) return false;
     if (currentUser.profile === 'RH') return true;
-    return emp.manager.toLowerCase().includes(currentUser.name.toLowerCase().split(' ')[0]);
+    return emp.manager === currentUser.name;
   });
 
   const selectedEmployee = accessibleEmployees.find(e => e.id === selectedId) || accessibleEmployees[0];
@@ -144,6 +148,7 @@ export default function App() {
   const handleStatusChange = async (actionId, newStatus) => {
     if (!selectedEmployee) return;
 
+    // Atualização otimista no estado local
     const updatedActions = selectedEmployee.actions.map(act => act.id === actionId ? { ...act, status: newStatus } : act);
     const completed = updatedActions.filter(a => a.status === 'Concluído').length;
     const progress = Math.round((completed / (updatedActions.length || 1)) * 100);
@@ -153,6 +158,7 @@ export default function App() {
 
     setEmployees(prev => prev.map(emp => emp.id === selectedEmployee.id ? { ...emp, actions: updatedActions, progress, status } : emp));
 
+    // Persistência no Supabase
     if (supabase) {
       await supabase.from('acoes_pdi').update({ status: newStatus }).eq('id', actionId);
       await supabase.from('colaboradores').update({ progress, status }).eq('id', selectedEmployee.id);
@@ -168,16 +174,16 @@ export default function App() {
       const { data: newEmpData, error: empErr } = await supabase
         .from('colaboradores')
         .insert([{
-          nome: newEmployee.nome,
-          cargo: newEmployee.cargo,
-          departamento: newEmployee.departamento,
-          gestor_nome: newEmployee.gestor_nome,
-          gestor_email: `${newEmployee.gestor_nome.toLowerCase().split(' ')[0]}@mixsolucoesambientais.com.br`,
+          name: newEmployee.name,
+          role: newEmployee.role,
+          department: newEmployee.department,
+          manager: newEmployee.manager,
+          manager_email: `${newEmployee.manager.toLowerCase().split(' ')[0]}@mixsolucoesambientais.com.br`,
           status: 'Não Iniciado',
           progress: 0,
-          pontos_fortes: newEmployee.pontos_fortes || 'A mapear em reunião de PDI.',
-          pontos_desenvolver: newEmployee.pontos_desenvolver || 'A definir com a gestão.',
-          objetivo_carreira: newEmployee.objetivo_carreira || 'Desenvolvimento contínuo.'
+          strengths: newEmployee.strengths || 'A mapear em reunião de PDI.',
+          growth_areas: newEmployee.growthAreas || 'A definir com a gestão.',
+          goal: newEmployee.goal || 'Desenvolvimento contínuo.'
         }])
         .select();
 
@@ -195,7 +201,7 @@ export default function App() {
 
       await fetchEmployees();
       setShowAddModal(false);
-      setNewEmployee({ nome: '', cargo: '', departamento: 'Operação', gestor_nome: 'Daiene Santos', pontos_fortes: '', pontos_desenvolver: '', objetivo_carreira: '' });
+      setNewEmployee({ name: '', role: '', department: 'Operacional', manager: 'Daiene Santos', strengths: '', growthAreas: '', goal: '' });
     } catch (err) {
       console.error("Erro ao cadastrar colaborador:", err);
     } finally {
@@ -205,16 +211,19 @@ export default function App() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4 font-sans">
-        <div className="bg-white max-w-md w-full rounded-2xl shadow-2xl overflow-hidden border border-slate-100">
+      <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4 font-sans relative overflow-hidden">
+        <div className="bg-white max-w-md w-full rounded-2xl shadow-2xl overflow-hidden border border-slate-100 z-10">
           <div className="bg-gradient-to-r from-emerald-800 to-teal-900 p-8 text-center text-white">
+            <div className="flex justify-center mb-4">
+              <img src="/logo.png" alt="Mix Soluções Ambientais" className="h-12 w-auto object-contain brightness-0 invert" />
+            </div>
             <h2 className="text-xl font-extrabold tracking-tight">MIX SOLUÇÕES AMBIENTAIS</h2>
-            <p className="text-xs text-emerald-200 mt-1">Portal de Gestão de PDI</p>
+            <p className="text-xs text-emerald-200 mt-1">Portal de Gestão de PDI • Conectado ao Supabase</p>
           </div>
 
           <form onSubmit={handleLogin} className="p-8 space-y-5 text-xs">
             {loginError && (
-              <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl font-semibold">
+              <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-xs font-semibold">
                 {loginError}
               </div>
             )}
@@ -227,7 +236,7 @@ export default function App() {
                 placeholder="seu.nome@mixsolucoesambientais.com.br"
                 value={loginEmail}
                 onChange={e => setLoginEmail(e.target.value)}
-                className="w-full p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                className="w-full p-3 border border-slate-200 rounded-xl text-slate-800 font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none"
               />
             </div>
 
@@ -239,7 +248,7 @@ export default function App() {
                 placeholder="••••••••"
                 value={loginPassword}
                 onChange={e => setLoginPassword(e.target.value)}
-                className="w-full p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                className="w-full p-3 border border-slate-200 rounded-xl text-slate-800 font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none"
               />
             </div>
 
@@ -257,11 +266,14 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans">
-      <header className="bg-gradient-to-r from-emerald-800 to-teal-900 text-white shadow-md">
+      <header className="bg-gradient-to-r from-emerald-800 to-teal-900 text-white shadow-md no-print">
         <div className="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-4">
-          <div>
-            <h1 className="text-xl font-bold tracking-tight">MIX SOLUÇÕES AMBIENTAIS</h1>
-            <p className="text-xs text-emerald-200">Sistema de Gestão de PDI • 67 Colaboradores</p>
+          <div className="flex items-center space-x-3">
+            <img src="/logo.png" alt="Mix Soluções Ambientais" className="h-10 w-auto object-contain" />
+            <div>
+              <h1 className="text-xl font-bold tracking-tight">MIX SOLUÇÕES AMBIENTAIS</h1>
+              <p className="text-xs text-emerald-200">Sistema de Gestão de PDI • Dados em Tempo Real</p>
+            </div>
           </div>
 
           <div className="flex items-center gap-4">
@@ -309,10 +321,15 @@ export default function App() {
           <div className="space-y-6">
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-wrap justify-between items-center gap-4">
               <div>
-                <span className="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full">META ESTRATÉGICA 2026</span>
+                <div className="flex items-center gap-2">
+                  <span className="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full">META ESTRATÉGICA 2026</span>
+                  {currentUser.profile === 'GESTOR' && (
+                    <span className="bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full">Gestor: {currentUser.name}</span>
+                  )}
+                </div>
                 <h2 className="text-2xl font-bold text-slate-900 mt-2">Implementação de 100% dos PDIs</h2>
                 <p className="text-sm text-slate-500">
-                  {currentUser.profile === 'RH' ? 'Acompanhamento global dos 67 colaboradores.' : `Gerenciando a equipe de ${currentUser.name}.`}
+                  {currentUser.profile === 'RH' ? 'Acompanhamento global sincronizado no banco de dados.' : `Gerenciando colaboradores diretos de ${currentUser.name}.`}
                 </p>
               </div>
               
@@ -369,21 +386,21 @@ export default function App() {
             <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
               <div className="p-4 border-b border-slate-100 flex justify-between items-center">
                 <h3 className="font-bold text-slate-800 flex items-center gap-2">
-                  <TrendingUp className="w-5 h-5 text-emerald-600" /> Lista de Colaboradores
+                  <TrendingUp className="w-5 h-5 text-emerald-600" /> Status dos PDIs
                 </h3>
                 <button onClick={() => setActiveTab('list')} className="text-xs text-emerald-600 hover:text-emerald-700 font-semibold flex items-center gap-1">
-                  Ver Todos ({accessibleEmployees.length}) <ChevronRight className="w-4 h-4" />
+                  Ver Todos <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
-              <div className="overflow-x-auto max-h-96">
+              <div className="overflow-x-auto">
                 <table className="w-full text-left text-sm text-slate-600">
-                  <thead className="bg-slate-50 text-xs uppercase text-slate-500 font-semibold border-b sticky top-0">
+                  <thead className="bg-slate-50 text-xs uppercase text-slate-500 font-semibold border-b">
                     <tr>
                       <th className="p-4">Colaborador</th>
-                      <th className="p-4">Cargo</th>
                       <th className="p-4">Setor</th>
                       <th className="p-4">Gestor Responsável</th>
                       <th className="p-4">Progresso</th>
+                      <th className="p-4">Status</th>
                       <th className="p-4 text-right">Ação</th>
                     </tr>
                   </thead>
@@ -391,16 +408,23 @@ export default function App() {
                     {accessibleEmployees.map(emp => (
                       <tr key={emp.id} className="hover:bg-slate-50 transition">
                         <td className="p-4 font-semibold text-slate-800">{emp.name}</td>
-                        <td className="p-4">{emp.role}</td>
                         <td className="p-4">{emp.department}</td>
                         <td className="p-4 font-medium text-slate-700">{emp.manager}</td>
                         <td className="p-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-24 bg-slate-100 h-2 rounded-full overflow-hidden">
+                            <div className="w-28 bg-slate-100 h-2 rounded-full overflow-hidden">
                               <div className="bg-emerald-500 h-full rounded-full" style={{ width: `${emp.progress}%` }}></div>
                             </div>
                             <span className="text-xs font-bold text-slate-700">{emp.progress}%</span>
                           </div>
+                        </td>
+                        <td className="p-4">
+                          <span className={`text-xs px-2.5 py-1 rounded-full font-semibold ${
+                            emp.status === 'Concluído' ? 'bg-emerald-100 text-emerald-800' :
+                            emp.status === 'Em Andamento' ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-600'
+                          }`}>
+                            {emp.status}
+                          </span>
                         </td>
                         <td className="p-4 text-right">
                           <button 
@@ -426,7 +450,7 @@ export default function App() {
                 <Search className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
                 <input 
                   type="text" 
-                  placeholder="Buscar colaborador ou cargo..." 
+                  placeholder="Buscar por colaborador ou cargo..." 
                   value={searchTerm} 
                   onChange={e => setSearchTerm(e.target.value)}
                   className="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
@@ -434,18 +458,28 @@ export default function App() {
               </div>
 
               <div className="flex items-center gap-3">
-                <Filter className="w-4 h-4 text-slate-500" />
-                <select 
-                  value={departmentFilter} 
-                  onChange={e => setDepartmentFilter(e.target.value)}
-                  className="bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                >
-                  <option value="Todos">Todos os Setores</option>
-                  <option value="Operação">Operação</option>
-                  <option value="Logistica">Logística</option>
-                  <option value="TR 2">TR 2</option>
-                  <option value="Administrativo / RH">Administrativo / RH</option>
-                </select>
+                <div className="flex items-center gap-2">
+                  <Filter className="w-4 h-4 text-slate-500" />
+                  <select 
+                    value={departmentFilter} 
+                    onChange={e => setDepartmentFilter(e.target.value)}
+                    className="bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  >
+                    <option value="Todos">Todos os Setores</option>
+                    <option value="Operacional">Operacional</option>
+                    <option value="Administrativo / RH">Administrativo / RH</option>
+                    <option value="Logística">Logística</option>
+                  </select>
+                </div>
+
+                {currentUser.profile === 'RH' && (
+                  <button 
+                    onClick={() => setShowAddModal(true)}
+                    className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow transition flex items-center gap-2"
+                  >
+                    <UserPlus className="w-4 h-4" /> Novo Colaborador
+                  </button>
+                )}
               </div>
             </div>
 
@@ -458,7 +492,9 @@ export default function App() {
                         <h3 className="font-bold text-slate-900">{emp.name}</h3>
                         <p className="text-xs text-slate-500">{emp.role}</p>
                       </div>
-                      <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-md ${
+                        emp.department === 'Operacional' ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-blue-50 text-blue-700 border border-blue-200'
+                      }`}>
                         {emp.department}
                       </span>
                     </div>
@@ -491,7 +527,7 @@ export default function App() {
 
         {!loading && activeTab === 'detail' && selectedEmployee && (
           <div className="space-y-6">
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center no-print">
               <button 
                 onClick={() => setActiveTab('list')}
                 className="text-xs font-bold text-slate-500 hover:text-slate-800 flex items-center gap-1"
@@ -502,20 +538,25 @@ export default function App() {
                 onClick={() => window.print()} 
                 className="px-4 py-2 bg-slate-800 text-white hover:bg-slate-900 rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-sm"
               >
-                <Printer className="w-4 h-4" /> Imprimir / PDF
+                <Printer className="w-4 h-4" /> Imprimir / Gerar PDF
               </button>
             </div>
 
             <div className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-8">
               <div className="border-b border-slate-200 pb-6 flex justify-between items-start flex-wrap gap-4">
                 <div>
-                  <span className="text-xs font-bold text-emerald-600 uppercase tracking-widest">Ficha Individual de PDI</span>
+                  <span className="text-xs font-bold text-emerald-600 uppercase tracking-widest">Ficha Individual de Desenvolvimento</span>
                   <h2 className="text-3xl font-extrabold text-slate-900 mt-1">{selectedEmployee.name}</h2>
                   <p className="text-sm text-slate-500 font-medium">{selectedEmployee.role} • {selectedEmployee.department}</p>
                 </div>
                 <div className="text-right">
                   <span className="text-xs text-slate-400 block">Gestor Responsável</span>
                   <span className="text-sm font-bold text-slate-700">{selectedEmployee.manager}</span>
+                  <div className="mt-2">
+                    <span className="text-xs font-bold px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full">
+                      Status: {selectedEmployee.status} ({selectedEmployee.progress}%)
+                    </span>
+                  </div>
                 </div>
               </div>
 
@@ -544,38 +585,163 @@ export default function App() {
 
               <div>
                 <h3 className="font-bold text-slate-800 text-lg mb-4 flex items-center gap-2">
-                  <BookOpen className="w-5 h-5 text-emerald-600" /> Plano de Ação Estruturado (70/20/10)
+                  <BookOpen className="w-5 h-5 text-emerald-600" /> Plano de Ação Estruturado (Metodologia 70/20/10)
                 </h3>
                 <div className="space-y-3">
-                  {selectedEmployee.actions.length === 0 ? (
-                    <p className="text-xs text-slate-400">Nenhuma ação cadastrada para este colaborador ainda.</p>
-                  ) : (
-                    selectedEmployee.actions.map(action => (
-                      <div key={action.id} className="p-4 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between gap-4">
-                        <div className="space-y-1">
-                          <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-600 text-white">
+                  {selectedEmployee.actions.map(action => (
+                    <div key={action.id} className="p-4 bg-slate-50 border border-slate-200 rounded-xl flex flex-wrap items-center justify-between gap-4">
+                      <div className="space-y-1 max-w-xl">
+                        <div className="flex items-center gap-2">
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${
+                            action.type === '70%' ? 'bg-emerald-600 text-white' :
+                            action.type === '20%' ? 'bg-blue-600 text-white' : 'bg-purple-600 text-white'
+                          }`}>
                             {action.type} {action.category}
                           </span>
-                          <p className="text-sm font-semibold text-slate-800">{action.title}</p>
+                          <span className="text-xs text-slate-400">Prazo: {action.deadline}</span>
                         </div>
+                        <p className="text-sm font-semibold text-slate-800">{action.title}</p>
+                        <p className="text-xs text-slate-500">Evidência esperada: {action.evidence}</p>
+                      </div>
+
+                      <div className="no-print">
                         <select 
                           value={action.status} 
                           onChange={e => handleStatusChange(action.id, e.target.value)}
-                          className="text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-300 bg-white"
+                          className="text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-300 bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                         >
                           <option value="Não Iniciado">Não Iniciado</option>
                           <option value="Em Andamento">Em Andamento</option>
                           <option value="Concluído">Concluído</option>
                         </select>
                       </div>
-                    ))
-                  )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="pt-12 border-t border-slate-200 grid grid-cols-3 gap-6 text-center text-xs text-slate-500">
+                <div>
+                  <div className="border-b border-slate-300 mb-2 pb-8"></div>
+                  <span>{selectedEmployee.name}</span>
+                  <span className="block text-[10px] text-slate-400">Colaborador</span>
+                </div>
+                <div>
+                  <div className="border-b border-slate-300 mb-2 pb-8"></div>
+                  <span>{selectedEmployee.manager}</span>
+                  <span className="block text-[10px] text-slate-400">Gestor Direto</span>
+                </div>
+                <div>
+                  <div className="border-b border-slate-300 mb-2 pb-8"></div>
+                  <span>Daiene Santos</span>
+                  <span className="block text-[10px] text-slate-400">Recursos Humanos / DHO</span>
                 </div>
               </div>
             </div>
           </div>
         )}
       </main>
+
+      {showAddModal && (
+        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white max-w-lg w-full rounded-2xl shadow-xl overflow-hidden border border-slate-100">
+            <div className="bg-emerald-900 text-white p-4 flex justify-between items-center">
+              <h3 className="font-bold text-sm flex items-center gap-2">
+                <UserPlus className="w-4 h-4 text-emerald-300" /> Cadastrar Novo Colaborador
+              </h3>
+              <button onClick={() => setShowAddModal(false)} className="text-emerald-200 hover:text-white">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleAddEmployee} className="p-6 space-y-4 text-xs">
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Nome Completo</label>
+                <input 
+                  type="text" 
+                  required 
+                  placeholder="Ex: Ana Clara Santos"
+                  value={newEmployee.name}
+                  onChange={e => setNewEmployee({...newEmployee, name: e.target.value})}
+                  className="w-full p-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Cargo</label>
+                  <input 
+                    type="text" 
+                    required 
+                    placeholder="Ex: Encarregado de Limpeza"
+                    value={newEmployee.role}
+                    onChange={e => setNewEmployee({...newEmployee, role: e.target.value})}
+                    className="w-full p-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Setor / Departamento</label>
+                  <select 
+                    value={newEmployee.department}
+                    onChange={e => setNewEmployee({...newEmployee, department: e.target.value})}
+                    className="w-full p-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                  >
+                    <option value="Operacional">Operacional</option>
+                    <option value="Administrativo / RH">Administrativo / RH</option>
+                    <option value="Logística">Logística</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Gestor Imediato Responsável</label>
+                <select 
+                  value={newEmployee.manager}
+                  onChange={e => setNewEmployee({...newEmployee, manager: e.target.value})}
+                  className="w-full p-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                >
+                  <option value="Daiene Santos">Daiene Santos (RH / DHO)</option>
+                  <option value="Roberto Santos">Roberto Santos (Supervisor Operacional)</option>
+                  <option value="Marcos Oliveira">Marcos Oliveira (Coordenador de Logística)</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Objetivo Principal de Carreira</label>
+                <input 
+                  type="text" 
+                  placeholder="Ex: Desenvolvimento técnico para promoção a encarregado"
+                  value={newEmployee.goal}
+                  onChange={e => setNewEmployee({...newEmployee, goal: e.target.value})}
+                  className="w-full p-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                />
+              </div>
+
+              <div className="pt-4 flex justify-end gap-2">
+                <button 
+                  type="button"
+                  onClick={() => setShowAddModal(false)}
+                  className="px-4 py-2 border border-slate-200 text-slate-600 rounded-xl font-bold hover:bg-slate-50 transition"
+                >
+                  Cancelar
+                </button>
+                <button 
+                  type="submit"
+                  disabled={loading}
+                  className="px-4 py-2 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-700 transition flex items-center gap-2"
+                >
+                  {loading && <Loader2 className="w-4 h-4 animate-spin" />}
+                  Salvar no Banco
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      <footer className="bg-slate-900 text-slate-400 text-xs py-4 text-center border-t border-slate-800 no-print">
+        <p>Mix Soluções Ambientais • Sistema Interno de Gestão de PDI • Conectado ao PostgreSQL</p>
+      </footer>
     </div>
   );
 }
