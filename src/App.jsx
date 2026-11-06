@@ -23,7 +23,12 @@ const initialEmployees = [
   { id: 2, name: "WALLACE SILVA RODRIGUES", role: "MECANICO DE AUTOMOVEIS E CAMINHOES EM GERAL", department: "Logistica", manager: "Jose Izailton", managerEmail: "log@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [] },
   { id: 3, name: "GLAUBER LUAN LIMA VIANA", role: "MOTORISTA DE CAMINHÃO", department: "Logistica", manager: "Jose Izailton", managerEmail: "log@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [] },
   { id: 4, name: "JOSE IZAILTON BATISTA ALMEIDA JUNIOR", role: "ANALISTA DE LOGISTICA DE TRANSPORTE", department: "Logistica", manager: "George Costa", managerEmail: "george@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [] },
-  { id: 5, name: "GIVALDO DE SOUSA CONCEICAO", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [] }
+  { id: 5, name: "GIVALDO DE SOUSA CONCEICAO", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [] },
+  { id: 6, name: "AUGUSTO CESAR DE ARRUDA", role: "ENCARREGADO OPERACIONAL LOGISTICO", department: "Operação", manager: "Lucas Borges", managerEmail: "lucas@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [] },
+  { id: 7, name: "BENIVALDO EVANGELISTA DOS SANTOS", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [] },
+  { id: 8, name: "FERNANDO JOAQUIM DO NASCIMENTO", role: "OPERADOR DE EMPILHADEIRA", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [] },
+  { id: 9, name: "LAERCIO SOUZA OLIVEIRA SANTOS", role: "MOTORISTA DE CAMINHÃO", department: "Logistica", manager: "Jose Izailton", managerEmail: "log@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [] },
+  { id: 10, name: "RAFAEL ANJOS MENEZES", role: "MOTORISTA DE CAMINHÃO", department: "Logistica", manager: "Jose Izailton", managerEmail: "log@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [] }
 ];
 
 export default function App() {
@@ -35,12 +40,10 @@ export default function App() {
   const [loginError, setLoginError] = useState('');
 
   const [employees, setEmployees] = useState(initialEmployees);
-  const [loading, setLoading] = useState(false);
   const [selectedId, setSelectedId] = useState(1);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [searchTerm, setSearchTerm] = useState('');
   const [departmentFilter, setDepartmentFilter] = useState('Todos');
-  const [showAddModal, setShowAddModal] = useState(false);
 
   // Estados de edição do PDI
   const [editFormData, setEditFormData] = useState({ strengths: '', growthAreas: '', goal: '' });
@@ -103,7 +106,7 @@ export default function App() {
         const updatedActions = [...(emp.actions || []), { ...newAction, id: Date.now(), completed: false }];
         const completedCount = updatedActions.filter(a => a.completed).length;
         const progress = Math.round((completedCount / updatedActions.length) * 100);
-        const status = progress === 100 ? 'Concluído' : progress > 0 ? 'Em Andamento' : 'Em Andamento';
+        const status = progress === 100 ? 'Concluído' : 'Em Andamento';
 
         return { ...emp, actions: updatedActions, progress, status };
       }
