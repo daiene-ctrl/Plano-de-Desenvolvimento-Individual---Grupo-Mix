@@ -141,7 +141,6 @@ const initialEmployees = [
     return Math.round((sum / 4) * 10);
   };
 
-  // Lógica do Farol de Acompanhamento (🟢 Em dia, 🟡 Atenção, 🔴 Vencido/Pendente sem notas)
   const getFarolStatus = (employee) => {
     const notesCount = (employee.notes || []).length;
     if (notesCount > 0) {
@@ -476,6 +475,7 @@ const initialEmployees = [
                     <th className="p-3">Farol</th>
                     <th className="p-3">Colaborador</th>
                     <th className="p-3">Cargo</th>
+                    <th className="p-3">Validade / Meta</th>
                     <th className="p-3">Média</th>
                     <th className="p-3">Status Matriz</th>
                     <th className="p-3 text-right">Ação</th>
@@ -493,6 +493,7 @@ const initialEmployees = [
                         </td>
                         <td className="p-3 font-semibold">{emp.name}</td>
                         <td className="p-3">{emp.role}</td>
+                        <td className="p-3 font-bold text-slate-700">{emp.deadline || '31/12/2026'}</td>
                         <td className="p-3 font-bold">{scr}/100</td>
                         <td className="p-3"><span className={`px-2 py-0.5 rounded text-[10px] font-bold ${rec.badgeColor}`}>{rec.status}</span></td>
                         <td className="p-3 text-right">
@@ -555,7 +556,7 @@ const initialEmployees = [
                       </div>
                       <div className="mt-4 space-y-2">
                         <div className="flex justify-between text-xs text-slate-600">
-                          <span>Média: <b>{scr}/100</b></span>
+                          <span>Validade: <b>{emp.deadline || '31/12/2026'}</b></span>
                           <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${rec.badgeColor}`}>{rec.status}</span>
                         </div>
                         <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
