@@ -1,68 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { createClient } from '@supabase/supabase-js';
 import { 
-  Users, Target, CheckCircle2, Clock, Plus, Search, Filter, 
-  ChevronRight, Award, BarChart3, Printer, FileText, Calendar, 
-  Building2, TrendingUp, BookOpen, UserCheck, Edit3, Trash2, Shield, UserPlus, X, Lock, LogOut, Key
+  Users, Target, CheckCircle2, Clock, Search, Filter, 
+  ChevronRight, Award, BarChart3, Printer, BookOpen, 
+  TrendingUp, UserPlus, X, Lock, LogOut, Shield, Loader2
 } from 'lucide-react';
 
-const initialEmployees = [
-  {
-    id: 1,
-    name: "Carlos Eduardo Silva",
-    role: "Operador de Máquinas",
-    department: "Operacional",
-    manager: "Roberto Santos",
-    managerEmail: "roberto@mixsolucoesambientais.com.br",
-    status: "Em Andamento",
-    progress: 65,
-    strengths: "Agilidade nas rotinas, pontualidade e excelente rigor com uso de EPIs.",
-    growthAreas: "Comunicação verbal assertiva e noções básicas de liderança operacional.",
-    goal: "Evoluir para a função de Encarregado de Campo nos próximos 12 meses.",
-    actions: [
-      { id: 101, type: "70%", title: "Conduzir o Diálogo Diário de Segurança (DDS) às terças-feiras", category: "Prática", status: "Em Andamento", deadline: "2026-11-30", evidence: "Registro em ata do DDS" },
-      { id: 102, type: "20%", title: "Sessões mensais de mentoria operacional com o Supervisor de Campo", category: "Mentoria", status: "Em Andamento", deadline: "2026-12-15", evidence: "Ficha de feedback assinado" },
-      { id: 103, type: "10%", title: "Curso online de Liderança Operacional e Comunicação (16h)", category: "Curso", status: "Concluído", deadline: "2026-10-20", evidence: "Certificado entregue ao RH" }
-    ]
-  },
-  {
-    id: 2,
-    name: "Mariana Alcantara",
-    role: "Assistente Administrativo",
-    department: "Administrativo / RH",
-    manager: "Daiene Santos",
-    managerEmail: "daiene@mixsolucoesambientais.com.br",
-    status: "Concluído",
-    progress: 100,
-    strengths: "Organização impecável, domínio de planilhas e atendimento cortês.",
-    growthAreas: "Gestão de projetos internos e análise de indicadores de RH.",
-    goal: "Assumir responsabilidade direta pelos subsistemas de DHO e Treinamento.",
-    actions: [
-      { id: 201, type: "70%", title: "Mapear e organizar o fluxo de integração de 100% dos novos colaboradores", category: "Prática", status: "Concluído", deadline: "2026-09-30", evidence: "Procedimento operacional documentado" },
-      { id: 202, type: "20%", title: "Acompanhamento quinzenal no alinhamento das Metas Estratégicas 2026", category: "Mentoria", status: "Concluído", deadline: "2026-10-15", evidence: "Relatório de progresso de metas" },
-      { id: 203, type: "10%", title: "Treinamento em Indicadores de Gestão de Pessoas e Power BI", category: "Curso", status: "Concluído", deadline: "2026-08-30", evidence: "Dashboard de RH implementado" }
-    ]
-  },
-  {
-    id: 3,
-    name: "João Pedro Souza",
-    role: "Motorista Operacional",
-    department: "Logística",
-    manager: "Marcos Oliveira",
-    managerEmail: "marcos@mixsolucoesambientais.com.br",
-    status: "Não Iniciado",
-    progress: 0,
-    strengths: "Direção defensiva excelente e profundo conhecimento de rotas urbanas.",
-    growthAreas: "Preenchimento digital dos relatórios de viagem e checklist diário.",
-    goal: "Tornar-se referência em eficiência logística e economia de combustível.",
-    actions: [
-      { id: 301, type: "70%", title: "Realizar o checklist de saída via aplicativo em 100% das viagens", category: "Prática", status: "Não Iniciado", deadline: "2026-11-25", evidence: "Registros no sistema logístico" },
-      { id: 302, type: "20%", title: "Acompanhamento semanal com o Gestor de Frota", category: "Mentoria", status: "Não Iniciado", deadline: "2026-12-10", evidence: "Checklist validado" },
-      { id: 303, type: "10%", title: "Treinamento interno em Tecnologias de Gestão de Frotas", category: "Curso", status: "Não Iniciado", deadline: "2026-12-01", evidence: "Certificado de conclusão" }
-    ]
-  }
-];
+// Conexão dinâmica com as variáveis de ambiente ativas na Vercel
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabase = (supabaseUrl && supabaseAnonKey) ? createClient(supabaseUrl, supabaseAnonKey) : null;
 
-// Base de Utilizadores e Credenciais de Acesso Seguras
 const validUsers = [
   { name: "Daiene Santos", email: "daiene@mixsolucoesambientais.com.br", pass: "mix#rh2026", profile: "RH", role: "Gestora de RH / DHO" },
   { name: "Roberto Santos", email: "roberto@mixsolucoesambientais.com.br", pass: "gestor123", profile: "GESTOR", role: "Supervisor Operacional" },
@@ -79,8 +27,9 @@ export default function App() {
   const [loginError, setLoginError] = useState('');
 
   // Main App State
-  const [employees, setEmployees] = useState(initialEmployees);
-  const [selectedId, setSelectedId] = useState(1);
+  const [employees, setEmployees] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [searchTerm, setSearchTerm] = useState('');
   const [departmentFilter, setDepartmentFilter] = useState('Todos');
@@ -96,6 +45,63 @@ export default function App() {
     goal: ''
   });
 
+  // Carregar dados reais do Supabase
+  const fetchEmployees = async () => {
+    if (!supabase) return;
+    setLoading(true);
+    try {
+      const { data: colaboradoresData, error: empError } = await supabase
+        .from('colaboradores')
+        .select('*');
+
+      if (empError) throw empError;
+
+      const { data: acoesData, error: acoesError } = await supabase
+        .from('acoes_pdi')
+        .select('*');
+
+      if (acoesError) throw acoesError;
+
+      const formatted = colaboradoresData.map(emp => ({
+        id: emp.id,
+        name: emp.name,
+        role: emp.role,
+        department: emp.department,
+        manager: emp.manager,
+        managerEmail: emp.manager_email,
+        status: emp.status || 'Não Iniciado',
+        progress: emp.progress || 0,
+        strengths: emp.strengths || 'A mapear em reunião de PDI.',
+        growthAreas: emp.growth_areas || 'A definir com a gestão.',
+        goal: emp.goal || 'Desenvolvimento contínuo.',
+        actions: acoesData.filter(a => a.colaborador_id === emp.id).map(a => ({
+          id: a.id,
+          type: a.type,
+          category: a.category,
+          title: a.title,
+          evidence: a.evidence,
+          deadline: a.deadline,
+          status: a.status
+        }))
+      }));
+
+      setEmployees(formatted);
+      if (formatted.length > 0 && !selectedId) {
+        setSelectedId(formatted[0].id);
+      }
+    } catch (err) {
+      console.error("Erro ao buscar dados do Supabase:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchEmployees();
+    }
+  }, [isAuthenticated]);
+
   const handleLogin = (e) => {
     e.preventDefault();
     const user = validUsers.find(
@@ -106,11 +112,8 @@ export default function App() {
       setCurrentUser(user);
       setIsAuthenticated(true);
       setLoginError('');
-      // Seleciona o primeiro colaborador disponível para o utilizador logado
-      const accessible = employees.filter(emp => user.profile === 'RH' || emp.manager === user.name);
-      if (accessible.length > 0) setSelectedId(accessible[0].id);
     } else {
-      setLoginError('E-mail ou senha incorretos. Verifique os dados de acesso.');
+      setLoginError('E-mail ou senha incorretos. Verifique as credenciais.');
     }
   };
 
@@ -121,7 +124,6 @@ export default function App() {
     setLoginPassword('');
   };
 
-  // Trava de Segurança: Filtra colaboradores de acordo com o perfil estritamente logado
   const accessibleEmployees = employees.filter(emp => {
     if (!currentUser) return false;
     if (currentUser.profile === 'RH') return true;
@@ -143,59 +145,80 @@ export default function App() {
     return matchesSearch && matchesDept;
   });
 
-  const handleStatusChange = (actionId, newStatus) => {
-    setEmployees(prev => prev.map(emp => {
-      if (emp.id !== selectedId) return emp;
-      const updatedActions = emp.actions.map(act => act.id === actionId ? { ...act, status: newStatus } : act);
-      const completed = updatedActions.filter(a => a.status === 'Concluído').length;
-      const progress = Math.round((completed / updatedActions.length) * 100);
-      let status = 'Em Andamento';
-      if (progress === 100) status = 'Concluído';
-      if (progress === 0 && updatedActions.every(a => a.status === 'Não Iniciado')) status = 'Não Iniciado';
-      return { ...emp, actions: updatedActions, progress, status };
-    }));
+  const handleStatusChange = async (actionId, newStatus) => {
+    if (!selectedEmployee) return;
+
+    // Atualização otimista no estado local
+    const updatedActions = selectedEmployee.actions.map(act => act.id === actionId ? { ...act, status: newStatus } : act);
+    const completed = updatedActions.filter(a => a.status === 'Concluído').length;
+    const progress = Math.round((completed / (updatedActions.length || 1)) * 100);
+    let status = 'Em Andamento';
+    if (progress === 100) status = 'Concluído';
+    if (progress === 0 && updatedActions.every(a => a.status === 'Não Iniciado')) status = 'Não Iniciado';
+
+    setEmployees(prev => prev.map(emp => emp.id === selectedEmployee.id ? { ...emp, actions: updatedActions, progress, status } : emp));
+
+    // Persistência no Supabase
+    if (supabase) {
+      await supabase.from('acoes_pdi').update({ status: newStatus }).eq('id', actionId);
+      await supabase.from('colaboradores').update({ progress, status }).eq('id', selectedEmployee.id);
+    }
   };
 
-  const handleAddEmployee = (e) => {
+  const handleAddEmployee = async (e) => {
     e.preventDefault();
-    const created = {
-      id: Date.now(),
-      name: newEmployee.name,
-      role: newEmployee.role,
-      department: newEmployee.department,
-      manager: newEmployee.manager,
-      status: "Não Iniciado",
-      progress: 0,
-      strengths: newEmployee.strengths || "A mapear na primeira reunião de PDI.",
-      growthAreas: newEmployee.growthAreas || "A definir com a gestão imediata.",
-      goal: newEmployee.goal || "Desenvolvimento profissional contínuo.",
-      actions: [
-        { id: Date.now() + 1, type: "70%", title: "Alinhamento prático das rotinas operacionais", category: "Prática", status: "Não Iniciado", deadline: "2026-12-31", evidence: "Validação pelo gestor" },
-        { id: Date.now() + 2, type: "20%", title: "Feedback e mentoria mensal", category: "Mentoria", status: "Não Iniciado", deadline: "2026-12-31", evidence: "Ata de reunião de feedback" },
-        { id: Date.now() + 3, type: "10%", title: "Treinamento obrigatório de integração e segurança", category: "Curso", status: "Não Iniciado", deadline: "2026-11-30", evidence: "Certificado de conclusão" }
-      ]
-    };
+    if (!supabase) return;
 
-    setEmployees(prev => [...prev, created]);
-    setShowAddModal(false);
-    setNewEmployee({ name: '', role: '', department: 'Operacional', manager: 'Daiene Santos', strengths: '', growthAreas: '', goal: '' });
+    setLoading(true);
+    try {
+      const { data: newEmpData, error: empErr } = await supabase
+        .from('colaboradores')
+        .insert([{
+          name: newEmployee.name,
+          role: newEmployee.role,
+          department: newEmployee.department,
+          manager: newEmployee.manager,
+          manager_email: `${newEmployee.manager.toLowerCase().split(' ')[0]}@mixsolucoesambientais.com.br`,
+          status: 'Não Iniciado',
+          progress: 0,
+          strengths: newEmployee.strengths || 'A mapear em reunião de PDI.',
+          growth_areas: newEmployee.growthAreas || 'A definir com a gestão.',
+          goal: newEmployee.goal || 'Desenvolvimento contínuo.'
+        }])
+        .select();
+
+      if (empErr) throw empErr;
+
+      const createdEmp = newEmpData[0];
+
+      const initialActions = [
+        { colaborador_id: createdEmp.id, type: "70%", category: "Prática", title: "Alinhamento prático das rotinas operacionais", evidence: "Validação pelo gestor", deadline: "2026-12-31", status: "Não Iniciado" },
+        { colaborador_id: createdEmp.id, type: "20%", category: "Mentoria", title: "Feedback e mentoria mensal", evidence: "Ata de reunião de feedback", deadline: "2026-12-31", status: "Não Iniciado" },
+        { colaborador_id: createdEmp.id, type: "10%", category: "Curso", title: "Treinamento obrigatório de integração e segurança", evidence: "Certificado de conclusão", deadline: "2026-11-30", status: "Não Iniciado" }
+      ];
+
+      await supabase.from('acoes_pdi').insert(initialActions);
+
+      await fetchEmployees();
+      setShowAddModal(false);
+      setNewEmployee({ name: '', role: '', department: 'Operacional', manager: 'Daiene Santos', strengths: '', growthAreas: '', goal: '' });
+    } catch (err) {
+      console.error("Erro ao cadastrar colaborador:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // TELA DE LOGIN (Sem autenticação prévia)
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4 font-sans relative overflow-hidden">
-        {/* Fundo decorativo corporativo */}
-        <div className="absolute -top-32 -left-32 w-96 h-96 bg-emerald-600/20 rounded-full blur-3xl"></div>
-        <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-teal-600/20 rounded-full blur-3xl"></div>
-
         <div className="bg-white max-w-md w-full rounded-2xl shadow-2xl overflow-hidden border border-slate-100 z-10">
           <div className="bg-gradient-to-r from-emerald-800 to-teal-900 p-8 text-center text-white">
             <div className="flex justify-center mb-4">
               <img src="/logo.png" alt="Mix Soluções Ambientais" className="h-12 w-auto object-contain brightness-0 invert" />
             </div>
             <h2 className="text-xl font-extrabold tracking-tight">MIX SOLUÇÕES AMBIENTAIS</h2>
-            <p className="text-xs text-emerald-200 mt-1">Portal de Gestão de PDI • Pilar Desenvolvimento</p>
+            <p className="text-xs text-emerald-200 mt-1">Portal de Gestão de PDI • Conectado ao Supabase</p>
           </div>
 
           <form onSubmit={handleLogin} className="p-8 space-y-5 text-xs">
@@ -207,16 +230,14 @@ export default function App() {
 
             <div>
               <label className="block font-bold text-slate-700 mb-1">E-mail Corporativo</label>
-              <div className="relative">
-                <input 
-                  type="email" 
-                  required 
-                  placeholder="seu.nome@mixsolucoesambientais.com.br"
-                  value={loginEmail}
-                  onChange={e => setLoginEmail(e.target.value)}
-                  className="w-full p-3 pl-3 border border-slate-200 rounded-xl text-slate-800 font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-                />
-              </div>
+              <input 
+                type="email" 
+                required 
+                placeholder="seu.nome@mixsolucoesambientais.com.br"
+                value={loginEmail}
+                onChange={e => setLoginEmail(e.target.value)}
+                className="w-full p-3 border border-slate-200 rounded-xl text-slate-800 font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+              />
             </div>
 
             <div>
@@ -237,37 +258,24 @@ export default function App() {
             >
               <Lock className="w-4 h-4" /> Entrar no Sistema
             </button>
-
-            {/* Guia Rápido de Acesso de Testes */}
-            <div className="mt-6 pt-4 border-t border-slate-100 text-[11px] text-slate-400 space-y-1">
-              <p className="font-bold text-slate-600 mb-1">Credenciais de Teste:</p>
-              <p>• <b>RH (Visão Total):</b> <span className="text-emerald-700">daiene@mixsolucoesambientais.com.br</span> / <span className="text-slate-600">mix#rh2026</span></p>
-              <p>• <b>Gestor Operacional:</b> <span className="text-emerald-700">roberto@mixsolucoesambientais.com.br</span> / <span className="text-slate-600">gestor123</span></p>
-              <p>• <b>Gestor Logística:</b> <span className="text-emerald-700">marcos@mixsolucoesambientais.com.br</span> / <span className="text-slate-600">gestor123</span></p>
-            </div>
           </form>
         </div>
       </div>
     );
   }
 
-  // APLICAÇÃO AUTENTICADA
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans">
-      {/* Header Corporativo com Status do Usuário Logado */}
       <header className="bg-gradient-to-r from-emerald-800 to-teal-900 text-white shadow-md no-print">
         <div className="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-4">
           <div className="flex items-center space-x-3">
-            <div className="flex items-center justify-center">
-              <img src="/logo.png" alt="Mix Soluções Ambientais" className="h-10 w-auto object-contain" />
-            </div>
+            <img src="/logo.png" alt="Mix Soluções Ambientais" className="h-10 w-auto object-contain" />
             <div>
               <h1 className="text-xl font-bold tracking-tight">MIX SOLUÇÕES AMBIENTAIS</h1>
-              <p className="text-xs text-emerald-200">Sistema de Gestão de PDI • Pilar Desenvolvimento 2026</p>
+              <p className="text-xs text-emerald-200">Sistema de Gestão de PDI • Dados em Tempo Real</p>
             </div>
           </div>
 
-          {/* Painel do Utilizador Autenticado */}
           <div className="flex items-center gap-4">
             <div className="bg-emerald-950/60 px-3 py-1.5 rounded-xl border border-emerald-700/50 flex items-center gap-2">
               <Shield className="w-4 h-4 text-emerald-300" />
@@ -280,7 +288,6 @@ export default function App() {
             <button 
               onClick={handleLogout}
               className="p-2 bg-emerald-950/40 hover:bg-red-600 text-emerald-200 hover:text-white rounded-xl transition border border-emerald-700/50 flex items-center gap-1 text-xs font-semibold"
-              title="Sair da Conta"
             >
               <LogOut className="w-4 h-4" /> Sair
             </button>
@@ -303,23 +310,26 @@ export default function App() {
         </div>
       </header>
 
-      {/* Conteúdo Principal */}
       <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6">
-        
-        {/* DASHBOARD TAB */}
-        {activeTab === 'dashboard' && (
+        {loading && (
+          <div className="flex justify-center items-center py-12">
+            <Loader2 className="w-8 h-8 text-emerald-600 animate-spin" />
+          </div>
+        )}
+
+        {!loading && activeTab === 'dashboard' && (
           <div className="space-y-6">
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-wrap justify-between items-center gap-4">
               <div>
                 <div className="flex items-center gap-2">
                   <span className="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full">META ESTRATÉGICA 2026</span>
                   {currentUser.profile === 'GESTOR' && (
-                    <span className="bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full">Área Restrita do Gestor: {currentUser.name}</span>
+                    <span className="bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full">Gestor: {currentUser.name}</span>
                   )}
                 </div>
                 <h2 className="text-2xl font-bold text-slate-900 mt-2">Implementação de 100% dos PDIs</h2>
                 <p className="text-sm text-slate-500">
-                  {currentUser.profile === 'RH' ? 'Acompanhamento global de todos os planos da empresa.' : `Visualizando apenas os PDIs sob responsabilidade direta de ${currentUser.name}.`}
+                  {currentUser.profile === 'RH' ? 'Acompanhamento global sincronizado no banco de dados.' : `Gerenciando colaboradores diretos de ${currentUser.name}.`}
                 </p>
               </div>
               
@@ -339,11 +349,10 @@ export default function App() {
               </div>
             </div>
 
-            {/* Metric Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-semibold text-slate-500 uppercase">Colaboradores Autorizados</p>
+                  <p className="text-xs font-semibold text-slate-500 uppercase">Colaboradores</p>
                   <p className="text-2xl font-bold text-slate-800 mt-1">{totalPDIs}</p>
                 </div>
                 <div className="p-3 bg-blue-50 text-blue-600 rounded-xl"><Users className="w-6 h-6" /></div>
@@ -351,7 +360,7 @@ export default function App() {
               
               <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-semibold text-slate-500 uppercase">PDIs Em Andamento</p>
+                  <p className="text-xs font-semibold text-slate-500 uppercase">Em Andamento</p>
                   <p className="text-2xl font-bold text-amber-600 mt-1">{inProgressPDIs}</p>
                 </div>
                 <div className="p-3 bg-amber-50 text-amber-600 rounded-xl"><Clock className="w-6 h-6" /></div>
@@ -359,7 +368,7 @@ export default function App() {
 
               <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-semibold text-slate-500 uppercase">PDIs Concluídos</p>
+                  <p className="text-xs font-semibold text-slate-500 uppercase">Concluídos</p>
                   <p className="text-2xl font-bold text-emerald-600 mt-1">{completedPDIs}</p>
                 </div>
                 <div className="p-3 bg-emerald-50 text-emerald-600 rounded-xl"><CheckCircle2 className="w-6 h-6" /></div>
@@ -367,18 +376,17 @@ export default function App() {
 
               <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-semibold text-slate-500 uppercase">Metodologia 70/20/10</p>
-                  <p className="text-sm font-semibold text-slate-700 mt-1">Prática • Mentoria • Cursos</p>
+                  <p className="text-xs font-semibold text-slate-500 uppercase">Metodologia</p>
+                  <p className="text-sm font-semibold text-slate-700 mt-1">70/20/10</p>
                 </div>
                 <div className="p-3 bg-teal-50 text-teal-600 rounded-xl"><BookOpen className="w-6 h-6" /></div>
               </div>
             </div>
 
-            {/* Tabela Resumo */}
             <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
               <div className="p-4 border-b border-slate-100 flex justify-between items-center">
                 <h3 className="font-bold text-slate-800 flex items-center gap-2">
-                  <TrendingUp className="w-5 h-5 text-emerald-600" /> Status dos PDIs Permitidos
+                  <TrendingUp className="w-5 h-5 text-emerald-600" /> Status dos PDIs
                 </h3>
                 <button onClick={() => setActiveTab('list')} className="text-xs text-emerald-600 hover:text-emerald-700 font-semibold flex items-center gap-1">
                   Ver Todos <ChevronRight className="w-4 h-4" />
@@ -435,8 +443,7 @@ export default function App() {
           </div>
         )}
 
-        {/* LIST TAB */}
-        {activeTab === 'list' && (
+        {!loading && activeTab === 'list' && (
           <div className="space-y-6">
             <div className="flex flex-wrap gap-4 justify-between items-center">
               <div className="relative flex-1 min-w-[240px]">
@@ -518,8 +525,7 @@ export default function App() {
           </div>
         )}
 
-        {/* DETAIL TAB */}
-        {activeTab === 'detail' && selectedEmployee && (
+        {!loading && activeTab === 'detail' && selectedEmployee && (
           <div className="space-y-6">
             <div className="flex justify-between items-center no-print">
               <button 
@@ -636,13 +642,12 @@ export default function App() {
         )}
       </main>
 
-      {/* MODAL DE CADASTRO DE NOVO COLABORADOR */}
       {showAddModal && (
         <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white max-w-lg w-full rounded-2xl shadow-xl overflow-hidden border border-slate-100">
             <div className="bg-emerald-900 text-white p-4 flex justify-between items-center">
               <h3 className="font-bold text-sm flex items-center gap-2">
-                <UserPlus className="w-4 h-4 text-emerald-300" /> Cadastrar Novo Colaborador no PDI
+                <UserPlus className="w-4 h-4 text-emerald-300" /> Cadastrar Novo Colaborador
               </h3>
               <button onClick={() => setShowAddModal(false)} className="text-emerald-200 hover:text-white">
                 <X className="w-5 h-5" />
@@ -722,9 +727,11 @@ export default function App() {
                 </button>
                 <button 
                   type="submit"
-                  className="px-4 py-2 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-700 transition"
+                  disabled={loading}
+                  className="px-4 py-2 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-700 transition flex items-center gap-2"
                 >
-                  Salvar e Criar PDI
+                  {loading && <Loader2 className="w-4 h-4 animate-spin" />}
+                  Salvar no Banco
                 </button>
               </div>
             </form>
@@ -732,9 +739,8 @@ export default function App() {
         </div>
       )}
 
-      {/* Footer */}
       <footer className="bg-slate-900 text-slate-400 text-xs py-4 text-center border-t border-slate-800 no-print">
-        <p>Mix Soluções Ambientais • Sistema Interno de Gestão de Desenvolvimento Individual 2026</p>
+        <p>Mix Soluções Ambientais • Sistema Interno de Gestão de PDI • Conectado ao PostgreSQL</p>
       </footer>
     </div>
   );
