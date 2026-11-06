@@ -18,33 +18,33 @@ const validUsers = [
   { name: "Jose Izailton", email: "log@mixsolucoesambientais.com.br", pass: "gestor123", profile: "GESTOR", role: "Gestor Logística" }
 ];
 
-// Logótipo Oficial da Mix Soluções Ambientais (SVG Fiel)
+// Logo Oficial Branca Transparente (Sem caixa branca de fundo)
 function LogoMixOficial() {
   return (
     <div className="flex items-center justify-center select-none py-1">
-      <svg className="h-16 w-auto" viewBox="0 0 280 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg className="h-14 w-auto" viewBox="0 0 280 120" fill="none" xmlns="http://www.w3.org/2000/svg">
         {/* Letra M */}
-        <path d="M 15 110 L 15 40 L 40 85 L 65 40 L 65 110" stroke="#0078C8" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M 15 110 L 15 40 L 40 85 L 65 40 L 65 110" stroke="#FFFFFF" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round" />
         
         {/* Letra i (Haste) */}
-        <line x1="92" y1="58" x2="92" y2="110" stroke="#0078C8" strokeWidth="12" strokeLinecap="round" />
+        <line x1="92" y1="58" x2="92" y2="110" stroke="#FFFFFF" strokeWidth="12" strokeLinecap="round" />
 
-        {/* Folha Verde (Superior Esquerda) */}
-        <path d="M 85 45 C 70 30 75 10 92 10 C 100 25 95 40 85 45 Z" fill="#4CAE30" />
+        {/* Folha Superior Esquerda */}
+        <path d="M 85 45 C 70 30 75 10 92 10 C 100 25 95 40 85 45 Z" fill="#60A5FA" />
         
-        {/* Folha Azul (Superior Direita) */}
-        <path d="M 94 43 C 95 25 110 15 125 22 C 120 38 105 45 94 43 Z" fill="#0078C8" />
+        {/* Folha Superior Direita */}
+        <path d="M 94 43 C 95 25 110 15 125 22 C 120 38 105 45 94 43 Z" fill="#34D399" />
         
-        {/* Curva Ramo Verde sob o pingo do i */}
-        <path d="M 80 50 C 78 68 115 70 175 25" stroke="#4CAE30" strokeWidth="3.5" strokeLinecap="round" fill="none" />
+        {/* Curva Ramo sob o i */}
+        <path d="M 80 50 C 78 68 115 70 175 25" stroke="#34D399" strokeWidth="3.5" strokeLinecap="round" fill="none" />
 
         {/* Letra x */}
-        <path d="M 115 62 C 130 85 140 100 162 110" stroke="#0078C8" strokeWidth="11" strokeLinecap="round" />
-        <path d="M 162 62 C 145 85 130 98 115 110" stroke="#0078C8" strokeWidth="11" strokeLinecap="round" />
+        <path d="M 115 62 C 130 85 140 100 162 110" stroke="#FFFFFF" strokeWidth="11" strokeLinecap="round" />
+        <path d="M 162 62 C 145 85 130 98 115 110" stroke="#FFFFFF" strokeWidth="11" strokeLinecap="round" />
 
         {/* Texto SOLUÇÕES AMBIENTAIS */}
-        <text x="172" y="76" fill="#4CAE30" fontFamily="Arial, sans-serif" fontSize="20" fontWeight="bold" letterSpacing="1">SOLUÇÕES</text>
-        <text x="172" y="102" fill="#4CAE30" fontFamily="Arial, sans-serif" fontSize="20" fontWeight="bold" letterSpacing="1">AMBIENTAIS</text>
+        <text x="172" y="76" fill="#34D399" fontFamily="Arial, sans-serif" fontSize="20" fontWeight="bold" letterSpacing="1">SOLUÇÕES</text>
+        <text x="172" y="102" fill="#34D399" fontFamily="Arial, sans-serif" fontSize="20" fontWeight="bold" letterSpacing="1">AMBIENTAIS</text>
       </svg>
     </div>
   );
@@ -179,11 +179,10 @@ export default function App() {
     return (
       <div className="min-h-screen bg-[#0d1527] flex items-center justify-center p-4 font-sans">
         <div className="bg-white max-w-md w-full rounded-2xl shadow-2xl overflow-hidden border border-slate-100">
-          <div className="bg-[#055a43] p-8 text-center text-white space-y-3">
-            <div className="bg-white py-2 px-4 rounded-xl shadow-md inline-block w-full">
-              <LogoMixOficial />
-            </div>
-            <h2 className="text-xl font-extrabold tracking-tight mt-2">MIX SOLUÇÕES AMBIENTAIS</h2>
+          {/* Cabeçalho Verde sem fundo branco no logo */}
+          <div className="bg-[#055a43] p-8 text-center text-white space-y-2">
+            <LogoMixOficial />
+            <h2 className="text-xl font-extrabold tracking-tight mt-1">MIX SOLUÇÕES AMBIENTAIS</h2>
             <p className="text-xs text-emerald-100/80 font-medium">Portal de Gestão de PDI • Pilar Desenvolvimento</p>
           </div>
 
@@ -241,9 +240,7 @@ export default function App() {
     <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans">
       <header className="bg-gradient-to-r from-emerald-800 to-teal-900 text-white shadow-md">
         <div className="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-4">
-          <div className="bg-white px-3 py-1 rounded-lg">
-            <LogoMixOficial />
-          </div>
+          <LogoMixOficial />
 
           <div className="flex items-center gap-4">
             <div className="bg-emerald-950/60 px-3 py-1.5 rounded-xl border border-emerald-700/50 flex items-center gap-2">
@@ -442,113 +439,4 @@ export default function App() {
                         <span className="font-bold">{emp.progress}%</span>
                       </div>
                       <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                        <div className="bg-emerald-500 h-full rounded-full" style={{ width: `${emp.progress}%` }}></div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="mt-6 pt-4 border-t border-slate-100 flex justify-between items-center">
-                    <span className="text-xs text-slate-400">Gestor: {emp.manager}</span>
-                    <button 
-                      onClick={() => { setSelectedId(emp.id); setActiveTab('detail'); }}
-                      className="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-lg text-xs font-bold transition flex items-center gap-1"
-                    >
-                      Ver Detalhes <ChevronRight className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {!loading && activeTab === 'detail' && selectedEmployee && (
-          <div className="space-y-6">
-            <div className="flex justify-between items-center">
-              <button 
-                onClick={() => setActiveTab('list')}
-                className="text-xs font-bold text-slate-500 hover:text-slate-800 flex items-center gap-1"
-              >
-                ← Voltar para a lista
-              </button>
-              <button 
-                onClick={() => window.print()} 
-                className="px-4 py-2 bg-slate-800 text-white hover:bg-slate-900 rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-sm"
-              >
-                <Printer className="w-4 h-4" /> Imprimir / PDF
-              </button>
-            </div>
-
-            <div className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-8">
-              <div className="border-b border-slate-200 pb-6 flex justify-between items-start flex-wrap gap-4">
-                <div>
-                  <span className="text-xs font-bold text-emerald-600 uppercase tracking-widest">Ficha Individual de PDI</span>
-                  <h2 className="text-3xl font-extrabold text-slate-900 mt-1">{selectedEmployee.name}</h2>
-                  <p className="text-sm text-slate-500 font-medium">{selectedEmployee.role} • {selectedEmployee.department}</p>
-                </div>
-                <div className="text-right">
-                  <span className="text-xs text-slate-400 block">Gestor Responsável</span>
-                  <span className="text-sm font-bold text-slate-700">{selectedEmployee.manager}</span>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="p-4 bg-emerald-50/50 border border-emerald-100 rounded-xl">
-                  <h4 className="text-xs font-bold uppercase text-emerald-800 flex items-center gap-1.5 mb-2">
-                    <Award className="w-4 h-4" /> Pontos Fortes
-                  </h4>
-                  <p className="text-xs text-slate-600 leading-relaxed">{selectedEmployee.strengths}</p>
-                </div>
-
-                <div className="p-4 bg-amber-50/50 border border-amber-100 rounded-xl">
-                  <h4 className="text-xs font-bold uppercase text-amber-800 flex items-center gap-1.5 mb-2">
-                    <Target className="w-4 h-4" /> Pontos a Desenvolver
-                  </h4>
-                  <p className="text-xs text-slate-600 leading-relaxed">{selectedEmployee.growthAreas}</p>
-                </div>
-
-                <div className="p-4 bg-blue-50/50 border border-blue-100 rounded-xl">
-                  <h4 className="text-xs font-bold uppercase text-blue-800 flex items-center gap-1.5 mb-2">
-                    <TrendingUp className="w-4 h-4" /> Objetivo de Carreira
-                  </h4>
-                  <p className="text-xs text-slate-600 leading-relaxed">{selectedEmployee.goal}</p>
-                </div>
-              </div>
-
-              <div>
-                <h3 className="font-bold text-slate-800 text-lg mb-4 flex items-center gap-2">
-                  <BookOpen className="w-5 h-5 text-emerald-600" /> Plano de Ação Estruturado (70/20/10)
-                </h3>
-                <div className="space-y-3">
-                  {selectedEmployee.actions.length === 0 ? (
-                    <p className="text-xs text-slate-400">Nenhuma ação cadastrada para este colaborador ainda.</p>
-                  ) : (
-                    selectedEmployee.actions.map(action => (
-                      <div key={action.id} className="p-4 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between gap-4">
-                        <div className="space-y-1">
-                          <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-600 text-white">
-                            {action.type} {action.category}
-                          </span>
-                          <p className="text-sm font-semibold text-slate-800">{action.title}</p>
-                        </div>
-                        <select 
-                          value={action.status} 
-                          onChange={e => handleStatusChange(action.id, e.target.value)}
-                          className="text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-300 bg-white"
-                        >
-                          <option value="Não Iniciado">Não Iniciado</option>
-                          <option value="Em Andamento">Em Andamento</option>
-                          <option value="Concluído">Concluído</option>
-                        </select>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-      </main>
-    </div>
-  );
-}
+                        <div
