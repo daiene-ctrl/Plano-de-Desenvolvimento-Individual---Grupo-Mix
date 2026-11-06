@@ -107,53 +107,70 @@ export default function App() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4 font-sans">
+      <div className="min-h-screen bg-[#0d1527] flex items-center justify-center p-4 font-sans">
         <div className="bg-white max-w-md w-full rounded-2xl shadow-2xl overflow-hidden border border-slate-100">
-          <div className="bg-gradient-to-r from-emerald-800 to-teal-900 p-8 text-center text-white">
+          <div className="bg-[#055a43] p-8 text-center text-white">
             <div className="flex justify-center mb-3">
-              <img src="/logo.png" alt="Mix Soluções Ambientais" className="h-12 w-auto object-contain brightness-0 invert" />
+              <img 
+                src="https://raw.githubusercontent.com/shadcn.png" 
+                alt="Mix Soluções Ambientais" 
+                className="h-12 w-auto object-contain hidden" 
+              />
+              <div className="flex items-center justify-center space-x-1 text-white font-black text-2xl tracking-wider">
+                <span>M<span className="text-emerald-300">i</span>x</span>
+                <span className="text-[10px] font-normal leading-tight text-emerald-100 text-left uppercase ml-1">
+                  SOLUÇÕES<br/>AMBIENTAIS
+                </span>
+              </div>
             </div>
-            <h2 className="text-xl font-extrabold tracking-tight">MIX SOLUÇÕES AMBIENTAIS</h2>
-            <p className="text-xs text-emerald-200 mt-1">Portal de Gestão de PDI</p>
+            <h2 className="text-xl font-extrabold tracking-tight mt-2">MIX SOLUÇÕES AMBIENTAIS</h2>
+            <p className="text-xs text-emerald-100/80 mt-1 font-medium">Portal de Gestão de PDI • Pilar Desenvolvimento</p>
           </div>
 
           <form onSubmit={handleLogin} className="p-8 space-y-5 text-xs">
             {loginError && (
-              <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl font-semibold">
+              <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl font-semibold text-center">
                 {loginError}
               </div>
             )}
 
             <div>
-              <label className="block font-bold text-slate-700 mb-1">E-mail Corporativo</label>
+              <label className="block font-bold text-slate-700 mb-1.5">E-mail Corporativo</label>
               <input 
                 type="email" 
                 required 
-                placeholder="daiene@mixsolucoesambientais.com.br"
+                placeholder="seu.nome@mixsolucoesambientais.com.br"
                 value={loginEmail}
                 onChange={e => setLoginEmail(e.target.value)}
-                className="w-full p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                className="w-full p-3 border border-slate-200 rounded-xl text-slate-700 placeholder-slate-400 focus:ring-2 focus:ring-emerald-500 focus:outline-none transition"
               />
             </div>
 
             <div>
-              <label className="block font-bold text-slate-700 mb-1">Senha de Acesso</label>
+              <label className="block font-bold text-slate-700 mb-1.5">Senha de Acesso</label>
               <input 
                 type="password" 
                 required 
                 placeholder="••••••••"
                 value={loginPassword}
                 onChange={e => setLoginPassword(e.target.value)}
-                className="w-full p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                className="w-full p-3 border border-slate-200 rounded-xl text-slate-700 placeholder-slate-400 focus:ring-2 focus:ring-emerald-500 focus:outline-none transition"
               />
             </div>
 
             <button 
               type="submit"
-              className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-sm shadow-md transition flex items-center justify-center gap-2"
+              className="w-full py-3.5 bg-[#0b9669] hover:bg-[#087a55] text-white rounded-xl font-bold text-sm shadow-md transition flex items-center justify-center gap-2"
             >
               <Lock className="w-4 h-4" /> Entrar no Sistema
             </button>
+
+            <div className="pt-4 border-t border-slate-100 text-[11px] text-slate-500 space-y-1">
+              <p className="font-bold text-slate-700 mb-1.5">Credenciais de Teste:</p>
+              <p>• <strong className="text-slate-700">RH (Visão Total):</strong> daiene@mixsolucoesambientais.com.br / mix#rh2026</p>
+              <p>• <strong className="text-slate-700">Gestor Operacional:</strong> roberto@mixsolucoesambientais.com.br / gestor123</p>
+              <p>• <strong className="text-slate-700">Gestor Logística:</strong> marcos@mixsolucoesambientais.com.br / gestor123</p>
+            </div>
           </form>
         </div>
       </div>
@@ -164,12 +181,9 @@ export default function App() {
     <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans">
       <header className="bg-gradient-to-r from-emerald-800 to-teal-900 text-white shadow-md p-4">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <div className="flex items-center space-x-3">
-            <img src="/logo.png" alt="Mix Soluções Ambientais" className="h-10 w-auto object-contain brightness-0 invert" />
-            <div>
-              <h1 className="text-xl font-bold">MIX SOLUÇÕES AMBIENTAIS</h1>
-              <p className="text-xs text-emerald-200">Sistema de PDI • {employees.length} Colaboradores Importados</p>
-            </div>
+          <div>
+            <h1 className="text-xl font-bold">MIX SOLUÇÕES AMBIENTAIS</h1>
+            <p className="text-xs text-emerald-200">Sistema de PDI • {employees.length} Colaboradores Importados</p>
           </div>
           <div className="flex items-center gap-3">
             <span className="text-xs font-semibold">{currentUser.name}</span>
