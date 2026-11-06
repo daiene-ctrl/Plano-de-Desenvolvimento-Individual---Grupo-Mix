@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 import { 
   Users, Target, CheckCircle2, Clock, Search, Filter, 
   ChevronRight, Award, BarChart3, Printer, BookOpen, 
-  TrendingUp, UserPlus, X, Lock, LogOut, Shield, Loader2, Save, Plus, Trash2
+  TrendingUp, UserPlus, X, Lock, LogOut, Shield, Loader2, Save, Plus
 } from 'lucide-react';
 
 const supabaseUrl = 'https://hbyjblwzuvntinpugetr.supabase.co';
@@ -99,6 +99,14 @@ const initialEmployees = [
   const [activeTab, setActiveTab] = useState('dashboard');
   const [searchTerm, setSearchTerm] = useState('');
   const [departmentFilter, setDepartmentFilter] = useState('Todos');
+  const [showAddModal, setShowAddModal] = useState(false);
+
+  const [newEmployee, setNewEmployee] = useState({
+    name: '',
+    role: '',
+    department: 'Operação',
+    manager: 'Daiene Santos'
+  });
 
   const [editFormData, setEditFormData] = useState({ strengths: '', growthAreas: '', goal: '' });
   const [newAction, setNewAction] = useState({ title: '', type: '70% Prática', deadline: '', evidence: '' });
@@ -187,6 +195,28 @@ const initialEmployees = [
     }));
   };
 
+  const handleAddEmployee = (e) => {
+    e.preventDefault();
+    const newEmpObj = {
+      id: Date.now(),
+      name: newEmployee.name,
+      role: newEmployee.role,
+      department: newEmployee.department,
+      manager: newEmployee.manager,
+      status: 'Não Iniciado',
+      progress: 0,
+      strengths: 'A mapear em reunião de PDI.',
+      growthAreas: 'A definir com a gestão.',
+      goal: 'Desenvolvimento contínuo.',
+      actions: []
+    };
+
+    setEmployees(prev => [newEmpObj, ...prev]);
+    setShowAddModal(false);
+    setNewEmployee({ name: '', role: '', department: 'Operação', manager: 'Daiene Santos' });
+    alert("Colaborador cadastrado com sucesso!");
+  };
+
   const accessibleEmployees = employees.filter(emp => {
     if (!currentUser) return false;
     if (currentUser.profile === 'RH') return true;
@@ -211,6 +241,9 @@ const initialEmployees = [
       <div className="min-h-screen bg-[#0d1527] flex items-center justify-center p-4 font-sans">
         <div className="bg-white max-w-md w-full rounded-2xl shadow-2xl overflow-hidden border border-slate-100">
           <div className="bg-[#055a43] p-8 text-center text-white space-y-2">
+            <div className="flex justify-center mb-2">
+              <img src="/logo.png" alt="Mix Soluções Ambientais" className="h-14 w-auto object-contain bg-white/10 p-2 rounded-xl" />
+            </div>
             <h2 className="text-xl font-extrabold tracking-tight mt-1">MIX SOLUÇÕES AMBIENTAIS</h2>
             <p className="text-xs text-emerald-100/80 font-medium">Portal de Gestão de PDI • Pilar Desenvolvimento</p>
           </div>
@@ -234,29 +267,88 @@ const initialEmployees = [
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans">
       <header className="bg-gradient-to-r from-emerald-800 to-teal-900 text-white shadow-md">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-          <h1 className="font-extrabold text-lg">MIX SOLUÇÕES AMBIENTAIS</h1>
+        <div className="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-4">
+          <div className="flex items-center gap-3">
+            <img src="/logo.png" alt="Mix Soluções Ambientais" className="h-10 w-auto object-contain bg-white/10 p-1.5 rounded-lg" />
+            <span className="font-extrabold text-sm tracking-wide">MIX SOLUÇÕES AMBIENTAIS</span>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <div className="bg-emerald-950/60 px-3 py-1.5 rounded-xl border border-emerald-700/50 flex items-center gap-2">
+              <Shield className="w-4 h-4 text-emerald-300" />
+              <div className="text-xs">
+                <span className="font-bold text-white block">{currentUser.name}</span>
+                <span className="text-[10px] text-emerald-300 font-semibold uppercase">{currentUser.role}</span>
+              </div>
+            </div>
+
+            <button onClick={handleLogout} className="p-2 bg-emerald-950/40 hover:bg-red-600 text-emerald-200 hover:text-white rounded-xl transition text-xs font-semibold flex items-center gap-1">
+              <LogOut className="w-4 h-4" /> Sair
+            </button>
+          </div>
+
           <nav className="flex items-center gap-2">
-            <button onClick={() => setActiveTab('dashboard')} className={`px-3 py-1.5 rounded-lg text-xs font-semibold ${activeTab === 'dashboard' ? 'bg-white text-emerald-900' : 'text-white'}`}>Visão Geral</button>
-            <button onClick={() => setActiveTab('list')} className={`px-3 py-1.5 rounded-lg text-xs font-semibold ${activeTab === 'list' || activeTab === 'detail' ? 'bg-white text-emerald-900' : 'text-white'}`}>Colaboradores ({accessibleEmployees.length})</button>
-            <button onClick={handleLogout} className="p-2 bg-red-600 rounded-xl text-xs font-bold">Sair</button>
+            <div className="flex bg-emerald-950/40 p-1 rounded-xl border border-emerald-700/50">
+              <button onClick={() => setActiveTab('dashboard')} className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${activeTab === 'dashboard' ? 'bg-white text-emerald-900 shadow' : 'text-emerald-100 hover:text-white'}`}>
+                <BarChart3 className="w-4 h-4" /> Visão Geral
+              </button>
+              <button onClick={() => setActiveTab('list')} className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${activeTab === 'list' || activeTab === 'detail' ? 'bg-white text-emerald-900 shadow' : 'text-emerald-100 hover:text-white'}`}>
+                <Users className="w-4 h-4" /> Colaboradores ({accessibleEmployees.length})
+              </button>
+            </div>
+
+            {currentUser.profile === 'RH' && (
+              <button onClick={() => setShowAddModal(true)} className="px-3 py-2 bg-emerald-500 hover:bg-emerald-400 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-md">
+                <UserPlus className="w-4 h-4" /> Novo Colaborador
+              </button>
+            )}
           </nav>
         </div>
       </header>
 
-      <main className="flex-1 max-w-7xl w-full mx-auto p-6">
+      <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6">
         {activeTab === 'dashboard' && (
           <div className="space-y-6">
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex justify-between items-center">
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-wrap justify-between items-center gap-4">
               <div>
                 <span className="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full">META ESTRATÉGICA 2026</span>
-                <h2 className="text-2xl font-bold mt-2">Implementação de 100% dos PDIs</h2>
+                <h2 className="text-2xl font-bold text-slate-900 mt-2">Implementação de 100% dos PDIs</h2>
+                <p className="text-sm text-slate-500">Acompanhamento global de todos os colaboradores da empresa.</p>
               </div>
-              <div className="text-3xl font-extrabold text-emerald-600">{implementationRate}%</div>
+              <div className="text-right bg-slate-50 p-4 rounded-xl border">
+                <span className="text-xs text-slate-500 font-medium">Taxa de Adesão</span>
+                <div className="text-3xl font-extrabold text-emerald-600">{implementationRate}%</div>
+              </div>
             </div>
 
-            <div className="bg-white rounded-xl border p-4">
-              <h3 className="font-bold text-slate-800 mb-4">Lista de Colaboradores ({accessibleEmployees.length})</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="bg-white p-5 rounded-xl border shadow-sm flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-semibold text-slate-500 uppercase">Total Colaboradores</p>
+                  <p className="text-2xl font-bold text-slate-800 mt-1">{totalPDIs}</p>
+                </div>
+                <div className="p-3 bg-blue-50 text-blue-600 rounded-xl"><Users className="w-6 h-6" /></div>
+              </div>
+
+              <div className="bg-white p-5 rounded-xl border shadow-sm flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-semibold text-slate-500 uppercase">Em Andamento</p>
+                  <p className="text-2xl font-bold text-amber-600 mt-1">{inProgressPDIs}</p>
+                </div>
+                <div className="p-3 bg-amber-50 text-amber-600 rounded-xl"><Clock className="w-6 h-6" /></div>
+              </div>
+
+              <div className="bg-white p-5 rounded-xl border shadow-sm flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-semibold text-slate-500 uppercase">Concluídos</p>
+                  <p className="text-2xl font-bold text-emerald-600 mt-1">{completedPDIs}</p>
+                </div>
+                <div className="p-3 bg-emerald-50 text-emerald-600 rounded-xl"><CheckCircle2 className="w-6 h-6" /></div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-xl border shadow-sm p-4">
+              <h3 className="font-bold text-slate-800 mb-4">Lista de Colaboradores Recentes</h3>
               <table className="w-full text-left text-sm">
                 <thead>
                   <tr className="border-b text-xs uppercase text-slate-500">
@@ -269,7 +361,7 @@ const initialEmployees = [
                   </tr>
                 </thead>
                 <tbody>
-                  {accessibleEmployees.map(emp => (
+                  {accessibleEmployees.slice(0, 10).map(emp => (
                     <tr key={emp.id} className="border-b hover:bg-slate-50">
                       <td className="p-3 font-semibold">{emp.name}</td>
                       <td className="p-3">{emp.role}</td>
@@ -287,22 +379,84 @@ const initialEmployees = [
           </div>
         )}
 
+        {activeTab === 'list' && (
+          <div className="space-y-6">
+            <div className="flex flex-wrap gap-4 justify-between items-center">
+              <div className="relative flex-1 min-w-[240px]">
+                <Search className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
+                <input 
+                  type="text" 
+                  placeholder="Buscar colaborador ou cargo..." 
+                  value={searchTerm} 
+                  onChange={e => setSearchTerm(e.target.value)}
+                  className="w-full pl-9 pr-4 py-2 bg-white border rounded-xl text-sm"
+                />
+              </div>
+
+              <div className="flex items-center gap-3">
+                <Filter className="w-4 h-4 text-slate-500" />
+                <select value={departmentFilter} onChange={e => setDepartmentFilter(e.target.value)} className="bg-white border rounded-xl px-3 py-2 text-sm">
+                  <option value="Todos">Todos os Setores</option>
+                  <option value="Operação">Operação</option>
+                  <option value="Logistica">Logística</option>
+                  <option value="TR 2">TR 2</option>
+                  <option value="Administrativo">Administrativo</option>
+                  <option value="Comercial">Comercial</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredEmployees.map(emp => (
+                <div key={emp.id} className="bg-white p-5 rounded-2xl border shadow-sm flex flex-col justify-between">
+                  <div>
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h3 className="font-bold text-slate-900">{emp.name}</h3>
+                        <p className="text-xs text-slate-500">{emp.role}</p>
+                      </div>
+                      <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">{emp.department}</span>
+                    </div>
+                    <div className="mt-4 space-y-1">
+                      <div className="flex justify-between text-xs text-slate-600">
+                        <span>Progresso</span>
+                        <span className="font-bold">{emp.progress}%</span>
+                      </div>
+                      <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                        <div className="bg-emerald-500 h-full" style={{ width: `${emp.progress}%` }}></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-6 pt-4 border-t flex justify-between items-center text-xs">
+                    <span className="text-slate-400">Gestor: {emp.manager}</span>
+                    <button onClick={() => { setSelectedId(emp.id); setActiveTab('detail'); }} className="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold rounded-lg flex items-center gap-1">
+                      Ver PDI <ChevronRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {activeTab === 'detail' && selectedEmployee && (
           <div className="space-y-6">
-            <button onClick={() => setActiveTab('dashboard')} className="text-xs font-bold text-slate-500">← Voltar para a lista</button>
+            <button onClick={() => setActiveTab('list')} className="text-xs font-bold text-slate-500 hover:text-slate-800">← Voltar para a lista</button>
 
-            <div className="bg-white p-6 rounded-2xl border shadow-sm space-y-6">
-              <div className="flex justify-between border-b pb-4">
+            <div className="bg-white p-6 sm:p-8 rounded-2xl border shadow-sm space-y-6">
+              <div className="flex justify-between border-b pb-4 flex-wrap gap-4">
                 <div>
-                  <h2 className="text-2xl font-extrabold">{selectedEmployee.name}</h2>
-                  <p className="text-xs text-slate-500">{selectedEmployee.role} • {selectedEmployee.department}</p>
+                  <span className="text-xs font-bold text-emerald-600 uppercase tracking-widest">Ficha Individual de PDI</span>
+                  <h2 className="text-2xl font-extrabold text-slate-900 mt-1">{selectedEmployee.name}</h2>
+                  <p className="text-xs text-slate-500 font-medium">{selectedEmployee.role} • {selectedEmployee.department}</p>
                 </div>
                 <div className="text-right">
-                  <span className="text-xs text-slate-400 block">Gestor</span>
-                  <span className="text-sm font-bold">{selectedEmployee.manager}</span>
+                  <span className="text-xs text-slate-400 block">Gestor Responsável</span>
+                  <span className="text-sm font-bold text-slate-700">{selectedEmployee.manager}</span>
                 </div>
               </div>
 
+              {/* FORMULÁRIO DE EDIÇÃO DOS CAMPOS PRINCIPAIS */}
               <form onSubmit={handleSavePDI} className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="p-4 bg-emerald-50/50 border border-emerald-100 rounded-xl space-y-2">
                   <label className="text-xs font-bold uppercase text-emerald-800 block">Pontos Fortes</label>
@@ -344,6 +498,7 @@ const initialEmployees = [
                 </div>
               </form>
 
+              {/* SEÇÃO DE AÇÕES 70/20/10 */}
               <div className="pt-6 border-t space-y-4">
                 <h3 className="font-bold text-slate-900 text-base">Plano de Ação (Metodologia 70/20/10)</h3>
 
@@ -351,7 +506,7 @@ const initialEmployees = [
                   <input 
                     type="text" 
                     required 
-                    placeholder="Descrição da Ação (Ex: Curso de Excel)" 
+                    placeholder="Descrição da Ação (Ex: Treinamento NR 06)" 
                     value={newAction.title}
                     onChange={e => setNewAction({...newAction, title: e.target.value})}
                     className="p-2 border rounded-lg text-xs sm:col-span-2"
@@ -395,6 +550,84 @@ const initialEmployees = [
           </div>
         )}
       </main>
+
+      {/* MODAL DE NOVO COLABORADOR */}
+      {showAddModal && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4">
+            <div className="flex justify-between items-center border-b pb-3">
+              <h3 className="font-bold text-slate-800 text-base flex items-center gap-2">
+                <UserPlus className="w-5 h-5 text-emerald-600" /> Cadastrar Novo Colaborador
+              </h3>
+              <button onClick={() => setShowAddModal(false)} className="text-slate-400 hover:text-slate-600">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleAddEmployee} className="space-y-4 text-xs">
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Nome Completo</label>
+                <input 
+                  type="text" 
+                  required 
+                  placeholder="Ex: João da Silva"
+                  value={newEmployee.name}
+                  onChange={e => setNewEmployee({...newEmployee, name: e.target.value})}
+                  className="w-full p-2.5 border rounded-xl"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Cargo</label>
+                  <input 
+                    type="text" 
+                    required 
+                    placeholder="Ex: Operador"
+                    value={newEmployee.role}
+                    onChange={e => setNewEmployee({...newEmployee, role: e.target.value})}
+                    className="w-full p-2.5 border rounded-xl"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Setor</label>
+                  <select 
+                    value={newEmployee.department}
+                    onChange={e => setNewEmployee({...newEmployee, department: e.target.value})}
+                    className="w-full p-2.5 border rounded-xl bg-white"
+                  >
+                    <option value="Operação">Operação</option>
+                    <option value="Logistica">Logística</option>
+                    <option value="TR 2">TR 2</option>
+                    <option value="Administrativo">Administrativo</option>
+                    <option value="Comercial">Comercial</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Gestor Responsável</label>
+                <select 
+                  value={newEmployee.manager}
+                  onChange={e => setNewEmployee({...newEmployee, manager: e.target.value})}
+                  className="w-full p-2.5 border rounded-xl bg-white"
+                >
+                  <option value="Daiene Santos">Daiene Santos</option>
+                  <option value="Roberto Santos">Roberto Santos</option>
+                  <option value="Marcos Oliveira">Marcos Oliveira</option>
+                  <option value="Augusto Arruda">Augusto Arruda</option>
+                  <option value="Jose Izailton">Jose Izailton</option>
+                </select>
+              </div>
+
+              <div className="flex justify-end gap-2 pt-3 border-t">
+                <button type="button" onClick={() => setShowAddModal(false)} className="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl font-bold">Cancelar</button>
+                <button type="submit" className="px-4 py-2 bg-emerald-600 text-white rounded-xl font-bold">Salvar Colaborador</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
