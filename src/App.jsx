@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 import { 
   Users, Target, CheckCircle2, Clock, Search, Filter, 
   ChevronRight, Award, BarChart3, Printer, BookOpen, 
-  TrendingUp, UserPlus, X, Lock, LogOut, Shield, Loader2, Save, Plus, Calendar, CheckSquare, FileCheck, MessageSquare
+  TrendingUp, UserPlus, X, Lock, LogOut, Shield, Loader2, Save, Plus, Calendar, CheckSquare, FileCheck, MessageSquare, AlertTriangle, ArrowUpRight
 } from 'lucide-react';
 
 const supabaseUrl = 'https://hbyjblwzuvntinpugetr.supabase.co';
@@ -19,73 +19,73 @@ const validUsers = [
 ];
 
 const initialEmployees = [
-  { id: 1, name: "HELIO MARCOS DE JESUS SANTOS", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 2, name: "WALLACE SILVA RODRIGUES", role: "MECANICO DE AUTOMOVEIS E CAMINHOES EM GERAL", department: "Logistica", manager: "Jose Izailton", managerEmail: "log@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 3, name: "GLAUBER LUAN LIMA VIANA", role: "MOTORISTA DE CAMINHÃO", department: "Logistica", manager: "Jose Izailton", managerEmail: "log@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 4, name: "JOSE IZAILTON BATISTA ALMEIDA JUNIOR", role: "ANALISTA DE LOGISTICA DE TRANSPORTE", department: "Logistica", manager: "George Costa", managerEmail: "george@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 5, name: "GIVALDO DE SOUSA CONCEICAO", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 6, name: "AUGUSTO CESAR DE ARRUDA", role: "ENCARREGADO OPERACIONAL LOGISTICO", department: "Operação", manager: "Lucas Borges", managerEmail: "lucas@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 7, name: "BENIVALDO EVANGELISTA DOS SANTOS", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 8, name: "FERNANDO JOAQUIM DO NASCIMENTO", role: "OPERADOR DE EMPILHADEIRA", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 9, name: "LAERCIO SOUZA OLIVEIRA SANTOS", role: "MOTORISTA DE CAMINHÃO", department: "Logistica", manager: "Jose Izailton", managerEmail: "log@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 10, name: "RAFAEL ANJOS MENEZES", role: "MOTORISTA DE CAMINHÃO", department: "Logistica", manager: "Jose Izailton", managerEmail: "log@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 11, name: "ANDRE LACERDA DOS SANTOS", role: "OPERADOR DE TRATAMENTO TERMICO DE RESIDUOS", department: "TR 2", manager: "Ederson Borges", managerEmail: "", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 12, name: "ROQUE NASCIMENTO DOS SANTOS", role: "OPERADOR DE TRATAMENTO TERMICO DE RESIDUOS", department: "TR 2", manager: "Ederson Borges", managerEmail: "", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 13, name: "UILIAM SANTANA DO NASCIMENTO", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 14, name: "EDERSON BORGES SANTOS DE CARVALHO", role: "Supervisor TR2", department: "TR 2", manager: "Lucas Borges", managerEmail: "lucas@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 15, name: "JADSON SANTOS DE SOUZA", role: "MOTORISTA CARRETEIRO", department: "Logistica", manager: "Jose Izailton", managerEmail: "log@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 16, name: "JORGINEI ALMEIDA", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 17, name: "EVANILDO GARCIA DOS SANTOS", role: "SOLDADOR", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 18, name: "FABRICIO DOS SANTOS SAMPAIO", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 19, name: "AVANILDE SANTOS SILVA", role: "AUX. DE LIMPEZA", department: "SGI", manager: "Luiza Costa", managerEmail: "luiza@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 20, name: "ADRIANO ANITOGE DE ARRUDA", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 21, name: "ALEX SANTANA DO NASCIMENTO", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 22, name: "EDUARDO SILVA DA SILVA", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 23, name: "GIVANILDO CONCEICAO MOREIRA", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 24, name: "ACACIO NOVAIS SANTOS", role: "MOTORISTA DE CAMINHÃO", department: "Logistica", manager: "Jose Izailton", managerEmail: "log@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 25, name: "JEFERSON JESUS DE ALCANTARA", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 26, name: "DAVI REIS DE ANDRADE", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 27, name: "ALINE SANTOS SILVA", role: "ASSISTENTE ADMINISTRATIVO", department: "Logistica", manager: "Jose Izailton", managerEmail: "log@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 28, name: "LILIANE ALVES DA SILVA", role: "ASSISTENTE LOGISTICA", department: "Logistica", manager: "Jose Izailton", managerEmail: "log@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 29, name: "PABLO RIAN REIS NOVAES", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 30, name: "JOSIVAN MOTA CARDOSO", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 31, name: "JUTAIR DOS SANTOS BASTOS", role: "VIGIA", department: "SGI", manager: "Luiza Costa", managerEmail: "luiza@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 32, name: "RICARDO ALVES TEIXEIRA", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 33, name: "DANIEL FRANCA BASTOS", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 34, name: "DAIENE LIMA DA SILVA SANTOS MOREIRA", role: "ASSISTENTE DE RECURSOS HUMANOS", department: "Recursos Humanos", manager: "Luiza Costa", managerEmail: "luiza@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 35, name: "VAGNER RODRIGUES DE OLIVEIRA", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 36, name: "CLEIDIANE SOUZA DOS SANTOS", role: "AUXILIAR FINANCEIRO", department: "Administrativo", manager: "Lucas Borges", managerEmail: "lucas@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 37, name: "JOEVALDO MORAIS DE SANTANA", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 38, name: "VITOR FONSECA DOS SANTOS", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 39, name: "MAYRA MATOS COSTA DE OLIVEIRA", role: "AUXILIAR ADMINISTRATIVO AMBIENTAL", department: "SGI", manager: "Luiza Costa", managerEmail: "luiza@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 40, name: "CASSIANO DE JESUS DOS SANTOS", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 41, name: "ALAENE RODRIGUES COIMBRA ALVES", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 42, name: "BRUNO DOS SANTOS BISPO", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 43, name: "CARLOS ROBERTO DOS SANTOS", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 44, name: "CELIO DOS SANTOS BRITO JUNIOR", role: "MOTORISTA DE CAMINHÃO", department: "Logistica", manager: "Jose Izailton", managerEmail: "log@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 45, name: "DIONE BARRETO CARMO", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 46, name: "EDIVALDO FRANCISCO DE JESUS", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 47, name: "EDSON DOS SANTOS OLIVEIRA", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 48, name: "GUSTAVO BARRENSE DE SOUZA", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 49, name: "IGOR DOS SANTOS NOVAIS", role: "MOTORISTA CARRETEIRO", department: "Logistica", manager: "Jose Izailton", managerEmail: "log@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 50, name: "JAIME BORGES PINHEIRO", role: "MOTORISTA CARRETEIRO", department: "Logistica", manager: "Jose Izailton", managerEmail: "log@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 51, name: "JEOZADAQUE OLIVEIRA SANTOS", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 52, name: "LUIZ FELIPE DE SOUZA MIRANDA", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 53, name: "PAULA XAUANA DO CARMO OLIVEIRA", role: "AUXILIAR ADMINISTRATIVO", department: "Administrativo", manager: "Luiza Costa", managerEmail: "luiza@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 54, name: "RAFAEL BARROSO SANTANA", role: "ASSISTENTE ADMINISTRATIVO", department: "Administrativo", manager: "George Costa", managerEmail: "george@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 55, name: "RAFAEL DOS SANTOS DE LIMA", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 56, name: "SANDRA ALVES PINTO DE SOUZA", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 57, name: "JEFERSON RICARDO NOVAIS DE BARROS", role: "MOTORISTA DE CAMINHÃO", department: "Logistica", manager: "Jose Izailton", managerEmail: "log@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 58, name: "OZIAS OLIVEIRA SANTOS", role: "MOTORISTA CARRETEIRO", department: "Logistica", manager: "Jose Izailton", managerEmail: "log@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 59, name: "SIDNEI LOPES DE OLIVEIRA", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 60, name: "MARCOS ANTONIO ESPIRITO SANTO DE JESUS", role: "MOTORISTA DE CAMINHÃO", department: "Logistica", manager: "Jose Izailton", managerEmail: "log@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 61, name: "DANILO SANTANA DOS SANTOS", role: "MOTORISTA DE CAMINHÃO", department: "Logistica", manager: "Jose Izailton", managerEmail: "log@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 62, name: "UILIANS SILVA SANTOS", role: "MOTORISTA DE CAMINHÃO", department: "Logistica", manager: "Jose Izailton", managerEmail: "log@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 63, name: "RENIO GOMES SOUZA", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 64, name: "REGIVALDO FRANQLIN DOS ANJOS MIRANDA", role: "MOTORISTA DE CAMINHÃO", department: "Logistica", manager: "Jose Izailton", managerEmail: "log@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 65, name: "BRENDO WILLIAN DA SILVA CARMO", role: "ASSISTENTE ADMINISTRATIVO", department: "Administrativo", manager: "Luiza Costa", managerEmail: "luiza@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 66, name: "WALLAS DE SOUZA VIEIRA", role: "MOTORISTA DE CAMINHÃO", department: "Logistica", manager: "Jose Izailton", managerEmail: "log@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 67, name: "EDUARDO MARTIN DE MACEDO", role: "EXECUTIVO COMERCIAL", department: "Comercial", manager: "George Costa", managerEmail: "george@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null }
+  { id: 1, name: "HELIO MARCOS DE JESUS SANTOS", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 2, name: "WALLACE SILVA RODRIGUES", role: "MECANICO DE AUTOMOVEIS E CAMINHOES EM GERAL", department: "Logistica", manager: "Jose Izailton", managerEmail: "log@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 3, name: "GLAUBER LUAN LIMA VIANA", role: "MOTORISTA DE CAMINHÃO", department: "Logistica", manager: "Jose Izailton", managerEmail: "log@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 4, name: "JOSE IZAILTON BATISTA ALMEIDA JUNIOR", role: "ANALISTA DE LOGISTICA DE TRANSPORTE", department: "Logistica", manager: "George Costa", managerEmail: "george@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 5, name: "GIVALDO DE SOUSA CONCEICAO", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 6, name: "AUGUSTO CESAR DE ARRUDA", role: "ENCARREGADO OPERACIONAL LOGISTICO", department: "Operação", manager: "Lucas Borges", managerEmail: "lucas@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 7, name: "BENIVALDO EVANGELISTA DOS SANTOS", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 8, name: "FERNANDO JOAQUIM DO NASCIMENTO", role: "OPERADOR DE EMPILHADEIRA", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 9, name: "LAERCIO SOUZA OLIVEIRA SANTOS", role: "MOTORISTA DE CAMINHÃO", department: "Logistica", manager: "Jose Izailton", managerEmail: "log@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 10, name: "RAFAEL ANJOS MENEZES", role: "MOTORISTA DE CAMINHÃO", department: "Logistica", manager: "Jose Izailton", managerEmail: "log@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 11, name: "ANDRE LACERDA DOS SANTOS", role: "OPERADOR DE TRATAMENTO TERMICO DE RESIDUOS", department: "TR 2", manager: "Ederson Borges", managerEmail: "", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 12, name: "ROQUE NASCIMENTO DOS SANTOS", role: "OPERADOR DE TRATAMENTO TERMICO DE RESIDUOS", department: "TR 2", manager: "Ederson Borges", managerEmail: "", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 13, name: "UILIAM SANTANA DO NASCIMENTO", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 14, name: "EDERSON BORGES SANTOS DE CARVALHO", role: "Supervisor TR2", department: "TR 2", manager: "Lucas Borges", managerEmail: "lucas@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 15, name: "JADSON SANTOS DE SOUZA", role: "MOTORISTA CARRETEIRO", department: "Logistica", manager: "Jose Izailton", managerEmail: "log@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 16, name: "JORGINEI ALMEIDA", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 17, name: "EVANILDO GARCIA DOS SANTOS", role: "SOLDADOR", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 18, name: "FABRICIO DOS SANTOS SAMPAIO", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 19, name: "AVANILDE SANTOS SILVA", role: "AUX. DE LIMPEZA", department: "SGI", manager: "Luiza Costa", managerEmail: "luiza@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 20, name: "ADRIANO ANITOGE DE ARRUDA", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 21, name: "ALEX SANTANA DO NASCIMENTO", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 22, name: "EDUARDO SILVA DA SILVA", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 23, name: "GIVANILDO CONCEICAO MOREIRA", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 24, name: "ACACIO NOVAIS SANTOS", role: "MOTORISTA DE CAMINHÃO", department: "Logistica", manager: "Jose Izailton", managerEmail: "log@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 25, name: "JEFERSON JESUS DE ALCANTARA", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 26, name: "DAVI REIS DE ANDRADE", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 27, name: "ALINE SANTOS SILVA", role: "ASSISTENTE ADMINISTRATIVO", department: "Logistica", manager: "Jose Izailton", managerEmail: "log@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 28, name: "LILIANE ALVES DA SILVA", role: "ASSISTENTE LOGISTICA", department: "Logistica", manager: "Jose Izailton", managerEmail: "log@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 29, name: "PABLO RIAN REIS NOVAES", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 30, name: "JOSIVAN MOTA CARDOSO", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 31, name: "JUTAIR DOS SANTOS BASTOS", role: "VIGIA", department: "SGI", manager: "Luiza Costa", managerEmail: "luiza@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 32, name: "RICARDO ALVES TEIXEIRA", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 33, name: "DANIEL FRANCA BASTOS", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 34, name: "DAIENE LIMA DA SILVA SANTOS MOREIRA", role: "ASSISTENTE DE RECURSOS HUMANOS", department: "Recursos Humanos", manager: "Luiza Costa", managerEmail: "luiza@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 90, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 35, name: "VAGNER RODRIGUES DE OLIVEIRA", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 36, name: "CLEIDIANE SOUZA DOS SANTOS", role: "AUXILIAR FINANCEIRO", department: "Administrativo", manager: "Lucas Borges", managerEmail: "lucas@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 37, name: "JOEVALDO MORAIS DE SANTANA", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 38, name: "VITOR FONSECA DOS SANTOS", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 39, name: "MAYRA MATOS COSTA DE OLIVEIRA", role: "AUXILIAR ADMINISTRATIVO AMBIENTAL", department: "SGI", manager: "Luiza Costa", managerEmail: "luiza@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 40, name: "CASSIANO DE JESUS DOS SANTOS", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 41, name: "ALAENE RODRIGUES COIMBRA ALVES", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 42, name: "BRUNO DOS SANTOS BISPO", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 43, name: "CARLOS ROBERTO DOS SANTOS", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 44, name: "CELIO DOS SANTOS BRITO JUNIOR", role: "MOTORISTA DE CAMINHÃO", department: "Logistica", manager: "Jose Izailton", managerEmail: "log@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 45, name: "DIONE BARRETO CARMO", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 46, name: "EDIVALDO FRANCISCO DE JESUS", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 47, name: "EDSON DOS SANTOS OLIVEIRA", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 48, name: "GUSTAVO BARRENSE DE SOUZA", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 49, name: "IGOR DOS SANTOS NOVAIS", role: "MOTORISTA CARRETEIRO", department: "Logistica", manager: "Jose Izailton", managerEmail: "log@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 50, name: "JAIME BORGES PINHEIRO", role: "MOTORISTA CARRETEIRO", department: "Logistica", manager: "Jose Izailton", managerEmail: "log@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 51, name: "JEOZADAQUE OLIVEIRA SANTOS", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 52, name: "LUIZ FELIPE DE SOUZA MIRANDA", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 53, name: "PAULA XAUANA DO CARMO OLIVEIRA", role: "AUXILIAR ADMINISTRATIVO", department: "Administrativo", manager: "Luiza Costa", managerEmail: "luiza@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 54, name: "RAFAEL BARROSO SANTANA", role: "ASSISTENTE ADMINISTRATIVO", department: "Administrativo", manager: "George Costa", managerEmail: "george@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 55, name: "RAFAEL DOS SANTOS DE LIMA", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 56, name: "SANDRA ALVES PINTO DE SOUZA", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 57, name: "JEFERSON RICARDO NOVAIS DE BARROS", role: "MOTORISTA DE CAMINHÃO", department: "Logistica", manager: "Jose Izailton", managerEmail: "log@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 58, name: "OZIAS OLIVEIRA SANTOS", role: "MOTORISTA CARRETEIRO", department: "Logistica", manager: "Jose Izailton", managerEmail: "log@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 59, name: "SIDNEI LOPES DE OLIVEIRA", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 60, name: "MARCOS ANTONIO ESPIRITO SANTO DE JESUS", role: "MOTORISTA DE CAMINHÃO", department: "Logistica", manager: "Jose Izailton", managerEmail: "log@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 61, name: "DANILO SANTANA DOS SANTOS", role: "MOTORISTA DE CAMINHÃO", department: "Logistica", manager: "Jose Izailton", managerEmail: "log@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 62, name: "UILIANS SILVA SANTOS", role: "MOTORISTA DE CAMINHÃO", department: "Logistica", manager: "Jose Izailton", managerEmail: "log@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 63, name: "RENIO GOMES SOUZA", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 64, name: "REGIVALDO FRANQLIN DOS ANJOS MIRANDA", role: "MOTORISTA DE CAMINHÃO", department: "Logistica", manager: "Jose Izailton", managerEmail: "log@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 65, name: "BRENDO WILLIAN DA SILVA CARMO", role: "ASSISTENTE ADMINISTRATIVO", department: "Administrativo", manager: "Luiza Costa", managerEmail: "luiza@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 66, name: "WALLAS DE SOUZA VIEIRA", role: "MOTORISTA DE CAMINHÃO", department: "Logistica", manager: "Jose Izailton", managerEmail: "log@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 67, name: "EDUARDO MARTIN DE MACEDO", role: "EXECUTIVO COMERCIAL", department: "Comercial", manager: "George Costa", managerEmail: "george@mixsolucoesambientais.com.br", status: "Não Iniciado", progress: 0, cycle: "2026", score: 70, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null }
 ];export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
@@ -102,10 +102,10 @@ const initialEmployees = [
   const [showAddModal, setShowAddModal] = useState(false);
 
   const [newEmployee, setNewEmployee] = useState({
-    name: '', role: '', department: 'Operação', manager: 'Daiene Santos', cycle: '2026'
+    name: '', role: '', department: 'Operação', manager: 'Daiene Santos', cycle: '2026', score: 70
   });
 
-  const [editFormData, setEditFormData] = useState({ strengths: '', growthAreas: '', goal: '', cycle: '2026' });
+  const [editFormData, setEditFormData] = useState({ strengths: '', growthAreas: '', goal: '', cycle: '2026', score: 70 });
   
   const [newAction, setNewAction] = useState({ 
     title: '', 
@@ -125,10 +125,39 @@ const initialEmployees = [
         strengths: selectedEmployee.strengths || '',
         growthAreas: selectedEmployee.growthAreas || '',
         goal: selectedEmployee.goal || '',
-        cycle: selectedEmployee.cycle || '2026'
+        cycle: selectedEmployee.cycle || '2026',
+        score: selectedEmployee.score !== undefined ? selectedEmployee.score : 70
       });
     }
   }, [selectedId, selectedEmployee]);
+
+  const getRecommendation = (score) => {
+    if (score < 60) {
+      return {
+        status: "Abaixo do Mínimo / Risco",
+        action: "Plano de Recuperação Rigoroso / Desligamento Requerido",
+        color: "bg-red-50 text-red-700 border-red-200",
+        badgeColor: "bg-red-600 text-white",
+        icon: AlertTriangle
+      };
+    } else if (score >= 60 && score <= 84) {
+      return {
+        status: "Atende / Em Desenvolvimento",
+        action: "Manter na Função atual com Foco em Capacitação Contínua (PDI Regular)",
+        color: "bg-amber-50 text-amber-800 border-amber-200",
+        badgeColor: "bg-amber-600 text-white",
+        icon: Clock
+      };
+    } else {
+      return {
+        status: "Supera o Esperado / Alto Desempenho",
+        action: "Elegível para Promoção / Plano de Sucessão",
+        color: "bg-emerald-50 text-emerald-800 border-emerald-200",
+        badgeColor: "bg-emerald-600 text-white",
+        icon: ArrowUpRight
+      };
+    }
+  };
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -159,12 +188,13 @@ const initialEmployees = [
           strengths: editFormData.strengths,
           growthAreas: editFormData.growthAreas,
           goal: editFormData.goal,
-          cycle: editFormData.cycle
+          cycle: editFormData.cycle,
+          score: Number(editFormData.score)
         };
       }
       return emp;
     }));
-    alert("Competências e ciclo do PDI salvos com sucesso!");
+    alert("Competências, pontuação e recomendação salvas com sucesso!");
   };
 
   const handleAddAction = (e) => {
@@ -249,6 +279,7 @@ const initialEmployees = [
       department: newEmployee.department,
       manager: newEmployee.manager,
       cycle: newEmployee.cycle,
+      score: Number(newEmployee.score),
       status: 'Não Iniciado',
       progress: 0,
       strengths: 'A mapear em reunião de PDI.',
@@ -260,7 +291,7 @@ const initialEmployees = [
 
     setEmployees(prev => [newEmpObj, ...prev]);
     setShowAddModal(false);
-    setNewEmployee({ name: '', role: '', department: 'Operação', manager: 'Daiene Santos', cycle: '2026' });
+    setNewEmployee({ name: '', role: '', department: 'Operação', manager: 'Daiene Santos', cycle: '2026', score: 70 });
     alert("Colaborador cadastrado com sucesso!");
   };
 
@@ -311,6 +342,9 @@ const initialEmployees = [
     );
   }
 
+  const currentRec = getRecommendation(editFormData.score);
+  const RecIcon = currentRec.icon;
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans">
       <header className="bg-gradient-to-r from-emerald-800 to-teal-900 text-white shadow-md">
@@ -358,8 +392,8 @@ const initialEmployees = [
           <div className="space-y-6">
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-wrap justify-between items-center gap-4">
               <div>
-                <span className="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full">SGI & QUALIDADE 2026</span>
-                <h2 className="text-2xl font-bold text-slate-900 mt-2">Implementação de 100% dos PDIs e Conformidade</h2>
+                <span className="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full">SGI & MATRIZ DE DECISÃO 2026</span>
+                <h2 className="text-2xl font-bold text-slate-900 mt-2">Implementação de 100% dos PDIs e Avaliação</h2>
                 <p className="text-sm text-slate-500">Gestão integrada alinhada às NRs e diretrizes de desenvolvimento humano.</p>
               </div>
               <div className="text-right bg-slate-50 p-4 rounded-xl border">
@@ -402,26 +436,27 @@ const initialEmployees = [
                     <th className="p-3">Colaborador</th>
                     <th className="p-3">Cargo</th>
                     <th className="p-3">Setor</th>
-                    <th className="p-3">Gestor</th>
-                    <th className="p-3">Ciclo</th>
-                    <th className="p-3">Progresso</th>
+                    <th className="p-3">Pontuação</th>
+                    <th className="p-3">Status Matriz</th>
                     <th className="p-3 text-right">Ação</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {accessibleEmployees.slice(0, 10).map(emp => (
-                    <tr key={emp.id} className="border-b hover:bg-slate-50">
-                      <td className="p-3 font-semibold">{emp.name}</td>
-                      <td className="p-3">{emp.role}</td>
-                      <td className="p-3">{emp.department}</td>
-                      <td className="p-3">{emp.manager}</td>
-                      <td className="p-3"><span className="px-2 py-0.5 bg-slate-100 rounded text-xs font-bold">{emp.cycle || '2026'}</span></td>
-                      <td className="p-3 font-bold text-emerald-600">{emp.progress}%</td>
-                      <td className="p-3 text-right">
-                        <button onClick={() => { setSelectedId(emp.id); setActiveTab('detail'); }} className="px-3 py-1 bg-emerald-100 text-emerald-800 rounded-lg text-xs font-bold">Abrir PDI</button>
-                      </td>
-                    </tr>
-                  ))}
+                  {accessibleEmployees.slice(0, 10).map(emp => {
+                    const rec = getRecommendation(emp.score !== undefined ? emp.score : 70);
+                    return (
+                      <tr key={emp.id} className="border-b hover:bg-slate-50">
+                        <td className="p-3 font-semibold">{emp.name}</td>
+                        <td className="p-3">{emp.role}</td>
+                        <td className="p-3">{emp.department}</td>
+                        <td className="p-3 font-bold">{emp.score !== undefined ? emp.score : 70}/100</td>
+                        <td className="p-3"><span className={`px-2 py-0.5 rounded text-[10px] font-bold ${rec.badgeColor}`}>{rec.status}</span></td>
+                        <td className="p-3 text-right">
+                          <button onClick={() => { setSelectedId(emp.id); setActiveTab('detail'); }} className="px-3 py-1 bg-emerald-100 text-emerald-800 rounded-lg text-xs font-bold">Abrir PDI</button>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -456,34 +491,37 @@ const initialEmployees = [
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredEmployees.map(emp => (
-                <div key={emp.id} className="bg-white p-5 rounded-2xl border shadow-sm flex flex-col justify-between">
-                  <div>
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h3 className="font-bold text-slate-900">{emp.name}</h3>
-                        <p className="text-xs text-slate-500">{emp.role}</p>
+              {filteredEmployees.map(emp => {
+                const rec = getRecommendation(emp.score !== undefined ? emp.score : 70);
+                return (
+                  <div key={emp.id} className="bg-white p-5 rounded-2xl border shadow-sm flex flex-col justify-between">
+                    <div>
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h3 className="font-bold text-slate-900">{emp.name}</h3>
+                          <p className="text-xs text-slate-500">{emp.role}</p>
+                        </div>
+                        <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">{emp.department}</span>
                       </div>
-                      <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">{emp.department}</span>
+                      <div className="mt-4 space-y-2">
+                        <div className="flex justify-between text-xs text-slate-600">
+                          <span>Pontuação: <b>{emp.score !== undefined ? emp.score : 70}/100</b></span>
+                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${rec.badgeColor}`}>{rec.status}</span>
+                        </div>
+                        <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                          <div className="bg-emerald-500 h-full" style={{ width: `${emp.progress}%` }}></div>
+                        </div>
+                      </div>
                     </div>
-                    <div className="mt-4 space-y-1">
-                      <div className="flex justify-between text-xs text-slate-600">
-                        <span>Ciclo: <b>{emp.cycle || '2026'}</b> | Progresso</span>
-                        <span className="font-bold">{emp.progress}%</span>
-                      </div>
-                      <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                        <div className="bg-emerald-500 h-full" style={{ width: `${emp.progress}%` }}></div>
-                      </div>
+                    <div className="mt-6 pt-4 border-t flex justify-between items-center text-xs">
+                      <span className="text-slate-400">Gestor: {emp.manager}</span>
+                      <button onClick={() => { setSelectedId(emp.id); setActiveTab('detail'); }} className="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold rounded-lg flex items-center gap-1">
+                        Ver PDI <ChevronRight className="w-3.5 h-3.5" />
+                      </button>
                     </div>
                   </div>
-                  <div className="mt-6 pt-4 border-t flex justify-between items-center text-xs">
-                    <span className="text-slate-400">Gestor: {emp.manager}</span>
-                    <button onClick={() => { setSelectedId(emp.id); setActiveTab('detail'); }} className="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold rounded-lg flex items-center gap-1">
-                      Ver PDI <ChevronRight className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}
@@ -500,7 +538,7 @@ const initialEmployees = [
             <div className="bg-white p-6 sm:p-8 rounded-2xl border shadow-sm space-y-6">
               <div className="flex justify-between border-b pb-4 flex-wrap gap-4 items-center">
                 <div>
-                  <span className="text-xs font-bold text-emerald-600 uppercase tracking-widest">Ficha de PDI & Conformidade SGI</span>
+                  <span className="text-xs font-bold text-emerald-600 uppercase tracking-widest">Ficha de PDI & Matriz de Decisão SGI</span>
                   <h2 className="text-2xl font-extrabold text-slate-900 mt-1">{selectedEmployee.name}</h2>
                   <p className="text-xs text-slate-500 font-medium">{selectedEmployee.role} • {selectedEmployee.department}</p>
                 </div>
@@ -514,13 +552,43 @@ const initialEmployees = [
                     >
                       <option value="2026">Ciclo 2026</option>
                       <option value="2027">Ciclo 2027</option>
-                      <option value="2028">Ciclo 2028</option>
                     </select>
                   </div>
                   <div className="text-right border-l pl-3">
                     <span className="text-xs text-slate-400 block">Gestor Responsável</span>
                     <span className="text-sm font-bold text-slate-700">{selectedEmployee.manager}</span>
                   </div>
+                </div>
+              </div>
+
+              {/* PAINEL DE PONTUAÇÃO E MATRIZ DE DECISÃO AUTOMATIZADA */}
+              <div className={`p-5 rounded-2xl border ${currentRec.color} space-y-3`}>
+                <div className="flex justify-between items-center flex-wrap gap-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-3 bg-white rounded-xl shadow-sm">
+                      <RecIcon className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <span className="text-xs uppercase font-bold tracking-wider opacity-80">Matriz de Desempenho & Decisão (DHO)</span>
+                      <h3 className="text-lg font-extrabold">{currentRec.status}</h3>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-3 bg-white px-4 py-2 rounded-xl border shadow-sm">
+                    <label className="text-xs font-bold text-slate-700">Pontuação (0-100):</label>
+                    <input 
+                      type="number" 
+                      min="0" 
+                      max="100" 
+                      value={editFormData.score}
+                      onChange={e => setEditFormData({...editFormData, score: e.target.value})}
+                      className="w-16 p-1 text-center font-bold text-sm border rounded-lg"
+                    />
+                  </div>
+                </div>
+
+                <div className="pt-2 border-t border-current/10 text-xs">
+                  <b>Diretriz de RH / Recomendação Oficial:</b> {currentRec.action}
                 </div>
               </div>
 
@@ -561,7 +629,7 @@ const initialEmployees = [
 
                 <div className="md:col-span-3 flex justify-end">
                   <button type="submit" className="px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow">
-                    <Save className="w-4 h-4" /> Salvar Competências & Ciclo do PDI
+                    <Save className="w-4 h-4" /> Salvar Pontuação & Competências do PDI
                   </button>
                 </div>
               </form>
