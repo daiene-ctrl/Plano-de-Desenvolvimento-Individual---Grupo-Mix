@@ -3,12 +3,12 @@ import { createClient } from '@supabase/supabase-js';
 import { 
   Users, Target, CheckCircle2, Clock, Search, Filter, 
   ChevronRight, Award, BarChart3, Printer, BookOpen, 
-  TrendingUp, Lock, LogOut, Shield, Loader2, RefreshCw
+  TrendingUp, UserPlus, X, Lock, LogOut, Shield, Loader2
 } from 'lucide-react';
 
-const supabaseUrl = 'https://hbyjblwzuvntinpugetr.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhieWpibHd6dXZudGlucHVnZXRyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDEyMzQ1NjcsImV4cCI6MjA1NjgxMDU2N30.placeholder';
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabase = (supabaseUrl && supabaseAnonKey) ? createClient(supabaseUrl, supabaseAnonKey) : null;
 
 const validUsers = [
   { name: "Daiene Santos", email: "daiene@mixsolucoesambientais.com.br", pass: "mix#rh2026", profile: "RH", role: "Gestora de RH / DHO" },
@@ -17,40 +17,6 @@ const validUsers = [
   { name: "Augusto Arruda", email: "augusto@mixsolucoesambientais.com.br", pass: "gestor123", profile: "GESTOR", role: "Supervisor Operacional" },
   { name: "Jose Izailton", email: "log@mixsolucoesambientais.com.br", pass: "gestor123", profile: "GESTOR", role: "Gestor Logística" }
 ];
-
-// Logo Oficial Mix Soluções Ambientais em Alta Definição e Transparente
-function LogoMixOficial({ lightHeader = false }) {
-  return (
-    <div className="flex items-center justify-center select-none py-1">
-      <div className="flex items-center gap-1">
-        <svg className="h-12 w-auto" viewBox="0 0 300 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-          {/* M */}
-          <path d="M 10 110 V 35 L 38 85 L 66 35 V 110" stroke="#0078C8" strokeWidth="14" strokeLinecap="round" strokeLinejoin="round" />
-          
-          {/* i Haste */}
-          <line x1="96" y1="55" x2="96" y2="110" stroke="#0078C8" strokeWidth="14" strokeLinecap="round" />
-          
-          {/* Folha Verde Superior (i) */}
-          <path d="M 96 45 C 75 30 78 8 98 5 C 108 20 102 38 96 45 Z" fill="#4CAE30" />
-          
-          {/* Folha Azul Interior (i) */}
-          <path d="M 98 43 C 100 25 118 12 135 20 C 128 38 112 45 98 43 Z" fill="#0078C8" />
-          
-          {/* Ramo Verde a envolver o i */}
-          <path d="M 85 52 C 82 72 125 75 185 28" stroke="#4CAE30" strokeWidth="4" strokeLinecap="round" fill="none" />
-
-          {/* x */}
-          <path d="M 125 60 L 175 110" stroke="#0078C8" strokeWidth="13" strokeLinecap="round" />
-          <path d="M 175 60 L 125 110" stroke="#0078C8" strokeWidth="13" strokeLinecap="round" />
-
-          {/* Texto SOLUÇÕES AMBIENTAIS */}
-          <text x="185" y="75" fill="#4CAE30" fontFamily="Arial, Helvetica, sans-serif" fontSize="22" fontWeight="900" letterSpacing="0.5">SOLUÇÕES</text>
-          <text x="185" y="103" fill="#4CAE30" fontFamily="Arial, Helvetica, sans-serif" fontSize="22" fontWeight="900" letterSpacing="0.5">AMBIENTAIS</text>
-        </svg>
-      </div>
-    </div>
-  );
-}
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -66,59 +32,63 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [searchTerm, setSearchTerm] = useState('');
   const [departmentFilter, setDepartmentFilter] = useState('Todos');
+  const [showAddModal, setShowAddModal] = useState(false);
+
+  const [newEmployee, setNewEmployee] = useState({
+    nome: '',
+    cargo: '',
+    departamento: 'Operação',
+    gestor_nome: 'Daiene Santos',
+    pontos_fortes: '',
+    pontos_desenvolver: '',
+    objetivo_carreira: ''
+  });
 
   const fetchEmployees = async () => {
+    if (!supabase) return;
     setLoading(true);
     try {
-      // Busca direta REST na API do Supabase garantida
-      const response = await fetch(`${supabaseUrl}/rest/v1/colaboradores?select=*`, {
-        headers: {
-          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhieWpibHd6dXZudGlucHVnZXRyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDEyMzQ1NjcsImV4cCI6MjAxNTAwMDAwMH0.placeholder',
-          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhieWpibHd6dXZudGlucHVnZXRyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDEyMzQ1NjcsImV4cCI6MjAxNTAwMDAwMH0.placeholder`
-        }
-      });
-      
-      const colaboradoresData = await response.json();
+      const { data: colaboradoresData, error: empError } = await supabase
+        .from('colaboradores')
+        .select('*');
 
-      if (Array.isArray(colaboradoresData) && colaboradoresData.length > 0) {
-        const formatted = colaboradoresData.map(emp => ({
-          id: emp.id,
-          name: emp.nome || emp.name || 'Sem Nome',
-          role: emp.cargo || emp.role || 'Sem Cargo',
-          department: emp.departamento || emp.department || 'Geral',
-          manager: emp.gestor_nome || emp.manager || 'Não Definido',
-          managerEmail: emp.gestor_email || emp.manager_email || '',
-          status: emp.status || 'Não Iniciado',
-          progress: emp.progress || 0,
-          strengths: emp.pontos_fortes || 'A mapear em reunião de PDI.',
-          growthAreas: emp.pontos_desenvolver || 'A definir com a gestão.',
-          goal: emp.objetivo_carreira || 'Desenvolvimento contínuo.',
-          actions: []
-        }));
-        setEmployees(formatted);
-        if (!selectedId) setSelectedId(formatted[0].id);
-      } else {
-        // Tenta a chamada SDK caso a chamada REST retorne vazia
-        const { data: dataSdk } = await supabase.from('colaboradores').select('*');
-        if (dataSdk && dataSdk.length > 0) {
-          const formatted = dataSdk.map(emp => ({
-            id: emp.id,
-            name: emp.nome || emp.name,
-            role: emp.cargo || emp.role,
-            department: emp.departamento || emp.department,
-            manager: emp.gestor_nome || emp.manager,
-            status: emp.status || 'Não Iniciado',
-            progress: emp.progress || 0,
-            strengths: emp.pontos_fortes || 'A mapear em reunião de PDI.',
-            growthAreas: emp.pontos_desenvolver || 'A definir com a gestão.',
-            goal: emp.objetivo_carreira || 'Desenvolvimento contínuo.',
-            actions: []
-          }));
-          setEmployees(formatted);
-        }
+      if (empError) throw empError;
+
+      const { data: acoesData, error: acoesError } = await supabase
+        .from('acoes_pdi')
+        .select('*');
+
+      if (acoesError && acoesError.code !== 'PGRST116') console.log("Sem ações ainda");
+
+      const formatted = (colaboradoresData || []).map(emp => ({
+        id: emp.id,
+        name: emp.nome || emp.name || 'Sem Nome',
+        role: emp.cargo || emp.role || 'Sem Cargo',
+        department: emp.departamento || emp.department || 'Geral',
+        manager: emp.gestor_nome || emp.manager || 'Não Definido',
+        managerEmail: emp.gestor_email || emp.manager_email || '',
+        status: emp.status || 'Não Iniciado',
+        progress: emp.progress || 0,
+        strengths: emp.pontos_fortes || emp.strengths || 'A mapear em reunião de PDI.',
+        growthAreas: emp.pontos_desenvolver || emp.growth_areas || 'A definir com a gestão.',
+        goal: emp.objetivo_carreira || emp.goal || 'Desenvolvimento contínuo.',
+        actions: (acoesData || []).filter(a => a.colaborador_id === emp.id).map(a => ({
+          id: a.id,
+          type: a.type,
+          category: a.category,
+          title: a.title,
+          evidence: a.evidence,
+          deadline: a.deadline,
+          status: a.status
+        }))
+      }));
+
+      setEmployees(formatted);
+      if (formatted.length > 0 && !selectedId) {
+        setSelectedId(formatted[0].id);
       }
     } catch (err) {
-      console.error("Erro na sincronização:", err);
+      console.error("Erro ao buscar dados do Supabase:", err);
     } finally {
       setLoading(false);
     }
@@ -171,62 +141,114 @@ export default function App() {
     return matchesSearch && matchesDept;
   });
 
+  const handleStatusChange = async (actionId, newStatus) => {
+    if (!selectedEmployee) return;
+
+    const updatedActions = selectedEmployee.actions.map(act => act.id === actionId ? { ...act, status: newStatus } : act);
+    const completed = updatedActions.filter(a => a.status === 'Concluído').length;
+    const progress = Math.round((completed / (updatedActions.length || 1)) * 100);
+    let status = 'Em Andamento';
+    if (progress === 100) status = 'Concluído';
+    if (progress === 0 && updatedActions.every(a => a.status === 'Não Iniciado')) status = 'Não Iniciado';
+
+    setEmployees(prev => prev.map(emp => emp.id === selectedEmployee.id ? { ...emp, actions: updatedActions, progress, status } : emp));
+
+    if (supabase) {
+      await supabase.from('acoes_pdi').update({ status: newStatus }).eq('id', actionId);
+      await supabase.from('colaboradores').update({ progress, status }).eq('id', selectedEmployee.id);
+    }
+  };
+
+  const handleAddEmployee = async (e) => {
+    e.preventDefault();
+    if (!supabase) return;
+
+    setLoading(true);
+    try {
+      const { data: newEmpData, error: empErr } = await supabase
+        .from('colaboradores')
+        .insert([{
+          nome: newEmployee.nome,
+          cargo: newEmployee.cargo,
+          departamento: newEmployee.departamento,
+          gestor_nome: newEmployee.gestor_nome,
+          gestor_email: `${newEmployee.gestor_nome.toLowerCase().split(' ')[0]}@mixsolucoesambientais.com.br`,
+          status: 'Não Iniciado',
+          progress: 0,
+          pontos_fortes: newEmployee.pontos_fortes || 'A mapear em reunião de PDI.',
+          pontos_desenvolver: newEmployee.pontos_desenvolver || 'A definir com a gestão.',
+          objetivo_carreira: newEmployee.objetivo_carreira || 'Desenvolvimento contínuo.'
+        }])
+        .select();
+
+      if (empErr) throw empErr;
+
+      const createdEmp = newEmpData[0];
+
+      const initialActions = [
+        { colaborador_id: createdEmp.id, type: "70%", category: "Prática", title: "Alinhamento prático das rotinas operacionais", evidence: "Validação pelo gestor", deadline: "2026-12-31", status: "Não Iniciado" },
+        { colaborador_id: createdEmp.id, type: "20%", category: "Mentoria", title: "Feedback e mentoria mensal", evidence: "Ata de reunião de feedback", deadline: "2026-12-31", status: "Não Iniciado" },
+        { colaborador_id: createdEmp.id, type: "10%", category: "Curso", title: "Treinamento obrigatório de integração e segurança", evidence: "Certificado de conclusão", deadline: "2026-11-30", status: "Não Iniciado" }
+      ];
+
+      await supabase.from('acoes_pdi').insert(initialActions);
+
+      await fetchEmployees();
+      setShowAddModal(false);
+      setNewEmployee({ nome: '', cargo: '', departamento: 'Operação', gestor_nome: 'Daiene Santos', pontos_fortes: '', pontos_desenvolver: '', objetivo_carreira: '' });
+    } catch (err) {
+      console.error("Erro ao cadastrar colaborador:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-[#0d1527] flex items-center justify-center p-4 font-sans">
+      <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4 font-sans">
         <div className="bg-white max-w-md w-full rounded-2xl shadow-2xl overflow-hidden border border-slate-100">
-          <div className="bg-[#055a43] p-8 text-center text-white space-y-2">
-            <div className="bg-white/95 py-2 px-4 rounded-xl shadow-inner inline-block w-full">
-              <LogoMixOficial />
-            </div>
-            <h2 className="text-xl font-extrabold tracking-tight mt-2">MIX SOLUÇÕES AMBIENTAIS</h2>
-            <p className="text-xs text-emerald-100/80 font-medium">Portal de Gestão de PDI • Pilar Desenvolvimento</p>
+          <div className="bg-gradient-to-r from-emerald-800 to-teal-900 p-8 text-center text-white">
+            <h2 className="text-xl font-extrabold tracking-tight">MIX SOLUÇÕES AMBIENTAIS</h2>
+            <p className="text-xs text-emerald-200 mt-1">Portal de Gestão de PDI</p>
           </div>
 
           <form onSubmit={handleLogin} className="p-8 space-y-5 text-xs">
             {loginError && (
-              <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl font-semibold text-center">
+              <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl font-semibold">
                 {loginError}
               </div>
             )}
 
             <div>
-              <label className="block font-bold text-slate-700 mb-1.5">E-mail Corporativo</label>
+              <label className="block font-bold text-slate-700 mb-1">E-mail Corporativo</label>
               <input 
                 type="email" 
                 required 
                 placeholder="seu.nome@mixsolucoesambientais.com.br"
                 value={loginEmail}
                 onChange={e => setLoginEmail(e.target.value)}
-                className="w-full p-3 border border-slate-200 rounded-xl text-slate-700 placeholder-slate-400 focus:ring-2 focus:ring-emerald-500 focus:outline-none transition"
+                className="w-full p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="block font-bold text-slate-700 mb-1.5">Senha de Acesso</label>
+              <label className="block font-bold text-slate-700 mb-1">Senha de Acesso</label>
               <input 
                 type="password" 
                 required 
                 placeholder="••••••••"
                 value={loginPassword}
                 onChange={e => setLoginPassword(e.target.value)}
-                className="w-full p-3 border border-slate-200 rounded-xl text-slate-700 placeholder-slate-400 focus:ring-2 focus:ring-emerald-500 focus:outline-none transition"
+                className="w-full p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none"
               />
             </div>
 
             <button 
               type="submit"
-              className="w-full py-3.5 bg-[#0b9669] hover:bg-[#087a55] text-white rounded-xl font-bold text-sm shadow-md transition flex items-center justify-center gap-2"
+              className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-sm shadow-md transition flex items-center justify-center gap-2"
             >
               <Lock className="w-4 h-4" /> Entrar no Sistema
             </button>
-
-            <div className="pt-4 border-t border-slate-100 text-[11px] text-slate-500 space-y-1">
-              <p className="font-bold text-slate-700 mb-1.5">Credenciais de Teste:</p>
-              <p>• <strong className="text-slate-700">RH (Visão Total):</strong> daiene@mixsolucoesambientais.com.br / mix#rh2026</p>
-              <p>• <strong className="text-slate-700">Gestor Operacional:</strong> roberto@mixsolucoesambientais.com.br / gestor123</p>
-              <p>• <strong className="text-slate-700">Gestor Logística:</strong> marcos@mixsolucoesambientais.com.br / gestor123</p>
-            </div>
           </form>
         </div>
       </div>
@@ -237,8 +259,9 @@ export default function App() {
     <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans">
       <header className="bg-gradient-to-r from-emerald-800 to-teal-900 text-white shadow-md">
         <div className="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-4">
-          <div className="bg-white px-3 py-1 rounded-lg">
-            <LogoMixOficial />
+          <div>
+            <h1 className="text-xl font-bold tracking-tight">MIX SOLUÇÕES AMBIENTAIS</h1>
+            <p className="text-xs text-emerald-200">Sistema de Gestão de PDI • 67 Colaboradores</p>
           </div>
 
           <div className="flex items-center gap-4">
@@ -289,11 +312,19 @@ export default function App() {
                 <span className="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full">META ESTRATÉGICA 2026</span>
                 <h2 className="text-2xl font-bold text-slate-900 mt-2">Implementação de 100% dos PDIs</h2>
                 <p className="text-sm text-slate-500">
-                  {currentUser.profile === 'RH' ? `Acompanhamento global dos ${employees.length} colaboradores da empresa.` : `Gerenciando a equipe de ${currentUser.name}.`}
+                  {currentUser.profile === 'RH' ? 'Acompanhamento global dos 67 colaboradores.' : `Gerenciando a equipe de ${currentUser.name}.`}
                 </p>
               </div>
               
               <div className="flex items-center gap-3">
+                {currentUser.profile === 'RH' && (
+                  <button 
+                    onClick={() => setShowAddModal(true)}
+                    className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow transition flex items-center gap-2"
+                  >
+                    <UserPlus className="w-4 h-4" /> Cadastrar Colaborador
+                  </button>
+                )}
                 <div className="text-right bg-slate-50 p-4 rounded-xl border border-slate-100">
                   <span className="text-xs text-slate-500 font-medium">Taxa de Adesão</span>
                   <div className="text-3xl font-extrabold text-emerald-600">{implementationRate}%</div>
@@ -338,13 +369,13 @@ export default function App() {
             <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
               <div className="p-4 border-b border-slate-100 flex justify-between items-center">
                 <h3 className="font-bold text-slate-800 flex items-center gap-2">
-                  <TrendingUp className="w-5 h-5 text-emerald-600" /> Lista dos Colaboradores ({accessibleEmployees.length})
+                  <TrendingUp className="w-5 h-5 text-emerald-600" /> Lista de Colaboradores
                 </h3>
                 <button onClick={() => setActiveTab('list')} className="text-xs text-emerald-600 hover:text-emerald-700 font-semibold flex items-center gap-1">
-                  Ver Todos <ChevronRight className="w-4 h-4" />
+                  Ver Todos ({accessibleEmployees.length}) <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
-              <div className="overflow-x-auto max-h-[500px]">
+              <div className="overflow-x-auto max-h-96">
                 <table className="w-full text-left text-sm text-slate-600">
                   <thead className="bg-slate-50 text-xs uppercase text-slate-500 font-semibold border-b sticky top-0">
                     <tr>
@@ -508,6 +539,37 @@ export default function App() {
                     <TrendingUp className="w-4 h-4" /> Objetivo de Carreira
                   </h4>
                   <p className="text-xs text-slate-600 leading-relaxed">{selectedEmployee.goal}</p>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-slate-800 text-lg mb-4 flex items-center gap-2">
+                  <BookOpen className="w-5 h-5 text-emerald-600" /> Plano de Ação Estruturado (70/20/10)
+                </h3>
+                <div className="space-y-3">
+                  {selectedEmployee.actions.length === 0 ? (
+                    <p className="text-xs text-slate-400">Nenhuma ação cadastrada para este colaborador ainda.</p>
+                  ) : (
+                    selectedEmployee.actions.map(action => (
+                      <div key={action.id} className="p-4 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between gap-4">
+                        <div className="space-y-1">
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-600 text-white">
+                            {action.type} {action.category}
+                          </span>
+                          <p className="text-sm font-semibold text-slate-800">{action.title}</p>
+                        </div>
+                        <select 
+                          value={action.status} 
+                          onChange={e => handleStatusChange(action.id, e.target.value)}
+                          className="text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-300 bg-white"
+                        >
+                          <option value="Não Iniciado">Não Iniciado</option>
+                          <option value="Em Andamento">Em Andamento</option>
+                          <option value="Concluído">Concluído</option>
+                        </select>
+                      </div>
+                    ))
+                  )}
                 </div>
               </div>
             </div>
