@@ -18,48 +18,35 @@ const validUsers = [
   { name: "Jose Izailton", email: "log@mixsolucoesambientais.com.br", pass: "gestor123", profile: "GESTOR", role: "Gestor Logística" }
 ];
 
-// Componente do Logotipo Oficial e Fiel da Mix Soluções Ambientais
-function LogoMixOficial({ lightMode = false }) {
+// Vetor idêntico à Logomarca Oficial da Mix Soluções Ambientais
+function LogoMixOficial() {
   return (
     <div className="flex items-center justify-center select-none py-1">
-      <div className="flex items-center gap-1.5">
-        {/* Letra M, i com folhas e x */}
-        <div className="flex items-end">
-          {/* M */}
-          <span className={`text-4xl font-extrabold tracking-tighter font-sans ${lightMode ? 'text-[#0078C8]' : 'text-white'}`} style={{ fontFamily: 'Arial, sans-serif' }}>
-            M
-          </span>
-          
-          {/* i com o ramo de folhas no topo */}
-          <div className="relative flex flex-col items-center mx-[1px]">
-            {/* Folhas sobre o ponto do i */}
-            <svg className="w-7 h-7 -mb-1 text-[#4CAE30]" viewBox="0 0 24 24" fill="none">
-              <path d="M12 3C8 3 5 7 5 11C5 13.5 6.5 15.5 8.5 16.5C7 13.5 9 10 12 9C15 9 17 11 17.5 14.5C19.5 13.5 21 11.5 21 9C21 5 17 3 12 3Z" fill="#4CAE30" />
-              <path d="M12 9C9 10 7 13.5 8.5 16.5C10 18.5 12.5 19 14.5 18C13.5 16.5 14 14.5 16 13C15 11 13.5 9.5 12 9Z" fill="#0078C8" />
-              <path d="M5 15C8 16 12 14.5 15 11" stroke="#4CAE30" strokeWidth="1.5" strokeLinecap="round" />
-            </svg>
-            {/* Corpo do i */}
-            <span className={`text-4xl font-extrabold font-sans ${lightMode ? 'text-[#0078C8]' : 'text-white'}`} style={{ fontFamily: 'Arial, sans-serif' }}>
-              i
-            </span>
-          </div>
+      <svg className="h-16 w-auto" viewBox="0 0 280 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {/* Letra M */}
+        <path d="M 15 110 L 15 40 L 40 85 L 65 40 L 65 110" stroke="#0078C8" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round" />
+        
+        {/* Letra i (Haste) */}
+        <line x1="92" y1="58" x2="92" y2="110" stroke="#0078C8" strokeWidth="12" strokeLinecap="round" />
 
-          {/* x */}
-          <span className={`text-4xl font-extrabold tracking-tighter font-sans ${lightMode ? 'text-[#0078C8]' : 'text-white'}`} style={{ fontFamily: 'Arial, sans-serif' }}>
-            x
-          </span>
-        </div>
+        {/* Folha Verde (Superior Esquerda) */}
+        <path d="M 85 45 C 70 30 75 10 92 10 C 100 25 95 40 85 45 Z" fill="#4CAE30" />
+        
+        {/* Folha Azul (Superior Direita) */}
+        <path d="M 94 43 C 95 25 110 15 125 22 C 120 38 105 45 94 43 Z" fill="#0078C8" />
+        
+        {/* Curva Ramo Verde sob o pingo do i */}
+        <path d="M 80 50 C 78 68 115 70 175 25" stroke="#4CAE30" strokeWidth="3.5" strokeLinecap="round" fill="none" />
+        <path d="M 82 52 C 85 62 105 64 135 50" stroke="#4CAE30" strokeWidth="2.5" fill="none" />
+
+        {/* Letra x */}
+        <path d="M 115 62 C 130 85 140 100 162 110" stroke="#0078C8" strokeWidth="11" strokeLinecap="round" />
+        <path d="M 162 62 C 145 85 130 98 115 110" stroke="#0078C8" strokeWidth="11" strokeLinecap="round" />
 
         {/* Texto SOLUÇÕES AMBIENTAIS */}
-        <div className="text-left font-sans leading-tight ml-1.5 flex flex-col justify-center">
-          <span className={`text-[11px] font-bold tracking-wider ${lightMode ? 'text-[#4CAE30]' : 'text-emerald-300'}`}>
-            SOLUÇÕES
-          </span>
-          <span className={`text-[11px] font-bold tracking-wider ${lightMode ? 'text-[#4CAE30]' : 'text-emerald-300'}`}>
-            AMBIENTAIS
-          </span>
-        </div>
-      </div>
+        <text x="172" y="76" fill="#4CAE30" fontFamily="Arial, sans-serif" fontSize="20" fontWeight="bold" letterSpacing="1">SOLUÇÕES</text>
+        <text x="172" y="102" fill="#4CAE30" fontFamily="Arial, sans-serif" fontSize="20" fontWeight="bold" letterSpacing="1">AMBIENTAIS</text>
+      </svg>
     </div>
   );
 }
@@ -89,7 +76,7 @@ export default function App() {
       setEmployees(data || []);
     } catch (err) {
       console.error("Erro Supabase:", err);
-      setFetchError("Não foi possível conectar ao banco de dados.");
+      setFetchError("Não foi possível carregar os colaboradores.");
     } finally {
       setLoading(false);
     }
@@ -137,11 +124,11 @@ export default function App() {
     return (
       <div className="min-h-screen bg-[#0d1527] flex items-center justify-center p-4 font-sans">
         <div className="bg-white max-w-md w-full rounded-2xl shadow-2xl overflow-hidden border border-slate-100">
-          <div className="bg-[#055a43] p-8 text-center text-white space-y-3">
-            <LogoMixOficial lightMode={false} />
+          <div className="bg-white p-6 text-center border-b border-slate-100 space-y-2">
+            <LogoMixOficial />
             <div className="pt-1">
-              <h2 className="text-lg font-extrabold tracking-tight text-white uppercase">MIX SOLUÇÕES AMBIENTAIS</h2>
-              <p className="text-xs text-emerald-100/80 font-medium">Portal de Gestão de PDI • Pilar Desenvolvimento</p>
+              <h2 className="text-sm font-extrabold tracking-tight text-slate-800 uppercase">MIX SOLUÇÕES AMBIENTAIS</h2>
+              <p className="text-[11px] text-slate-500 font-medium">Portal de Gestão de PDI • Pilar Desenvolvimento</p>
             </div>
           </div>
 
@@ -197,15 +184,15 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans">
-      <header className="bg-[#055a43] text-white shadow-md p-4">
+      <header className="bg-white border-b border-slate-200 text-slate-800 shadow-sm p-4">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <LogoMixOficial lightMode={false} />
+          <LogoMixOficial />
           <div className="flex items-center gap-4">
             <div className="text-right text-xs">
-              <span className="font-bold block">{currentUser?.name}</span>
-              <span className="text-[10px] text-emerald-200 uppercase">{currentUser?.role}</span>
+              <span className="font-bold block text-slate-800">{currentUser?.name}</span>
+              <span className="text-[10px] text-emerald-700 font-bold uppercase">{currentUser?.role}</span>
             </div>
-            <button onClick={handleLogout} className="text-xs bg-emerald-950 px-3 py-1.5 rounded-lg hover:bg-red-600 transition flex items-center gap-1 font-semibold">
+            <button onClick={handleLogout} className="text-xs bg-slate-100 hover:bg-red-600 hover:text-white text-slate-700 px-3 py-1.5 rounded-lg transition flex items-center gap-1 font-semibold border border-slate-200">
               <LogOut className="w-3.5 h-3.5" /> Sair
             </button>
           </div>
