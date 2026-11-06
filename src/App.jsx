@@ -3,12 +3,12 @@ import { createClient } from '@supabase/supabase-js';
 import { 
   Users, Target, CheckCircle2, Clock, Search, Filter, 
   ChevronRight, Award, BarChart3, Printer, BookOpen, 
-  TrendingUp, UserPlus, X, Lock, LogOut, Shield, Loader2, RefreshCw
+  TrendingUp, Lock, LogOut, Shield, Loader2, RefreshCw
 } from 'lucide-react';
 
 const supabaseUrl = 'https://hbyjblwzuvntinpugetr.supabase.co';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
-const supabase = (supabaseUrl && supabaseAnonKey) ? createClient(supabaseUrl, supabaseAnonKey) : null;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhieWpibHd6dXZudGlucHVnZXRyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDAwMDAwMDAsImV4cCI6MjAxNTAwMDAwMH0.placeholder';
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 const validUsers = [
   { name: "Daiene Santos", email: "daiene@mixsolucoesambientais.com.br", pass: "mix#rh2026", profile: "RH", role: "Gestora de RH / DHO" },
@@ -28,27 +28,13 @@ export default function App() {
 
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [fetchError, setFetchError] = useState('');
   const [selectedId, setSelectedId] = useState(null);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [searchTerm, setSearchTerm] = useState('');
   const [departmentFilter, setDepartmentFilter] = useState('Todos');
-  const [showAddModal, setShowAddModal] = useState(false);
-
-  const [newEmployee, setNewEmployee] = useState({
-    nome: '',
-    cargo: '',
-    departamento: 'Operação',
-    gestor_nome: 'Daiene Santos',
-    pontos_fortes: '',
-    pontos_desenvolver: '',
-    objetivo_carreira: ''
-  });
 
   const fetchEmployees = async () => {
-    if (!supabase) return;
     setLoading(true);
-    setFetchError('');
     try {
       const { data: colaboradoresData, error: empError } = await supabase
         .from('colaboradores')
@@ -88,8 +74,7 @@ export default function App() {
         setSelectedId(formatted[0].id);
       }
     } catch (err) {
-      console.error("Erro Supabase:", err);
-      setFetchError("Falha ao carregar colaboradores do Supabase.");
+      console.error("Erro ao buscar colaboradores do Supabase:", err);
     } finally {
       setLoading(false);
     }
@@ -164,6 +149,7 @@ export default function App() {
     return (
       <div className="min-h-screen bg-[#0d1527] flex items-center justify-center p-4 font-sans">
         <div className="bg-white max-w-md w-full rounded-2xl shadow-2xl overflow-hidden border border-slate-100">
+          {/* Cabeçalho Verde Escuro Exato */}
           <div className="bg-[#055a43] p-8 text-center text-white space-y-2">
             <div className="flex justify-center mb-1">
               <svg className="h-10 w-auto text-white" viewBox="0 0 200 60" fill="none">
@@ -181,6 +167,7 @@ export default function App() {
             <p className="text-xs text-emerald-100/80 font-medium">Portal de Gestão de PDI • Pilar Desenvolvimento</p>
           </div>
 
+          {/* Formulário de Login */}
           <form onSubmit={handleLogin} className="p-8 space-y-5 text-xs">
             {loginError && (
               <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl font-semibold text-center">
@@ -219,6 +206,7 @@ export default function App() {
               <Lock className="w-4 h-4" /> Entrar no Sistema
             </button>
 
+            {/* Credenciais de Teste no Rodapé da Caixa */}
             <div className="pt-4 border-t border-slate-100 text-[11px] text-slate-500 space-y-1">
               <p className="font-bold text-slate-700 mb-1.5">Credenciais de Teste:</p>
               <p>• <strong className="text-slate-700">RH (Visão Total):</strong> daiene@mixsolucoesambientais.com.br / mix#rh2026</p>
@@ -278,15 +266,6 @@ export default function App() {
         {loading && (
           <div className="flex justify-center items-center py-12">
             <Loader2 className="w-8 h-8 text-emerald-600 animate-spin" />
-          </div>
-        )}
-
-        {fetchError && (
-          <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl text-xs font-semibold text-center mb-6 flex justify-between items-center">
-            <span>{fetchError}</span>
-            <button onClick={fetchEmployees} className="px-3 py-1 bg-red-600 text-white rounded-lg flex items-center gap-1">
-              <RefreshCw className="w-3.5 h-3.5" /> Recarregar
-            </button>
           </div>
         )}
 
