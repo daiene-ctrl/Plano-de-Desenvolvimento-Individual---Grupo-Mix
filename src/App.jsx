@@ -47,45 +47,54 @@ export default function App() {
   const fetchEmployees = async () => {
     setLoading(true);
     try {
-      const { data: colaboradoresData, error: empError } = await supabase
-        .from('colaboradores')
-        .select('*');
+      // 1. Tenta buscar via REST API pública
+      const res = await fetch(`${supabaseUrl}/rest/v1/colaboradores?select=*`, {
+        headers: {
+          'apikey': supabaseAnonKey,
+          'Authorization': `Bearer ${supabaseAnonKey}`
+        }
+      });
+      const colaboradoresData = await res.json();
 
-      if (empError) throw empError;
-
-      const { data: acoesData } = await supabase
-        .from('acoes_pdi')
-        .select('*');
-
-      const formatted = (colaboradoresData || []).map(emp => ({
-        id: emp.id,
-        name: emp.nome || emp.name || 'Sem Nome',
-        role: emp.cargo || emp.role || 'Sem Cargo',
-        department: emp.departamento || emp.department || 'Geral',
-        manager: emp.gestor_nome || emp.manager || 'Não Definido',
-        managerEmail: emp.gestor_email || emp.manager_email || '',
-        status: emp.status || 'Não Iniciado',
-        progress: emp.progress || 0,
-        strengths: emp.pontos_fortes || 'A mapear em reunião de PDI.',
-        growthAreas: emp.pontos_desenvolver || 'A definir com a gestão.',
-        goal: emp.objetivo_carreira || 'Desenvolvimento contínuo.',
-        actions: (acoesData || []).filter(a => a.colaborador_id === emp.id).map(a => ({
-          id: a.id,
-          type: a.type,
-          category: a.category,
-          title: a.title,
-          evidence: a.evidence,
-          deadline: a.deadline,
-          status: a.status
-        }))
-      }));
-
-      setEmployees(formatted);
-      if (formatted.length > 0 && !selectedId) {
-        setSelectedId(formatted[0].id);
+      if (Array.isArray(colaboradoresData) && colaboradoresData.length > 0) {
+        const formatted = colaboradoresData.map(emp => ({
+          id: emp.id,
+          name: emp.nome || emp.name || 'Sem Nome',
+          role: emp.cargo || emp.role || 'Sem Cargo',
+          department: emp.departamento || emp.department || 'Geral',
+          manager: emp.gestor_nome || emp.manager || 'Não Definido',
+          managerEmail: emp.gestor_email || emp.manager_email || '',
+          status: emp.status || 'Não Iniciado',
+          progress: emp.progress || 0,
+          strengths: emp.pontos_fortes || 'A mapear em reunião de PDI.',
+          growthAreas: emp.pontos_desenvolver || 'A definir com a gestão.',
+          goal: emp.objetivo_carreira || 'Desenvolvimento contínuo.',
+          actions: []
+        }));
+        setEmployees(formatted);
+        if (!selectedId) setSelectedId(formatted[0].id);
+      } else {
+        // 2. Fallback via SDK Supabase
+        const { data: dataSdk } = await supabase.from('colaboradores').select('*');
+        if (dataSdk && dataSdk.length > 0) {
+          const formatted = dataSdk.map(emp => ({
+            id: emp.id,
+            name: emp.nome || emp.name,
+            role: emp.cargo || emp.role,
+            department: emp.departamento || emp.department,
+            manager: emp.gestor_nome || emp.manager,
+            status: emp.status || 'Não Iniciado',
+            progress: emp.progress || 0,
+            strengths: emp.pontos_fortes || 'A mapear em reunião de PDI.',
+            growthAreas: emp.pontos_desenvolver || 'A definir com a gestão.',
+            goal: emp.objetivo_carreira || 'Desenvolvimento contínuo.',
+            actions: []
+          }));
+          setEmployees(formatted);
+        }
       }
     } catch (err) {
-      console.error("Erro Supabase:", err);
+      console.error("Erro na busca de colaboradores:", err);
     } finally {
       setLoading(false);
     }
@@ -172,22 +181,6 @@ export default function App() {
     const matchesDept = departmentFilter === 'Todos' || e.department === departmentFilter;
     return matchesSearch && matchesDept;
   });
-
-  const handleStatusChange = async (actionId, newStatus) => {
-    if (!selectedEmployee) return;
-
-    const updatedActions = selectedEmployee.actions.map(act => act.id === actionId ? { ...act, status: newStatus } : act);
-    const completed = updatedActions.filter(a => a.status === 'Concluído').length;
-    const progress = Math.round((completed / (updatedActions.length || 1)) * 100);
-    let status = 'Em Andamento';
-    if (progress === 100) status = 'Concluído';
-    if (progress === 0 && updatedActions.every(a => a.status === 'Não Iniciado')) status = 'Não Iniciado';
-
-    setEmployees(prev => prev.map(emp => emp.id === selectedEmployee.id ? { ...emp, actions: updatedActions, progress, status } : emp));
-
-    await supabase.from('acoes_pdi').update({ status: newStatus }).eq('id', actionId);
-    await supabase.from('colaboradores').update({ progress, status }).eq('id', selectedEmployee.id);
-  };
 
   if (!isAuthenticated) {
     return (
