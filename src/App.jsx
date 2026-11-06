@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 import { 
   Users, Target, CheckCircle2, Clock, Search, Filter, 
   ChevronRight, Award, BarChart3, Printer, BookOpen, 
-  TrendingUp, UserPlus, X, Lock, LogOut, Shield, Loader2, Save, Plus
+  TrendingUp, UserPlus, X, Lock, LogOut, Shield, Loader2, Save, Plus, Calendar
 } from 'lucide-react';
 
 const supabaseUrl = 'https://hbyjblwzuvntinpugetr.supabase.co';
@@ -102,10 +102,7 @@ const initialEmployees = [
   const [showAddModal, setShowAddModal] = useState(false);
 
   const [newEmployee, setNewEmployee] = useState({
-    name: '',
-    role: '',
-    department: 'Operação',
-    manager: 'Daiene Santos'
+    name: '', role: '', department: 'Operação', manager: 'Daiene Santos'
   });
 
   const [editFormData, setEditFormData] = useState({ strengths: '', growthAreas: '', goal: '' });
@@ -242,7 +239,7 @@ const initialEmployees = [
         <div className="bg-white max-w-md w-full rounded-2xl shadow-2xl overflow-hidden border border-slate-100">
           <div className="bg-[#055a43] p-8 text-center text-white space-y-2">
             <div className="flex justify-center mb-2">
-              <img src="/logo.png" alt="Mix Soluções Ambientais" className="h-14 w-auto object-contain bg-white/10 p-2 rounded-xl" />
+              <img src="/logo.png" alt="Mix Soluções Ambientais" className="h-14 w-auto object-contain" />
             </div>
             <h2 className="text-xl font-extrabold tracking-tight mt-1">MIX SOLUÇÕES AMBIENTAIS</h2>
             <p className="text-xs text-emerald-100/80 font-medium">Portal de Gestão de PDI • Pilar Desenvolvimento</p>
@@ -269,7 +266,7 @@ const initialEmployees = [
       <header className="bg-gradient-to-r from-emerald-800 to-teal-900 text-white shadow-md">
         <div className="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-4">
           <div className="flex items-center gap-3">
-            <img src="/logo.png" alt="Mix Soluções Ambientais" className="h-10 w-auto object-contain bg-white/10 p-1.5 rounded-lg" />
+            <img src="/logo.png" alt="Mix Soluções Ambientais" className="h-10 w-auto object-contain" />
             <span className="font-extrabold text-sm tracking-wide">MIX SOLUÇÕES AMBIENTAIS</span>
           </div>
 
@@ -498,7 +495,7 @@ const initialEmployees = [
                 </div>
               </form>
 
-              {/* SEÇÃO DE AÇÕES 70/20/10 */}
+              {/* SEÇÃO DE AÇÕES 70/20/10 COM PRAZO */}
               <div className="pt-6 border-t space-y-4">
                 <h3 className="font-bold text-slate-900 text-base">Plano de Ação (Metodologia 70/20/10)</h3>
 
