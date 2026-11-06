@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { 
   Users, Target, CheckCircle2, Clock, Plus, Search, Filter, 
   ChevronRight, Award, BarChart3, Printer, FileText, Calendar, 
-  Building2, TrendingUp, BookOpen, UserCheck, Edit3, Trash2, Shield, UserPlus, X
+  Building2, TrendingUp, BookOpen, UserCheck, Edit3, Trash2, Shield, UserPlus, X, Lock, LogOut, Key
 } from 'lucide-react';
 
 const initialEmployees = [
@@ -62,21 +62,29 @@ const initialEmployees = [
   }
 ];
 
+// Base de Utilizadores e Credenciais de Acesso Seguras
+const validUsers = [
+  { name: "Daiene Santos", email: "daiene@mixsolucoesambientais.com.br", pass: "mix#rh2026", profile: "RH", role: "Gestora de RH / DHO" },
+  { name: "Roberto Santos", email: "roberto@mixsolucoesambientais.com.br", pass: "gestor123", profile: "GESTOR", role: "Supervisor Operacional" },
+  { name: "Marcos Oliveira", email: "marcos@mixsolucoesambientais.com.br", pass: "gestor123", profile: "GESTOR", role: "Coordenador de Logística" }
+];
+
 export default function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+  
+  // Login Form State
+  const [loginEmail, setLoginEmail] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
+  const [loginError, setLoginError] = useState('');
+
+  // Main App State
   const [employees, setEmployees] = useState(initialEmployees);
   const [selectedId, setSelectedId] = useState(1);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [searchTerm, setSearchTerm] = useState('');
   const [departmentFilter, setDepartmentFilter] = useState('Todos');
   const [showAddModal, setShowAddModal] = useState(false);
-
-  // Controle de Perfil / Usuário Logado
-  const [currentUser, setCurrentUser] = useState({
-    name: "Daiene Santos",
-    role: "RH / DHO",
-    email: "daiene@mixsolucoesambientais.com.br",
-    profile: "RH" // "RH" visualiza tudo; "GESTOR" visualiza apenas a própria equipe
-  });
 
   const [newEmployee, setNewEmployee] = useState({
     name: '',
@@ -88,8 +96,34 @@ export default function App() {
     goal: ''
   });
 
-  // Filtro por privilégio de acesso do perfil
+  const handleLogin = (e) => {
+    e.preventDefault();
+    const user = validUsers.find(
+      u => u.email.toLowerCase() === loginEmail.trim().toLowerCase() && u.pass === loginPassword
+    );
+
+    if (user) {
+      setCurrentUser(user);
+      setIsAuthenticated(true);
+      setLoginError('');
+      // Seleciona o primeiro colaborador disponível para o utilizador logado
+      const accessible = employees.filter(emp => user.profile === 'RH' || emp.manager === user.name);
+      if (accessible.length > 0) setSelectedId(accessible[0].id);
+    } else {
+      setLoginError('E-mail ou senha incorretos. Verifique os dados de acesso.');
+    }
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    setCurrentUser(null);
+    setLoginEmail('');
+    setLoginPassword('');
+  };
+
+  // Trava de Segurança: Filtra colaboradores de acordo com o perfil estritamente logado
   const accessibleEmployees = employees.filter(emp => {
+    if (!currentUser) return false;
     if (currentUser.profile === 'RH') return true;
     return emp.manager === currentUser.name;
   });
@@ -147,9 +181,80 @@ export default function App() {
     setNewEmployee({ name: '', role: '', department: 'Operacional', manager: 'Daiene Santos', strengths: '', growthAreas: '', goal: '' });
   };
 
+  // TELA DE LOGIN (Sem autenticação prévia)
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4 font-sans relative overflow-hidden">
+        {/* Fundo decorativo corporativo */}
+        <div className="absolute -top-32 -left-32 w-96 h-96 bg-emerald-600/20 rounded-full blur-3xl"></div>
+        <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-teal-600/20 rounded-full blur-3xl"></div>
+
+        <div className="bg-white max-w-md w-full rounded-2xl shadow-2xl overflow-hidden border border-slate-100 z-10">
+          <div className="bg-gradient-to-r from-emerald-800 to-teal-900 p-8 text-center text-white">
+            <div className="flex justify-center mb-4">
+              <img src="/logo.png" alt="Mix Soluções Ambientais" className="h-12 w-auto object-contain brightness-0 invert" />
+            </div>
+            <h2 className="text-xl font-extrabold tracking-tight">MIX SOLUÇÕES AMBIENTAIS</h2>
+            <p className="text-xs text-emerald-200 mt-1">Portal de Gestão de PDI • Pilar Desenvolvimento</p>
+          </div>
+
+          <form onSubmit={handleLogin} className="p-8 space-y-5 text-xs">
+            {loginError && (
+              <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-xs font-semibold">
+                {loginError}
+              </div>
+            )}
+
+            <div>
+              <label className="block font-bold text-slate-700 mb-1">E-mail Corporativo</label>
+              <div className="relative">
+                <input 
+                  type="email" 
+                  required 
+                  placeholder="seu.nome@mixsolucoesambientais.com.br"
+                  value={loginEmail}
+                  onChange={e => setLoginEmail(e.target.value)}
+                  className="w-full p-3 pl-3 border border-slate-200 rounded-xl text-slate-800 font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block font-bold text-slate-700 mb-1">Senha de Acesso</label>
+              <input 
+                type="password" 
+                required 
+                placeholder="••••••••"
+                value={loginPassword}
+                onChange={e => setLoginPassword(e.target.value)}
+                className="w-full p-3 border border-slate-200 rounded-xl text-slate-800 font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+              />
+            </div>
+
+            <button 
+              type="submit"
+              className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-sm shadow-md transition flex items-center justify-center gap-2"
+            >
+              <Lock className="w-4 h-4" /> Entrar no Sistema
+            </button>
+
+            {/* Guia Rápido de Acesso de Testes */}
+            <div className="mt-6 pt-4 border-t border-slate-100 text-[11px] text-slate-400 space-y-1">
+              <p className="font-bold text-slate-600 mb-1">Credenciais de Teste:</p>
+              <p>• <b>RH (Visão Total):</b> <span className="text-emerald-700">daiene@mixsolucoesambientais.com.br</span> / <span className="text-slate-600">mix#rh2026</span></p>
+              <p>• <b>Gestor Operacional:</b> <span className="text-emerald-700">roberto@mixsolucoesambientais.com.br</span> / <span className="text-slate-600">gestor123</span></p>
+              <p>• <b>Gestor Logística:</b> <span className="text-emerald-700">marcos@mixsolucoesambientais.com.br</span> / <span className="text-slate-600">gestor123</span></p>
+            </div>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
+  // APLICAÇÃO AUTENTICADA
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans">
-      {/* Header Corporativo */}
+      {/* Header Corporativo com Status do Usuário Logado */}
       <header className="bg-gradient-to-r from-emerald-800 to-teal-900 text-white shadow-md no-print">
         <div className="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-4">
           <div className="flex items-center space-x-3">
@@ -162,28 +267,23 @@ export default function App() {
             </div>
           </div>
 
-          {/* Seleção de Perfil para Simulação de Acesso */}
-          <div className="flex items-center gap-3 bg-emerald-950/60 px-3 py-1.5 rounded-xl border border-emerald-700/50">
-            <Shield className="w-4 h-4 text-emerald-300" />
-            <div className="text-xs">
-              <span className="text-emerald-300 block text-[10px] uppercase font-bold">Perfil Ativo</span>
-              <select 
-                value={currentUser.profile === 'RH' ? 'RH' : currentUser.name}
-                onChange={(e) => {
-                  const val = e.target.value;
-                  if (val === 'RH') {
-                    setCurrentUser({ name: "Daiene Santos", role: "RH / DHO", email: "daiene@mixsolucoesambientais.com.br", profile: "RH" });
-                  } else {
-                    setCurrentUser({ name: val, role: "Gestor", email: `${val.toLowerCase().replace(' ', '')}@mixsolucoesambientais.com.br`, profile: "GESTOR" });
-                  }
-                }}
-                className="bg-transparent text-white font-bold text-xs focus:outline-none cursor-pointer"
-              >
-                <option value="RH" className="text-slate-800">Administrador (RH/DHO - Ver Tudo)</option>
-                <option value="Roberto Santos" className="text-slate-800">Gestor: Roberto Santos (Operacional)</option>
-                <option value="Marcos Oliveira" className="text-slate-800">Gestor: Marcos Oliveira (Logística)</option>
-              </select>
+          {/* Painel do Utilizador Autenticado */}
+          <div className="flex items-center gap-4">
+            <div className="bg-emerald-950/60 px-3 py-1.5 rounded-xl border border-emerald-700/50 flex items-center gap-2">
+              <Shield className="w-4 h-4 text-emerald-300" />
+              <div className="text-xs">
+                <span className="font-bold text-white block">{currentUser.name}</span>
+                <span className="text-[10px] text-emerald-300 font-semibold uppercase">{currentUser.role}</span>
+              </div>
             </div>
+
+            <button 
+              onClick={handleLogout}
+              className="p-2 bg-emerald-950/40 hover:bg-red-600 text-emerald-200 hover:text-white rounded-xl transition border border-emerald-700/50 flex items-center gap-1 text-xs font-semibold"
+              title="Sair da Conta"
+            >
+              <LogOut className="w-4 h-4" /> Sair
+            </button>
           </div>
 
           <nav className="flex bg-emerald-950/40 p-1 rounded-xl border border-emerald-700/50">
@@ -214,12 +314,12 @@ export default function App() {
                 <div className="flex items-center gap-2">
                   <span className="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full">META ESTRATÉGICA 2026</span>
                   {currentUser.profile === 'GESTOR' && (
-                    <span className="bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full">Visão Filtrada: {currentUser.name}</span>
+                    <span className="bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full">Área Restrita do Gestor: {currentUser.name}</span>
                   )}
                 </div>
                 <h2 className="text-2xl font-bold text-slate-900 mt-2">Implementação de 100% dos PDIs</h2>
                 <p className="text-sm text-slate-500">
-                  {currentUser.profile === 'RH' ? 'Acompanhamento global de todos os planos da empresa.' : `Gerenciando os colaboradores sob responsabilidade de ${currentUser.name}.`}
+                  {currentUser.profile === 'RH' ? 'Acompanhamento global de todos os planos da empresa.' : `Visualizando apenas os PDIs sob responsabilidade direta de ${currentUser.name}.`}
                 </p>
               </div>
               
@@ -243,7 +343,7 @@ export default function App() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-semibold text-slate-500 uppercase">Colaboradores Visíveis</p>
+                  <p className="text-xs font-semibold text-slate-500 uppercase">Colaboradores Autorizados</p>
                   <p className="text-2xl font-bold text-slate-800 mt-1">{totalPDIs}</p>
                 </div>
                 <div className="p-3 bg-blue-50 text-blue-600 rounded-xl"><Users className="w-6 h-6" /></div>
@@ -278,7 +378,7 @@ export default function App() {
             <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
               <div className="p-4 border-b border-slate-100 flex justify-between items-center">
                 <h3 className="font-bold text-slate-800 flex items-center gap-2">
-                  <TrendingUp className="w-5 h-5 text-emerald-600" /> Status dos PDIs da Equipe
+                  <TrendingUp className="w-5 h-5 text-emerald-600" /> Status dos PDIs Permitidos
                 </h3>
                 <button onClick={() => setActiveTab('list')} className="text-xs text-emerald-600 hover:text-emerald-700 font-semibold flex items-center gap-1">
                   Ver Todos <ChevronRight className="w-4 h-4" />
