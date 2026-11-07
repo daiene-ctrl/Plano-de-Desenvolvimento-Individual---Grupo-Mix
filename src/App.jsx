@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 import { 
   Users, Target, CheckCircle2, Clock, Search, Filter, 
   ChevronRight, Award, BarChart3, Printer, BookOpen, 
-  TrendingUp, UserPlus, X, Lock, LogOut, Shield, Loader2, Save, Plus, Calendar, CheckSquare, FileCheck, MessageSquare, AlertTriangle, ArrowUpRight, Sliders, CalendarClock, AlertCircle 
+  TrendingUp, UserPlus, X, Lock, LogOut, Shield, Loader2, Save, Plus, Calendar, CheckSquare, FileCheck, MessageSquare, AlertTriangle, ArrowUpRight, Sliders, CalendarClock, AlertCircle, UserCheck 
 } from 'lucide-react';
 
 const supabaseUrl = 'https://hbyjblwzuvntinpugetr.supabase.co';
@@ -476,9 +476,9 @@ const initialEmployees = [
                     <th className="p-3">Farol</th>
                     <th className="p-3">Colaborador</th>
                     <th className="p-3">Cargo</th>
-                    <th className="p-3">Validade / Meta</th>
+                    <th className="p-3">Gestor Responsável</th>
+                    <th className="p-3">Validade</th>
                     <th className="p-3">Média</th>
-                    <th className="p-3">Status Matriz</th>
                     <th className="p-3 text-right">Ação</th>
                   </tr>
                 </thead>
@@ -493,10 +493,14 @@ const initialEmployees = [
                           <span className={`inline-block w-3.5 h-3.5 rounded-full ${farol.color} shadow-sm`} title={farol.text}></span>
                         </td>
                         <td className="p-3 font-semibold">{emp.name}</td>
-                        <td className="p-3">{emp.role}</td>
-                        <td className="p-3 font-bold text-slate-700">{emp.deadline || '31/12/2026'}</td>
+                        <td className="p-3 text-slate-600">{emp.role}</td>
+                        <td className="p-3">
+                          <span className="inline-flex items-center gap-1 bg-emerald-50 text-emerald-900 font-bold px-2 py-0.5 rounded text-xs border border-emerald-200">
+                            <UserCheck className="w-3.5 h-3.5 text-emerald-700" /> {emp.manager}
+                          </span>
+                        </td>
+                        <td className="p-3 font-semibold text-slate-700">{emp.deadline || '31/12/2026'}</td>
                         <td className="p-3 font-bold">{scr}/100</td>
-                        <td className="p-3"><span className={`px-2 py-0.5 rounded text-[10px] font-bold ${rec.badgeColor}`}>{rec.status}</span></td>
                         <td className="p-3 text-right">
                           <button onClick={() => { setSelectedId(emp.id); setActiveTab('detail'); }} className="px-3 py-1 bg-emerald-100 text-emerald-800 rounded-lg text-xs font-bold">Abrir PDI</button>
                         </td>
@@ -555,7 +559,17 @@ const initialEmployees = [
                         </div>
                         <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">{emp.department}</span>
                       </div>
-                      <div className="mt-4 space-y-2">
+
+                      {/* GESTOR EM DESTAQUE NA CARD */}
+                      <div className="mt-3 p-2 bg-emerald-50/60 rounded-xl border border-emerald-100 flex items-center gap-2">
+                        <UserCheck className="w-4 h-4 text-emerald-700 flex-shrink-0" />
+                        <div className="text-xs">
+                          <span className="text-[10px] text-emerald-800 font-semibold block uppercase">Gestor Responsável</span>
+                          <span className="font-bold text-slate-800">{emp.manager}</span>
+                        </div>
+                      </div>
+
+                      <div className="mt-3 space-y-2">
                         <div className="flex justify-between text-xs text-slate-600">
                           <span>Validade: <b>{emp.deadline || '31/12/2026'}</b></span>
                           <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${rec.badgeColor}`}>{rec.status}</span>
@@ -565,10 +579,10 @@ const initialEmployees = [
                         </div>
                       </div>
                     </div>
-                    <div className="mt-6 pt-4 border-t flex justify-between items-center text-xs">
-                      <span className="text-slate-400">Gestor: {emp.manager}</span>
-                      <button onClick={() => { setSelectedId(emp.id); setActiveTab('detail'); }} className="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold rounded-lg flex items-center gap-1">
-                        Ver PDI <ChevronRight className="w-3.5 h-3.5" />
+                    
+                    <div className="mt-5 pt-3 border-t flex justify-end items-center text-xs">
+                      <button onClick={() => { setSelectedId(emp.id); setActiveTab('detail'); }} className="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl flex items-center justify-center gap-1.5 shadow-sm transition">
+                        Ver Ficha e Histórico <ChevronRight className="w-3.5 h-3.5" />
                       </button>
                     </div>
                   </div>
@@ -599,7 +613,16 @@ const initialEmployees = [
                 </div>
                 
                 <div className="flex items-center gap-3 flex-wrap">
-                  <div className="text-right">
+                  {/* GESTOR EM EVIDÊNCIA NO TOPO DA FICHA */}
+                  <div className="bg-emerald-50 border border-emerald-200 p-2.5 rounded-xl flex items-center gap-2.5">
+                    <div className="p-2 bg-emerald-600 text-white rounded-lg"><UserCheck className="w-4 h-4" /></div>
+                    <div>
+                      <span className="text-[10px] text-emerald-800 font-bold block uppercase">Gestor Responsável</span>
+                      <span className="text-xs font-extrabold text-slate-900">{selectedEmployee.manager}</span>
+                    </div>
+                  </div>
+
+                  <div className="text-right border-l pl-3">
                     <span className="text-xs text-slate-400 block">Ciclo</span>
                     <select 
                       value={editFormData.cycle}
@@ -824,7 +847,7 @@ const initialEmployees = [
                 </div>
               </div>
 
-              {/* HISTÓRICO DE ACOMPANHAMENTO COM BOTÃO DESTACADO DE SALVAR */}
+              {/* HISTÓRICO DE ACOMPANHAMENTO COM BOTÃO DE SALVAR */}
               <div className="pt-6 border-t space-y-4">
                 <div className="flex items-center gap-2">
                   <CalendarClock className="w-5 h-5 text-emerald-700" />
