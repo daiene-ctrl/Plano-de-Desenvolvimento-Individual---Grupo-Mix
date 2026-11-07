@@ -281,6 +281,7 @@ const initialEmployees = [
       return emp;
     }));
     setNewNote('');
+    alert("Reunião de acompanhamento guardada e farol atualizado com sucesso!");
   };
 
   const toggleManagerSignature = () => {
@@ -823,6 +824,7 @@ const initialEmployees = [
                 </div>
               </div>
 
+              {/* HISTÓRICO DE ACOMPANHAMENTO COM BOTÃO DESTACADO DE SALVAR */}
               <div className="pt-6 border-t space-y-4">
                 <div className="flex items-center gap-2">
                   <CalendarClock className="w-5 h-5 text-emerald-700" />
@@ -832,21 +834,21 @@ const initialEmployees = [
 
                 <form onSubmit={handleAddNote} className="space-y-3 bg-slate-50 p-4 rounded-xl border">
                   <textarea 
-                    rows={2}
+                    rows={3}
                     required
                     placeholder="Registar notas da reunião de acompanhamento (ex: Revisão do trimestre, metas de segurança...)"
                     value={newNote}
                     onChange={e => setNewNote(e.target.value)}
-                    className="w-full p-2.5 border rounded-xl text-xs bg-white"
+                    className="w-full p-3 border rounded-xl text-xs bg-white"
                   />
                   <div className="flex justify-end">
-                    <button type="submit" className="px-4 py-2 bg-slate-800 text-white rounded-xl text-xs font-bold hover:bg-slate-900 transition">
-                      + Adicionar Acompanhamento ao Histórico
+                    <button type="submit" className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow transition">
+                      <Save className="w-4 h-4" /> Salvar / Registar Acompanhamento
                     </button>
                   </div>
                 </form>
 
-                <div className="space-y-2">
+                <div className="space-y-2 pt-2">
                   {(selectedEmployee.notes || []).length === 0 ? (
                     <p className="text-xs text-slate-400 italic">Nenhum registo de acompanhamento efetuado ainda.</p>
                   ) : (
