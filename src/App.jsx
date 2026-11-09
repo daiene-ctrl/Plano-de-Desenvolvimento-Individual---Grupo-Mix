@@ -10,6 +10,9 @@ const supabaseUrl = 'https://hbyjblwzuvntinpugetr.supabase.co';
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhieWpibHd6dXZudGlucHVnZXRyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDEyMzQ1NjcsImV4cCI6MjAxNTAwMDAwMH0.placeholder';
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
+// Logo oficial da Mix Soluções Ambientais
+const LOGO_URL = "https://hbyjblwzuvntinpugetr.supabase.co/storage/v1/object/public/assets/logo.png"; // ou substitua pelo link direto da imagem se preferir
+
 const validUsers = [
   { name: "Daiene Santos", email: "daiene@mixsolucoesambientais.com.br", pass: "mix#rh2026", profile: "RH", role: "Gestora de RH / DHO" },
   { name: "Roberto Santos", email: "roberto@mixsolucoesambientais.com.br", pass: "gestor123", profile: "GESTOR", role: "Supervisor Operacional" },
@@ -302,9 +305,9 @@ export default function App() {
     return (
       <div className="min-h-screen bg-[#0d1527] flex items-center justify-center p-4 font-sans">
         <div className="bg-white max-w-md w-full rounded-2xl shadow-2xl overflow-hidden border border-slate-100">
-          <div className="bg-[#055a43] p-8 text-center text-white space-y-2">
-            <h2 className="text-xl font-extrabold tracking-tight mt-1">MIX SOLUÇÕES AMBIENTAIS</h2>
-            <p className="text-xs text-emerald-100/80 font-medium">Portal de Gestão de PDI • Pilar Desenvolvimento</p>
+          <div className="bg-white p-8 text-center flex flex-col items-center justify-center space-y-3 border-b">
+            <img src={LOGO_URL} alt="Mix Soluções Ambientais" className="h-14 object-contain" />
+            <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider">Portal de Gestão de PDI • Pilar Desenvolvimento</p>
           </div>
           <form onSubmit={handleLogin} className="p-8 space-y-5 text-xs">
             {loginError && <div className="p-3 bg-red-50 text-red-700 rounded-xl text-center font-bold">{loginError}</div>}
@@ -316,7 +319,7 @@ export default function App() {
               <label className="block font-bold text-slate-700 mb-1">Senha de Acesso</label>
               <input type="password" required placeholder="••••••••" value={loginPassword} onChange={e => setLoginPassword(e.target.value)} className="w-full p-3 border rounded-xl" />
             </div>
-            <button type="submit" className="w-full py-3.5 bg-[#0b9669] text-white rounded-xl font-bold">Entrar no Sistema</button>
+            <button type="submit" className="w-full py-3.5 bg-[#0b9669] hover:bg-[#087753] text-white rounded-xl font-bold transition">Entrar no Sistema</button>
           </form>
         </div>
       </div>
@@ -330,16 +333,10 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans">
-      <header className="bg-gradient-to-r from-emerald-800 to-teal-900 text-white shadow-md">
+      <header className="bg-gradient-to-r from-emerald-900 to-teal-950 text-white shadow-md">
         <div className="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-4">
-          <div className="flex items-center gap-3">
-            <div className="bg-white p-1.5 rounded-xl shadow-sm flex items-center justify-center">
-              <span className="text-emerald-900 font-extrabold text-xs px-2 tracking-tighter">MIX</span>
-            </div>
-            <div>
-              <span className="font-extrabold text-sm tracking-wide block">MIX SOLUÇÕES AMBIENTAIS</span>
-              <span className="text-[10px] text-emerald-300 font-medium">Portal de Gestão de PDI & SGI</span>
-            </div>
+          <div className="flex items-center gap-3 bg-white px-3 py-1.5 rounded-xl shadow-sm">
+            <img src={LOGO_URL} alt="Mix Soluções Ambientais" className="h-8 object-contain" />
           </div>
 
           <div className="flex items-center gap-3">
