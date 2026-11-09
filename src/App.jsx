@@ -94,7 +94,6 @@ const initialEmployees = [
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
-  
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
   const [loginError, setLoginError] = useState('');
@@ -135,7 +134,7 @@ export default function App() {
     }
   }, [selectedId, selectedEmployee]);
 
-  // Função auxiliar para gerar iniciais para os avatares sem foto
+  // Função para gerar as iniciais em fallback caso não haja foto
   const getInitials = (name) => {
     if (!name) return "MS";
     const parts = name.trim().split(' ');
@@ -145,7 +144,7 @@ export default function App() {
     return name.substring(0, 2).toUpperCase();
   };
 
-  // Componente visual unificado para renderizar a foto do colaborador ou as iniciais em fallback
+  // Componente visual unificado para renderizar a foto ou as iniciais
   const renderAvatar = (emp, size = "w-10 h-10 text-xs") => {
     if (emp && emp.photo && emp.photo.trim() !== '') {
       return (
@@ -177,9 +176,9 @@ export default function App() {
   };
 
   const getRecommendation = (score) => {
-    if (score < 60) return { status: "Abaixo do Mínimo / Risco", action: "Plano de Recuperação Rigoroso", badgeColor: "bg-red-600 text-white", icon: AlertTriangle };
-    else if (score >= 60 && score <= 84) return { status: "Atende / Em Desenvolvimento", action: "Manter na Função com Foco Contínuo", badgeColor: "bg-amber-600 text-white", icon: Clock };
-    else return { status: "Supera o Esperado / Alto Desempenho", action: "Elegível para Promoção", badgeColor: "bg-emerald-600 text-white", icon: ArrowUpRight };
+    if (score < 60) return { status: "Abaixo do Mínimo / Risco", action: "Plano de Recuperação Rigoroso", color: "bg-red-50 text-red-700 border-red-200", badgeColor: "bg-red-600 text-white", icon: AlertTriangle };
+    else if (score >= 60 && score <= 84) return { status: "Atende / Em Desenvolvimento", action: "Manter na Função com Foco Contínuo", color: "bg-amber-50 text-amber-800 border-amber-200", badgeColor: "bg-amber-600 text-white", icon: Clock };
+    else return { status: "Supera o Esperado / Alto Desempenho", action: "Elegível para Promoção", color: "bg-emerald-50 text-emerald-800 border-emerald-200", badgeColor: "bg-emerald-600 text-white", icon: ArrowUpRight };
   };
 
   const handleLogin = (e) => {
@@ -328,7 +327,9 @@ export default function App() {
         </div>
       </div>
     );
-  }const currentScore = calculateScore(editFormData.criteria);
+  }
+
+  const currentScore = calculateScore(editFormData.criteria);
   const currentRec = getRecommendation(currentScore);
   const RecIcon = currentRec.icon;
   const currentFarol = getFarolStatus(selectedEmployee);
@@ -576,7 +577,7 @@ export default function App() {
                 </div>
               </div>
 
-              {/* CAMPO DE INCLUSÃO DA FOTO DO COLABORADOR */}
+              {/* CAMPO DE INCLUSÃO/ATUALIZAÇÃO DA FOTO */}
               <div className="p-4 bg-slate-50 rounded-xl border flex items-center gap-4">
                 <Camera className="w-5 h-5 text-emerald-700 flex-shrink-0" />
                 <div className="flex-1">
@@ -630,7 +631,7 @@ export default function App() {
                   </div>
                 </div>
 
-                <div className={`p-4 rounded-xl border ${currentRec.badgeColor.includes('red') ? 'bg-red-50 text-red-700 border-red-200' : currentRec.badgeColor.includes('amber') ? 'bg-amber-50 text-amber-800 border-amber-200' : 'bg-emerald-50 text-emerald-800 border-emerald-200'} flex items-center justify-between flex-wrap gap-3`}>
+                <div className={`p-4 rounded-xl border ${currentRec.color} flex items-center justify-between flex-wrap gap-3`}>
                   <div className="flex items-center gap-3">
                     <RecIcon className="w-5 h-5 flex-shrink-0" />
                     <div>
