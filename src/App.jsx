@@ -333,7 +333,13 @@ export default function App() {
       <header className="bg-gradient-to-r from-emerald-800 to-teal-900 text-white shadow-md">
         <div className="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-4">
           <div className="flex items-center gap-3">
-            <span className="font-extrabold text-sm tracking-wide">MIX SOLUÇÕES AMBIENTAIS</span>
+            <div className="bg-white p-1.5 rounded-xl shadow-sm flex items-center justify-center">
+              <span className="text-emerald-900 font-extrabold text-xs px-2 tracking-tighter">MIX</span>
+            </div>
+            <div>
+              <span className="font-extrabold text-sm tracking-wide block">MIX SOLUÇÕES AMBIENTAIS</span>
+              <span className="text-[10px] text-emerald-300 font-medium">Portal de Gestão de PDI & SGI</span>
+            </div>
           </div>
 
           <div className="flex items-center gap-3">
