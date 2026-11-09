@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 import { 
   Users, Target, CheckCircle2, Clock, Search, Filter, 
   ChevronRight, Award, BarChart3, Printer, BookOpen, 
-  TrendingUp, UserPlus, X, Lock, LogOut, Shield, Loader2, Save, Plus, Calendar, CheckSquare, FileCheck, MessageSquare, AlertTriangle, ArrowUpRight, Sliders, CalendarClock, AlertCircle, UserCheck, Camera 
+  TrendingUp, UserPlus, X, Lock, LogOut, Shield, Loader2, Save, Plus, Calendar, CheckSquare, FileCheck, MessageSquare, AlertTriangle, ArrowUpRight, Sliders, CalendarClock, AlertCircle, UserCheck, Camera, Upload 
 } from 'lucide-react';
 
 const supabaseUrl = 'https://hbyjblwzuvntinpugetr.supabase.co';
@@ -11,7 +11,7 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIU
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // Logo oficial original da Mix Soluções Ambientais
-const LOGO_URL = "https://hbyjblwzuvntinpugetr.supabase.co/storage/v1/object/public/assets/logo.png";
+const LOGO_URL = "https://hbyjblwzuvntinpugetr.supabase.co/storage/v1/object/public/assets/logo.png";[cite: 3]
 
 const validUsers = [
   { name: "Daiene Santos", email: "daiene@mixsolucoesambientais.com.br", pass: "mix#rh2026", profile: "RH", role: "Gestora de RH / DHO" },
@@ -163,6 +163,22 @@ export default function App() {
     );
   };
 
+  // Manipulador para upload de imagem do computador (converte para Base64)
+  const handleImageUpload = (e, isNew = false) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (isNew) {
+          setNewEmployee(prev => ({ ...prev, photo: reader.result }));
+        } else {
+          setEditFormData(prev => ({ ...prev, photo: reader.result }));
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const calculateScore = (criteria) => {
     const sum = Number(criteria.c1) + Number(criteria.c2) + Number(criteria.c3) + Number(criteria.c4);
     return Math.round((sum / 4) * 10);
@@ -306,15 +322,14 @@ export default function App() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4 font-sans">
-        <div className="bg-white max-w-md w-full rounded-2xl shadow-2xl p-8 border border-slate-100 space-y-6">
-          <div className="text-center space-y-2">
-            <img src={LOGO_URL} alt="Mix Soluções Ambientais" className="h-12 mx-auto object-contain" />
-            <h1 className="text-xl font-extrabold text-slate-800">Portal PDI - Gestão de Desempenho</h1>
-            <p className="text-xs text-slate-500">Mix Soluções Ambientais • SGI & DHO</p>
+      <div className="min-h-screen bg-[#0d1527] flex items-center justify-center p-4 font-sans">
+        <div className="bg-white max-w-md w-full rounded-2xl shadow-2xl overflow-hidden border border-slate-100">
+          <div className="bg-white p-8 text-center flex flex-col items-center justify-center space-y-3 border-b">
+            <img src={LOGO_URL} alt="Mix Soluções Ambientais" className="h-14 object-contain" />[cite: 3]
+            <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider">Portal de Gestão de PDI • Pilar Desenvolvimento</p>
           </div>
-          {loginError && <div className="p-3 bg-red-50 text-red-700 rounded-xl text-center text-xs font-bold">{loginError}</div>}
-          <form onSubmit={handleLogin} className="space-y-4 text-xs">
+          <form onSubmit={handleLogin} className="p-8 space-y-5 text-xs">
+            {loginError && <div className="p-3 bg-red-50 text-red-700 rounded-xl text-center font-bold">{loginError}</div>}
             <div>
               <label className="block font-bold text-slate-700 mb-1">E-mail Corporativo</label>
               <input type="email" required placeholder="seu.nome@mixsolucoesambientais.com.br" value={loginEmail} onChange={e => setLoginEmail(e.target.value)} className="w-full p-3 border rounded-xl" />
@@ -323,7 +338,7 @@ export default function App() {
               <label className="block font-bold text-slate-700 mb-1">Senha de Acesso</label>
               <input type="password" required placeholder="••••••••" value={loginPassword} onChange={e => setLoginPassword(e.target.value)} className="w-full p-3 border rounded-xl" />
             </div>
-            <button type="submit" className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold transition shadow-md">Entrar no Sistema</button>
+            <button type="submit" className="w-full py-3.5 bg-[#0b9669] hover:bg-[#087753] text-white rounded-xl font-bold transition">Entrar no Sistema</button>
           </form>
         </div>
       </div>
@@ -340,7 +355,7 @@ export default function App() {
       <header className="bg-gradient-to-r from-emerald-900 to-teal-950 text-white shadow-md">
         <div className="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-4">
           <div className="flex items-center gap-3 bg-white px-3 py-1.5 rounded-xl shadow-sm">
-            <img src={LOGO_URL} alt="Mix Soluções Ambientais" className="h-8 object-contain" />
+            <img src={LOGO_URL} alt="Mix Soluções Ambientais" className="h-8 object-contain" />[cite: 3]
           </div>
 
           <div className="flex items-center gap-3">
@@ -578,17 +593,16 @@ export default function App() {
                 </div>
               </div>
 
-              {/* CAMPO DE INCLUSÃO/ATUALIZAÇÃO DA FOTO */}
+              {/* CAMPO DE UPLOAD DA FOTO DO COMPUTADOR */}
               <div className="p-4 bg-slate-50 rounded-xl border flex items-center gap-4">
                 <Camera className="w-5 h-5 text-emerald-700 flex-shrink-0" />
                 <div className="flex-1">
-                  <label className="block text-xs font-bold text-slate-700 mb-1">URL da Fotografia do Colaborador (Link da imagem)</label>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">Fotografia do Colaborador (Upload do Computador)</label>
                   <input 
-                    type="url" 
-                    placeholder="Cole o link da foto (ex: https://exemplo.com/foto.jpg)" 
-                    value={editFormData.photo}
-                    onChange={e => setEditFormData({...editFormData, photo: e.target.value})}
-                    className="w-full p-2 border rounded-lg text-xs bg-white"
+                    type="file" 
+                    accept="image/*"
+                    onChange={e => handleImageUpload(e, false)}
+                    className="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer"
                   />
                 </div>
               </div>
@@ -777,8 +791,13 @@ export default function App() {
                 </div>
               </div>
               <div>
-                <label className="block font-bold text-slate-700 mb-1">URL da Foto (Opcional)</label>
-                <input type="url" placeholder="https://..." value={newEmployee.photo} onChange={e => setNewEmployee({...newEmployee, photo: e.target.value})} className="w-full p-2.5 border rounded-xl" />
+                <label className="block font-bold text-slate-700 mb-1">Foto do Colaborador (Upload do Computador)</label>
+                <input 
+                  type="file" 
+                  accept="image/*"
+                  onChange={e => handleImageUpload(e, true)}
+                  className="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer"
+                />
               </div>
               <div className="grid grid-cols-3 gap-3">
                 <div>
