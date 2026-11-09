@@ -10,7 +10,7 @@ const supabaseUrl = 'https://hbyjblwzuvntinpugetr.supabase.co';
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhieWpibHd6dXZudGlucHVnZXRyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDEyMzQ1NjcsImV4cCI6MjAxNTAwMDAwMH0.placeholder';
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-// Logo oficial da Mix Soluções Ambientais
+// Logo oficial original da Mix Soluções Ambientais
 const LOGO_URL = "https://hbyjblwzuvntinpugetr.supabase.co/storage/v1/object/public/assets/logo.png";
 
 const validUsers = [
@@ -22,9 +22,9 @@ const validUsers = [
 ];
 
 const initialEmployees = [
-  { id: 1, name: "HELIO MARCOS DE JESUS SANTOS", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80", status: "Não Iniciado", progress: 0, cycle: "2026", deadline: "31/12/2026", periodicity: "Trimestral", criteria: { c1: 7, c2: 7, c3: 7, c4: 7 }, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 2, name: "WALLACE SILVA RODRIGUES", role: "MECANICO DE AUTOMOVEIS E CAMINHOES EM GERAL", department: "Logistica", manager: "Jose Izailton", managerEmail: "log@mixsolucoesambientais.com.br", photo: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80", status: "Não Iniciado", progress: 0, cycle: "2026", deadline: "31/12/2026", periodicity: "Trimestral", criteria: { c1: 7, c2: 7, c3: 7, c4: 7 }, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 3, name: "GLAUBER LUAN LIMA VIANA", role: "MOTORISTA DE CAMINHÃO", department: "Logistica", manager: "Jose Izailton", managerEmail: "log@mixsolucoesambientais.com.br", photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80", status: "Não Iniciado", progress: 0, cycle: "2026", deadline: "31/12/2026", periodicity: "Trimestral", criteria: { c1: 7, c2: 7, c3: 7, c4: 7 }, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 1, name: "HELIO MARCOS DE JESUS SANTOS", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", photo: "", status: "Não Iniciado", progress: 0, cycle: "2026", deadline: "31/12/2026", periodicity: "Trimestral", criteria: { c1: 7, c2: 7, c3: 7, c4: 7 }, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 2, name: "WALLACE SILVA RODRIGUES", role: "MECANICO DE AUTOMOVEIS E CAMINHOES EM GERAL", department: "Logistica", manager: "Jose Izailton", managerEmail: "log@mixsolucoesambientais.com.br", photo: "", status: "Não Iniciado", progress: 0, cycle: "2026", deadline: "31/12/2026", periodicity: "Trimestral", criteria: { c1: 7, c2: 7, c3: 7, c4: 7 }, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 3, name: "GLAUBER LUAN LIMA VIANA", role: "MOTORISTA DE CAMINHÃO", department: "Logistica", manager: "Jose Izailton", managerEmail: "log@mixsolucoesambientais.com.br", photo: "", status: "Não Iniciado", progress: 0, cycle: "2026", deadline: "31/12/2026", periodicity: "Trimestral", criteria: { c1: 7, c2: 7, c3: 7, c4: 7 }, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
   { id: 4, name: "JOSE IZAILTON BATISTA ALMEIDA JUNIOR", role: "ANALISTA DE LOGISTICA DE TRANSPORTE", department: "Logistica", manager: "George Costa", managerEmail: "george@mixsolucoesambientais.com.br", photo: "", status: "Não Iniciado", progress: 0, cycle: "2026", deadline: "31/12/2026", periodicity: "Trimestral", criteria: { c1: 7, c2: 7, c3: 7, c4: 7 }, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
   { id: 5, name: "GIVALDO DE SOUSA CONCEICAO", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", photo: "", status: "Não Iniciado", progress: 0, cycle: "2026", deadline: "31/12/2026", periodicity: "Trimestral", criteria: { c1: 7, c2: 7, c3: 7, c4: 7 }, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
   { id: 6, name: "AUGUSTO CESAR DE ARRUDA", role: "ENCARREGADO OPERACIONAL LOGISTICO", department: "Operação", manager: "Lucas Borges", managerEmail: "lucas@mixsolucoesambientais.com.br", photo: "", status: "Não Iniciado", progress: 0, cycle: "2026", deadline: "31/12/2026", periodicity: "Trimestral", criteria: { c1: 7, c2: 7, c3: 7, c4: 7 }, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
@@ -55,7 +55,7 @@ const initialEmployees = [
   { id: 31, name: "JUTAIR DOS SANTOS BASTOS", role: "VIGIA", department: "SGI", manager: "Luiza Costa", managerEmail: "luiza@mixsolucoesambientais.com.br", photo: "", status: "Não Iniciado", progress: 0, cycle: "2026", deadline: "31/12/2026", periodicity: "Trimestral", criteria: { c1: 7, c2: 7, c3: 7, c4: 7 }, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
   { id: 32, name: "RICARDO ALVES TEIXEIRA", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", photo: "", status: "Não Iniciado", progress: 0, cycle: "2026", deadline: "31/12/2026", periodicity: "Trimestral", criteria: { c1: 7, c2: 7, c3: 7, c4: 7 }, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
   { id: 33, name: "DANIEL FRANCA BASTOS", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", photo: "", status: "Não Iniciado", progress: 0, cycle: "2026", deadline: "31/12/2026", periodicity: "Trimestral", criteria: { c1: 7, c2: 7, c3: 7, c4: 7 }, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
-  { id: 34, name: "DAIENE LIMA DA SILVA SANTOS MOREIRA", role: "ASSISTENTE DE RECURSOS HUMANOS", department: "Recursos Humanos", manager: "Luiza Costa", managerEmail: "luiza@mixsolucoesambientais.com.br", photo: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80", status: "Não Iniciado", progress: 0, cycle: "2026", deadline: "31/12/2026", periodicity: "Trimestral", criteria: { c1: 9, c2: 9, c3: 9, c4: 9 }, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
+  { id: 34, name: "DAIENE LIMA DA SILVA SANTOS MOREIRA", role: "ASSISTENTE DE RECURSOS HUMANOS", department: "Recursos Humanos", manager: "Luiza Costa", managerEmail: "luiza@mixsolucoesambientais.com.br", photo: "", status: "Não Iniciado", progress: 0, cycle: "2026", deadline: "31/12/2026", periodicity: "Trimestral", criteria: { c1: 9, c2: 9, c3: 9, c4: 9 }, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
   { id: 35, name: "VAGNER RODRIGUES DE OLIVEIRA", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", photo: "", status: "Não Iniciado", progress: 0, cycle: "2026", deadline: "31/12/2026", periodicity: "Trimestral", criteria: { c1: 7, c2: 7, c3: 7, c4: 7 }, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
   { id: 36, name: "CLEIDIANE SOUZA DOS SANTOS", role: "AUXILIAR FINANCEIRO", department: "Administrativo", manager: "Lucas Borges", managerEmail: "lucas@mixsolucoesambientais.com.br", photo: "", status: "Não Iniciado", progress: 0, cycle: "2026", deadline: "31/12/2026", periodicity: "Trimestral", criteria: { c1: 7, c2: 7, c3: 7, c4: 7 }, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
   { id: 37, name: "JOEVALDO MORAIS DE SANTANA", role: "AUXILIAR DE LOGISTICA E OPERACOES", department: "Operação", manager: "Augusto Arruda", managerEmail: "augusto@mixsolucoesambientais.com.br", photo: "", status: "Não Iniciado", progress: 0, cycle: "2026", deadline: "31/12/2026", periodicity: "Trimestral", criteria: { c1: 7, c2: 7, c3: 7, c4: 7 }, strengths: "A mapear em reunião de PDI.", growthAreas: "A definir com a gestão.", goal: "Desenvolvimento contínuo.", actions: [], notes: [], managerSigned: false, managerSignedAt: null, employeeSigned: false, employeeSignedAt: null },
@@ -306,14 +306,15 @@ export default function App() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-[#0d1527] flex items-center justify-center p-4 font-sans">
-        <div className="bg-white max-w-md w-full rounded-2xl shadow-2xl overflow-hidden border border-slate-100">
-          <div className="bg-white p-8 text-center flex flex-col items-center justify-center space-y-3 border-b">
-            <img src={LOGO_URL} alt="Mix Soluções Ambientais" className="h-14 object-contain" />
-            <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider">Portal de Gestão de PDI • Pilar Desenvolvimento</p>
+      <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4 font-sans">
+        <div className="bg-white max-w-md w-full rounded-2xl shadow-2xl p-8 border border-slate-100 space-y-6">
+          <div className="text-center space-y-2">
+            <img src={LOGO_URL} alt="Mix Soluções Ambientais" className="h-12 mx-auto object-contain" />
+            <h1 className="text-xl font-extrabold text-slate-800">Portal PDI - Gestão de Desempenho</h1>
+            <p className="text-xs text-slate-500">Mix Soluções Ambientais • SGI & DHO</p>
           </div>
-          <form onSubmit={handleLogin} className="p-8 space-y-5 text-xs">
-            {loginError && <div className="p-3 bg-red-50 text-red-700 rounded-xl text-center font-bold">{loginError}</div>}
+          {loginError && <div className="p-3 bg-red-50 text-red-700 rounded-xl text-center text-xs font-bold">{loginError}</div>}
+          <form onSubmit={handleLogin} className="space-y-4 text-xs">
             <div>
               <label className="block font-bold text-slate-700 mb-1">E-mail Corporativo</label>
               <input type="email" required placeholder="seu.nome@mixsolucoesambientais.com.br" value={loginEmail} onChange={e => setLoginEmail(e.target.value)} className="w-full p-3 border rounded-xl" />
@@ -322,7 +323,7 @@ export default function App() {
               <label className="block font-bold text-slate-700 mb-1">Senha de Acesso</label>
               <input type="password" required placeholder="••••••••" value={loginPassword} onChange={e => setLoginPassword(e.target.value)} className="w-full p-3 border rounded-xl" />
             </div>
-            <button type="submit" className="w-full py-3.5 bg-[#0b9669] hover:bg-[#087753] text-white rounded-xl font-bold transition">Entrar no Sistema</button>
+            <button type="submit" className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold transition shadow-md">Entrar no Sistema</button>
           </form>
         </div>
       </div>
@@ -707,19 +708,15 @@ export default function App() {
                   <div className="flex justify-end"><button type="submit" className="px-5 py-2.5 bg-emerald-600 text-white rounded-xl text-xs font-bold flex items-center gap-2"><Save className="w-4 h-4" /> Registar Feedback</button></div>
                 </form>
                 <div className="space-y-2 pt-2">
-                  {(selectedEmployee.notes || []).length === 0 ? (
-                    <p className="text-xs text-slate-400 italic">Nenhum registo efetuado ainda.</p>
-                  ) : (
-                    selectedEmployee.notes.map(note => (
-                      <div key={note.id} className="p-3 bg-white border rounded-xl text-xs space-y-1">
-                        <div className="flex justify-between text-slate-400 text-[10px]">
-                          <span>Registado por: <b>{note.author}</b></span>
-                          <span>{note.date}</span>
-                        </div>
-                        <p className="text-slate-700">{note.text}</p>
+                  {(selectedEmployee.notes || []).map(note => (
+                    <div key={note.id} className="p-3 bg-white border rounded-xl text-xs space-y-1">
+                      <div className="flex justify-between text-slate-400 text-[10px]">
+                        <span>Registado por: <b>{note.author}</b></span>
+                        <span>{note.date}</span>
                       </div>
-                    ))
-                  )}
+                      <p className="text-slate-700">{note.text}</p>
+                    </div>
+                  ))}
                 </div>
               </div>
 
