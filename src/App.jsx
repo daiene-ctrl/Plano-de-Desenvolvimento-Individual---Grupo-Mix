@@ -722,15 +722,19 @@ export default function App() {
                   <div className="flex justify-end"><button type="submit" className="px-5 py-2.5 bg-emerald-600 text-white rounded-xl text-xs font-bold flex items-center gap-2"><Save className="w-4 h-4" /> Registar Feedback</button></div>
                 </form>
                 <div className="space-y-2 pt-2">
-                  {(selectedEmployee.notes || []).map(note => (
-                    <div key={note.id} className="p-3 bg-white border rounded-xl text-xs space-y-1">
-                      <div className="flex justify-between text-slate-400 text-[10px]">
-                        <span>Registado por: <b>{note.author}</b></span>
-                        <span>{note.date}</span>
+                  {(selectedEmployee.notes || []).length === 0 ? (
+                    <p className="text-xs text-slate-400 italic">Nenhum registo efetuado ainda.</p>
+                  ) : (
+                    selectedEmployee.notes.map(note => (
+                      <div key={note.id} className="p-3 bg-white border rounded-xl text-xs space-y-1">
+                        <div className="flex justify-between text-slate-400 text-[10px]">
+                          <span>Registado por: <b>{note.author}</b></span>
+                          <span>{note.date}</span>
+                        </div>
+                        <p className="text-slate-700">{note.text}</p>
                       </div>
-                      <p className="text-slate-700">{note.text}</p>
-                    </div>
-                  ))}
+                    ))
+                  )}
                 </div>
               </div>
 
